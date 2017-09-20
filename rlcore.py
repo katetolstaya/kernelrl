@@ -4,7 +4,7 @@ from backports import configparser
 import pickle
 from callbacks import CallbackList, make_callbacks
 import sys
-sys.path.append('../gym_gazebo/envs')
+#sys.path.append('../gym_gazebo/envs')
 # Our agent types
 
 from kv import KVAgent
@@ -323,7 +323,7 @@ if __name__ == '__main__':
 #'cfg/kdpg_quad2.cfg') # 'cfg/kq_planar1.cfg') # #)
     #cProfile.run(run_experiments('cfg/kq_planar1.cfg'))
 	#ret = run_experiments('cfg/peval_quad2.cfg')
-    with open('exp_9_10.pkl', 'wb') as f:
+    with open('exp_9_10_2.pkl', 'wb') as f:
         pickle.dump(ret, f)
     #run_experiments('kq.cfg')
 

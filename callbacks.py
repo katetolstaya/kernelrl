@@ -191,7 +191,6 @@ class IntervalProgress(Callback):
         formatted_rewards = ''
         if 'interval_rewards' in logs:
             eps = logs['interval_rewards']['nb_episodes']
-	    
             if eps > 0:
                 formatted_rewards = ' - episode_rewards: {:.3f} [{:.3f}, {:.3f}]'.format(
                         logs['interval_rewards']['mean'],
@@ -243,6 +242,31 @@ class IntervalTest(Callback):
             total += err / float(i+1)
         loss = float(total) / float(self.testcount) + self.model.model_error()
         logs.setdefault('interval_metrics',{}).setdefault('Testing Loss',[]).append(loss)
+    def on_step_end(self, step, logs):
+        self.step += 1
+        if self.step % self.interval == 0:
+            self.test(logs)
+
+class IntervalACCTest(Callback):
+    def __init__(self, config):
+        self.step = 0
+        self.interval = config.getint('ReportInterval', 10000)
+        self.testpoints = config.getint('TestPoints', 2000)
+    def set_env(self, env):
+        # sample from environment state/actions
+        self.samples = []
+        for _ in range(self.testpoints):
+            s, a = env.env.observation_space.sample(), env.env.action_space.sample()
+            env.env.state = s
+            s_, r, _, _ = env.env.step(a)
+            self.samples.append((s, a, r, s_))
+    def test(self, logs):
+        err = 0.
+        for s,a,r,s_ in self.samples:
+            err += 0.5*self.model.bellman_error(s,a,r,s_)**2
+        loss = float(err) / float(len(self.samples))
+        logs.setdefault('interval_metrics',{}).setdefault('Testing Loss',[]).append(loss)
+        logs.setdefault('interval_metrics',{}).setdefault('Regularized Testing Loss',[]).append(self.model.model.Q.normsq())
     def on_step_end(self, step, logs):
         self.step += 1
         if self.step % self.interval == 0:

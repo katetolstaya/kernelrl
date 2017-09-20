@@ -3,7 +3,7 @@ import numpy.random as nr
 import h5py
 import cPickle
 import sys
-from VelocityController import VelocityController
+#from VelocityController import VelocityController
 from geometry_msgs.msg import Pose, PoseStamped, Point, Quaternion
 sys.path.append('../modular_rl')
 
@@ -12,82 +12,82 @@ sys.path.append('../modular_rl')
 # ------------------------------
 # Probability of choosing action i is effectively the softmax score
 #  p(s, a) = exp(w_a' * s) / sum_a exp(w_a' * s)
-class VelocityControlPolicy:
-    # n = size of state space
-    # m = size of action space
-    def __init__(self, config):
-        # self.W = nr.randn(n, m)
-        # self.actions = range(m)
+# class VelocityControlPolicy:
+#     # n = size of state space
+#     # m = size of action space
+#     def __init__(self, config):
+#         # self.W = nr.randn(n, m)
+#         # self.actions = range(m)
 
-        target = Pose()
-        target.position.x = 0
-        target.position.y = 0
-        target.position.z = 0
+#         target = Pose()
+#         target.position.x = 0
+#         target.position.y = 0
+#         target.position.z = 0
 
-        self.vController = VelocityController()
-        self.vController.setTarget(target)
-    def select(self, state):
-        pos = PoseStamped()
-        pos.pose.position.x = state[0]
-        pos.pose.position.y = state[1]
-        pos.pose.position.z = state[2]
-        pos.pose.orientation.x = state[3]
-        pos.pose.orientation.y = state[4]
-        pos.pose.orientation.z = state[5]
-        pos.pose.orientation.w = state[6]
+#         self.vController = VelocityController()
+#         self.vController.setTarget(target)
+#     def select(self, state):
+#         pos = PoseStamped()
+#         pos.pose.position.x = state[0]
+#         pos.pose.position.y = state[1]
+#         pos.pose.position.z = state[2]
+#         pos.pose.orientation.x = state[3]
+#         pos.pose.orientation.y = state[4]
+#         pos.pose.orientation.z = state[5]
+#         pos.pose.orientation.w = state[6]
 
-        act = self.vController.update(pos)
-        action = np.zeros(6,)
+#         act = self.vController.update(pos)
+#         action = np.zeros(6,)
 
-        action[0] = act.twist.linear.x
-        action[1] = act.twist.linear.y
-        action[2] = act.twist.linear.z
-        action[3] = act.twist.angular.x
-        action[4] = act.twist.angular.y
-        action[5] = act.twist.angular.z
+#         action[0] = act.twist.linear.x
+#         action[1] = act.twist.linear.y
+#         action[2] = act.twist.linear.z
+#         action[3] = act.twist.angular.x
+#         action[4] = act.twist.angular.y
+#         action[5] = act.twist.angular.z
 
-        # exps = np.exp(s.dot(self.W))
-        # return nr.choice(self.actions, p=exps/exps.sum())
-        return action
-    def reset(self):
-        pass
+#         # exps = np.exp(s.dot(self.W))
+#         # return nr.choice(self.actions, p=exps/exps.sum())
+#         return action
+#     def reset(self):
+#         pass
 
 # ------------------------------
 # Discrete Control Policy
 # ------------------------------
 # Probability of choosing action i is effectively the softmax score
 #  p(s, a) = exp(w_a' * s) / sum_a exp(w_a' * s)
-class Velocity2ControlPolicy:
-    # n = size of state space
-    # m = size of action space
-    def __init__(self, config):
-        # self.W = nr.randn(n, m)
-        # self.actions = range(m)
+# class Velocity2ControlPolicy:
+#     # n = size of state space
+#     # m = size of action space
+#     def __init__(self, config):
+#         # self.W = nr.randn(n, m)
+#         # self.actions = range(m)
 
-        target = Pose()
-        target.position.x = 0
-        target.position.y = 0
-        target.position.z = 0
+#         target = Pose()
+#         target.position.x = 0
+#         target.position.y = 0
+#         target.position.z = 0
 
-        self.vController = VelocityController()
-        self.vController.setTarget(target)
-    def select(self, state):
-        pos = PoseStamped()
-        pos.pose.position.x = state[0]
-        pos.pose.position.y = state[1]
+#         self.vController = VelocityController()
+#         self.vController.setTarget(target)
+#     def select(self, state):
+#         pos = PoseStamped()
+#         pos.pose.position.x = state[0]
+#         pos.pose.position.y = state[1]
 
 
-        act = self.vController.update(pos)
-        action = np.zeros(2,)
+#         act = self.vController.update(pos)
+#         action = np.zeros(2,)
 
-        action[0] = act.twist.linear.x
-        action[1] = act.twist.linear.y
+#         action[0] = act.twist.linear.x
+#         action[1] = act.twist.linear.y
 
-        # exps = np.exp(s.dot(self.W))
-        # return nr.choice(self.actions, p=exps/exps.sum())
-        return action
-    def reset(self):
-        pass
+#         # exps = np.exp(s.dot(self.W))
+#         # return nr.choice(self.actions, p=exps/exps.sum())
+#         return action
+#     def reset(self):
+#         pass
 
 # ------------------------------
 # Discrete Control Policy

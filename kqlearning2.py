@@ -26,12 +26,12 @@ class KQLearningModel2(object):
         else:
             a_ = self.Q.argmax(s_)
             x_ = numpy.concatenate((numpy.reshape(s_,(1,-1)), numpy.reshape(a_,(1,-1))),axis=1)
-            return r + self.Q(x_) - self.Q(x)
+            return r + self.gamma*self.Q(x_) - self.Q(x)
     def bellman_error2(self, x, r, x_):
         if x_ is None:
             return r - self.Q(x)
         else:
-            return r + self.Q(x_) - self.Q(x)
+            return r + self.gamma*self.Q(x_) - self.Q(x)
     def model_error(self):
         return 0.5*self.lossL*self.Q.normsq()
     def train(self, step, sample):
@@ -104,7 +104,7 @@ class KQLearningModelSCGD2(KQLearningModel2):
 	    a_ = None
 	    x_ = None
 	else: 
-	    a_ = self.Q.argmax(s) 
+	    a_ = self.Q.argmax(s_) 
 	    x_ = numpy.concatenate((numpy.reshape(numpy.array(s_),(1,-1)), numpy.reshape(numpy.array(a_),(1,-1))),axis=1)	
 	   
 	delta = self.bellman_error2(x,r,x_)
@@ -123,10 +123,10 @@ class KQLearningModelSCGD2(KQLearningModel2):
 
 	# Prune
 	modelOrder = len(self.Q.D)
-	self.Q.prune(self.eps * self.eta.value**2)
+	self.Q.prune(self.eps**2 * self.eta.value**2 / self.beta.value)
 	modelOrder_ = len(self.Q.D)
 	# Compute new error
-	loss = 0.5*self.bellman_error(s,a,r,s_)**2 + self.model_error()
+	loss = 0.5*self.bellman_error2(x,r,x_)**2 + self.model_error()
 	#print modelOrder_
 	return (float(loss), float(modelOrder_))
 
@@ -177,7 +177,7 @@ class KQLearningAgent2(object):
         "Decide what action to take in state s."
         if stochastic and (random.random() < self.epsilon.value):
 	    #print("random")
-	    a =  numpy.random.uniform(3*self.min_act,3*self.max_act)
+	    a =  numpy.random.uniform(self.min_act,self.max_act)
             #a_temp = numpy.clip(a, self.min_act, self.max_act)
 	    #return a_temp
 		#return self.action_space.sample() 
