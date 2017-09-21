@@ -2,7 +2,7 @@ import re
 import numpy as np
 import matplotlib.pyplot as plt
 
-filename = 'exp9_23.txt'
+filename = 'exp9_21p.txt'
 #filename = 'exp_results/exp9_16multi/exp9_9.txt'
 #exp9_195.txt'
 #filename = 'exp7_25.txt'

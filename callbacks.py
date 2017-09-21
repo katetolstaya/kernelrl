@@ -263,11 +263,15 @@ class IntervalACCTest(Callback):
             self.samples.append((s, a, r, s_))
     def test(self, logs):
         err = 0.
+	total_reward = 0
         for s,a,r,s_ in self.samples:
             err += 0.5*self.model.bellman_error(s,a,r,s_)**2
+	    total_reward += r
+
         loss = float(err) / float(len(self.samples))
         logs.setdefault('interval_metrics',{}).setdefault('Testing Loss',[]).append(loss)
         logs.setdefault('interval_metrics',{}).setdefault('Regularized Testing Loss',[]).append(self.model.model.Q.normsq())
+        logs.setdefault('interval_metrics',{}).setdefault('Testing Reward',[]).append(total_reward)	
     def on_step_end(self, step, logs):
         self.step += 1
         if self.step % self.interval == 0:

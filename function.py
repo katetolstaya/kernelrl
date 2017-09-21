@@ -19,8 +19,8 @@ class KernelRepresentation(object):
         # W is a K x M matrix of weights
         self.W      = np.zeros((0,M))
 	
-	self.low_act = np.array([-1])
-        self.high_act = np.array([1])
+	self.low_act = np.array([-2])
+        self.high_act = np.array([2])
 
     # ------------------------------
     # Evaluate a set of values
