@@ -2,8 +2,8 @@ import re
 import numpy as np
 import matplotlib.pyplot as plt
 
-filename = 'exp9_1910.txt'
-#filename = 'exp_results/exp9_15multi/exp9_9.txt'
+filename = 'exp9_23.txt'
+#filename = 'exp_results/exp9_16multi/exp9_9.txt'
 #exp9_195.txt'
 #filename = 'exp7_25.txt'
 interval = 1000
@@ -42,7 +42,7 @@ for i, line in enumerate(open(filename)):
 	p = p+1
 
 
-window =1
+window =10
 #k = 100
 
 

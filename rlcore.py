@@ -310,7 +310,7 @@ if __name__ == '__main__':
     #run_experiments('kq.cfg')
     #cfg/kpolicy_quad.cfg
     #cfg/kq_quad2.cfg
-    ret = run_experiments('cfg/kq_mccar2.cfg')
+    ret = run_experiments('cfg/kq_mccar_multi4.cfg')
 #kq_mccar_multi
 
 #('cfg/kq_mccar_multi2.cfg')
@@ -323,7 +323,7 @@ if __name__ == '__main__':
 #'cfg/kdpg_quad2.cfg') # 'cfg/kq_planar1.cfg') # #)
     #cProfile.run(run_experiments('cfg/kq_planar1.cfg'))
 	#ret = run_experiments('cfg/peval_quad2.cfg')
-    with open('exp_9_10_2.pkl', 'wb') as f:
+    with open('exp_9_23.pkl', 'wb') as f:
         pickle.dump(ret, f)
     #run_experiments('kq.cfg')
 
