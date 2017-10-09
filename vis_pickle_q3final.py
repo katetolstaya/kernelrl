@@ -18,9 +18,10 @@ method = 'DEFAULT'
 #folder = 'exp9_75'
 #n = 5000
 #folder = 'exp_results/exp9_16multi/exp9_97'
-folder = 'exp9_91'
-n = 3
-f =  open('../rlcore/'+folder+'/kpolicy_model_'+str(n)+'.pkl','rb')
+#folder = 'exp_results/exp9_21multi/exp9_99'
+folder = ''
+n = 50
+f =  open('../rlcore/'+folder+'kpolicy_model_'+str(n)+'.pkl','rb')
 model = cPickle.load(f)
 
 
@@ -48,18 +49,16 @@ font = {'family' : 'normal',
         'size'   : 14}
 
 plt.rc('font', **font)
+plt.rc('text', usetex=True)
 
 fig, ax = plt.subplots(1, 1)
 fig.set_figheight(13)
 fig.set_figwidth(21.034)
-
-print (np.max(b))
-print (np.min(b))
-
+#ax.set_aspect('equal', 'datalim')
 xv, yv = np.meshgrid(x, y, sparse=False, indexing='ij')
 # mc car
-plot = ax.pcolormesh(xv, yv, a, cmap='RdBu_r', vmin = -1, vmax = 1)
-#plot = ax.pcolormesh(xv, yv, b, cmap='RdBu_r', vmin = -110, vmax = 110)
+#plot = ax.pcolormesh(xv, yv, a, cmap='RdBu_r', vmin = -1, vmax = 1)
+plot = ax.pcolormesh(xv, yv, b, cmap='RdBu_r', vmin = -110, vmax = 110)
 
 ax.plot(model.D[:,0], model.D[:,1],'wo')
 ax.set_xlim((-1.2, 0.6))

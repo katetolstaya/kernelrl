@@ -323,7 +323,7 @@ if __name__ == '__main__':
 #'cfg/kdpg_quad2.cfg') # 'cfg/kq_planar1.cfg') # #)
     #cProfile.run(run_experiments('cfg/kq_planar1.cfg'))
 	#ret = run_experiments('cfg/peval_quad2.cfg')
-    with open('exp9_21p.pkl', 'wb') as f:
+    with open('exp10_01.pkl', 'wb') as f:
         pickle.dump(ret, f)
     #run_experiments('kq.cfg')
 

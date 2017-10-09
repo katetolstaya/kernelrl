@@ -177,7 +177,8 @@ class KQLearningAgent2(object):
         "Decide what action to take in state s."
         if stochastic and (random.random() < self.epsilon.value):
 	    #print("random")
-	    a =  numpy.random.uniform(3*self.min_act,3*self.max_act)
+	    #a =  numpy.random.uniform(3*self.min_act,3*self.max_act)
+	    a =  numpy.random.uniform(self.min_act,self.max_act)
             #a_temp = numpy.clip(a, self.min_act, self.max_act)
 	    #return a_temp
 		#return self.action_space.sample() 

@@ -221,7 +221,7 @@ class IntervalTest(Callback):
     def __init__(self, config):
         self.step = 0
         self.interval   = config.getint('ReportInterval', 10000)
-        self.testcount  = config.getint('TestCount', 0)
+        self.testcount  = config.getint('TestCount', 100)
         self.testlength = config.getint('TestLength', 200)
     def set_env(self, env):
         # Make a new copy of the environment
@@ -231,6 +231,7 @@ class IntervalTest(Callback):
         total = 0.
         for _ in range(self.testcount):
             err = 0.
+	    reward = 0
             s = self.env.reset()
             for i in range(self.testlength):
                 a = self.model.act(s, stochastic=False)
@@ -238,10 +239,12 @@ class IntervalTest(Callback):
                 if done: s_ = None
                 err += 0.5*self.model.bellman_error(s,a,r,s_)**2
                 s = s_
+		reward += r
                 if done: break
             total += err / float(i+1)
         loss = float(total) / float(self.testcount) + self.model.model_error()
         logs.setdefault('interval_metrics',{}).setdefault('Testing Loss',[]).append(loss)
+	logs.setdefault('interval_metrics',{}).setdefault('Testing Reward',[]).append(reward)
     def on_step_end(self, step, logs):
         self.step += 1
         if self.step % self.interval == 0:
@@ -266,12 +269,12 @@ class IntervalACCTest(Callback):
 	total_reward = 0
         for s,a,r,s_ in self.samples:
             err += 0.5*self.model.bellman_error(s,a,r,s_)**2
-	    total_reward += r
+	    #total_reward += r
 
         loss = float(err) / float(len(self.samples))
-        logs.setdefault('interval_metrics',{}).setdefault('Testing Loss',[]).append(loss)
-        logs.setdefault('interval_metrics',{}).setdefault('Regularized Testing Loss',[]).append(self.model.model.Q.normsq())
-        logs.setdefault('interval_metrics',{}).setdefault('Testing Reward',[]).append(total_reward)	
+        logs.setdefault('interval_metrics',{}).setdefault('ACC Testing Loss',[]).append(loss)
+        logs.setdefault('interval_metrics',{}).setdefault('ACC Regularized Testing Loss',[]).append(self.model.model.Q.normsq())
+	
     def on_step_end(self, step, logs):
         self.step += 1
         if self.step % self.interval == 0:

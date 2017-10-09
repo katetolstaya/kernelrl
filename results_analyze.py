@@ -2,15 +2,20 @@ import re
 import numpy as np
 import matplotlib.pyplot as plt
 
-filename = 'exp9_21p.txt'
+
+filename = 'exp10_01.txt'
+#filename = 'exp8_8multi.txt'
+#filename = 'exp_results/exp9_21multi/exp9_21multi.txt'
 #filename = 'exp_results/exp9_16multi/exp9_9.txt'
 #exp9_195.txt'
 #filename = 'exp7_25.txt'
 interval = 1000
-pattern = re.compile("episode_rewards: ([0-9]*.[0-9]*)")
-pattern2 = re.compile("^([0-9]+)$")
-pattern3 = re.compile("Model Order: ([0-9]*.[0-9]*)")
-pattern4 = re.compile("Training Loss: ([0-9]*.[0-9]*)")
+
+pattern = re.compile(r"episode_rewards: ([\+\-]?\d+\.\d+)")
+pattern2 = re.compile(r"^([0-9]+)$")
+pattern3 = re.compile(r"Model Order: ([0-9]*.[0-9]*)")
+pattern4 = re.compile(r"Training Loss: (-?[0-9]*.[0-9]*)")
+pattern = re.compile(r"Testing Reward: (-?[0-9]*.[0-9]*)")
 #episode_rewards: 36.938
 n = 100000
 a = np.zeros((n,))
@@ -42,7 +47,7 @@ for i, line in enumerate(open(filename)):
 	p = p+1
 
 
-window =10
+window =1
 #k = 100
 
 
