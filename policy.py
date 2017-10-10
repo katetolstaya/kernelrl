@@ -4,7 +4,7 @@ import h5py
 import cPickle
 import sys
 #from VelocityController import VelocityController
-from geometry_msgs.msg import Pose, PoseStamped, Point, Quaternion
+#from geometry_msgs.msg import Pose, PoseStamped, Point, Quaternion
 sys.path.append('../modular_rl')
 
 # ------------------------------

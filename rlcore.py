@@ -11,6 +11,7 @@ from kv import KVAgent
 from kqlearning import KQLearningAgent
 from ksarsa import KSARSAAgent
 from kqlearning2 import KQLearningAgent2
+from kqlearning_per import KQLearningAgentPER, RandomAgent
 from policy_test import QTestAgent2
 from kpolicy import KPolicyAgent
 from kpolicytab import KPolicyTabAgent
@@ -34,20 +35,20 @@ matplotlib.use('Agg')
 class Environment:
     def __init__(self, cfg):
         problem  = cfg.get('GymEnvironment')
-	self.reset_state = cfg.getboolean('ResetState',False)
-	print(problem)
+        self.reset_state = cfg.getboolean('ResetState',False)
+        print(problem)
         self.env = gym.make(problem)
-	#print (self.env.action_space.high)
-	#print (self.env.action_space.low)
+        #print (self.env.action_space.high)
+        #print (self.env.action_space.low)
     @property
     def stateCount(self):
         return self.env.observation_space.shape[0]
     @property
     def actionCount(self):
-	if hasattr(self.env.action_space, 'n'):
-        	return self.env.action_space.n
-	else:
-		return self.env.action_space.shape[0]
+        if hasattr(self.env.action_space, 'n'):
+                return self.env.action_space.n
+        else:
+                return self.env.action_space.shape[0]
     @property
     def bounds(self):
         return np.vstack((self.env.observation_space.high, self.env.observation_space.low))
@@ -65,12 +66,12 @@ class Environment:
         # Reset state
         s = self.env.reset()
 
-	#if nb_steps is not None:
-	#    pbar = tqdm(total=nb_steps)
+        #if nb_steps is not None:
+        #    pbar = tqdm(total=nb_steps)
 
         while (nb_steps is None) or (episodeStep < nb_steps):
-	    if self.reset_state:
-	    	s = self.env.reset()
+            if self.reset_state:
+                s = self.env.reset()
 
 
 
@@ -84,9 +85,9 @@ class Environment:
             callbacks.on_action_begin(a)
             #self.env.render()
             s_, r, done, info = self.env.step(a)
-	    
-	    #print (s_,a)
-	    #print (s)
+            
+            #print (s_,a)
+            #print (s)
             callbacks.on_action_end(a)
             # Process this transition
 
@@ -105,21 +106,21 @@ class Environment:
             R += r
             episodeStep += 1
 
-	    #if nb_steps is not None:
-	    #    pbar.update(1)
+            #if nb_steps is not None:
+            #    pbar.update(1)
             
             #if episodeStep >= self.reset_state and self.reset_state > 0:
-	    #   done = True
+            #   done = True
 
             s = copy.deepcopy(s_)
             if done:
                 break
 
-	#if nb_steps is not None:
-	#    pbar.close()
+        #if nb_steps is not None:
+        #    pbar.close()
 
         # End of episode
-	sys.stdout.flush()
+        sys.stdout.flush()
         return R, episodeStep
 
     # ----------------------------------------
@@ -136,8 +137,8 @@ class Environment:
         a = agent.act(s)
 
         while (nb_steps is None) or (episodeStep < nb_steps):
-	    if self.reset_state:
-	    	s = self.env.reset()
+            if self.reset_state:
+                s = self.env.reset()
             callbacks.on_step_begin(episodeStep)
 
             # Take action
@@ -150,7 +151,7 @@ class Environment:
             a_ = agent.act(s_)
 
  
-		
+                
             # Process this transition
             agent.observe( (s, a, r, None if done else s_, None if done else a_) )
 
@@ -206,15 +207,18 @@ class Experiment(object):
         elif atype.lower() == 'kqlearning':
             self.agent = KQLearningAgent(self.env, config)
         elif atype.lower() == 'kqlearning2':
-                self.agent = KQLearningAgent2(self.env, config)
+            self.agent = KQLearningAgent2(self.env, config)
+        elif atype.lower() == 'kqlearningper':
+            self.random_agent = RandomAgent(self.env, config)
+            self.agent = KQLearningAgentPER(self.env, config)
         elif atype.lower() == 'qtest':
-                self.agent = QTestAgent2(self.env, config)
+            self.agent = QTestAgent2(self.env, config)
         elif atype.lower() == 'kpolicy':
-                self.agent = KPolicyAgent(self.env, config)
+            self.agent = KPolicyAgent(self.env, config)
         elif atype.lower() == 'kpolicytab':
-                self.agent = KPolicyTabAgent(self.env, config)
+            self.agent = KPolicyTabAgent(self.env, config)
         elif atype.lower() == 'kqtab':
-                self.agent = KQTabAgent(self.env, config)
+            self.agent = KQTabAgent(self.env, config)
         elif atype.lower() == 'ksarsa':
             self.agent = KSARSAAgent(self.env, config)
         elif atype.lower() == 'kdpg':
@@ -241,6 +245,15 @@ class Experiment(object):
         self.callbacks.set_params({'nb_steps': self.maximum_steps})
 
     def run(self):
+        # Initialize our memory
+        if hasattr(self.agent, 'memory'):
+            print('Initializing memory with random agent...')
+            while not self.random_agent.memory.isFull():
+                self.env.run(self.random_agent, nb_steps=self.random_agent.memory.remaining())
+                print('%d/%d' % (self.random_agent.memory.length, self.random_agent.memory.capacity))
+            self.agent.memory = self.random_agent.memory
+            del self.random_agent
+
         # Begin our training
         self.callbacks.on_train_begin()
         # Select how our environment runs an episode
@@ -264,13 +277,13 @@ class Experiment(object):
                 'nb_episode_steps': episodeSteps,
                 'nb_steps': self.steps
                 })
-	    print(episodeSteps)
+            print(episodeSteps)
 
 
         # Collect final information
         logs = {}
         logs['agent'] = self.agent
-	#print (self.agent.model.Q.KDD)
+        #print (self.agent.model.Q.KDD)
         self.callbacks.on_train_end(logs)
         return logs
 
@@ -310,7 +323,7 @@ if __name__ == '__main__':
     #run_experiments('kq.cfg')
     #cfg/kpolicy_quad.cfg
     #cfg/kq_quad2.cfg
-    ret = run_experiments('cfg/kq_mccar2.cfg')
+    ret = run_experiments('cfg/kq_mccar_per.cfg')
 #kq_mccar_multi
 
 #('cfg/kq_mccar_multi2.cfg')
@@ -322,7 +335,7 @@ if __name__ == '__main__':
 #'cfg/kq_quadx.cfg')
 #'cfg/kdpg_quad2.cfg') # 'cfg/kq_planar1.cfg') # #)
     #cProfile.run(run_experiments('cfg/kq_planar1.cfg'))
-	#ret = run_experiments('cfg/peval_quad2.cfg')
+        #ret = run_experiments('cfg/peval_quad2.cfg')
     with open('exp_9_10_2.pkl', 'wb') as f:
         pickle.dump(ret, f)
     #run_experiments('kq.cfg')
