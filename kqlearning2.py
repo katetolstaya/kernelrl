@@ -118,7 +118,7 @@ class KQLearningModelSCGD2(KQLearningModel2):
 	else:
 	    W = numpy.zeros((2,1))
 	    W[0]  = -1.
-	    W[1] = self.gamma
+	    W[1] = self.gamma * 0.1
 	    self.Q.append(numpy.vstack((x,x_)), -self.eta.value * self.y * W)
 
 	# Prune

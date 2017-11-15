@@ -255,6 +255,7 @@ class IntervalACCTest(Callback):
     def set_env(self, env):
         # sample from environment state/actions
         self.samples = []
+	s = env.env.reset()
         for _ in range(self.testpoints):
             s, a = env.env.observation_space.sample(), env.env.action_space.sample()
             env.env.state = s
