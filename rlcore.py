@@ -1,14 +1,16 @@
 from __future__ import print_function
 import numpy as np, gym
-from backports import configparser
-import pickle
-from callbacks import CallbackList, make_callbacks
+import copy
 import sys
-#sys.path.append('../gym_gazebo/envs')
-# Our agent types
+import logging
+import pickle
+from backports import configparser
+logger = logging.getLogger(__name__)
 
-#from kv import KVAgent
+# Our agent types
+from callbacks import CallbackList, make_callbacks
 from kqlearning import KQLearningAgent
+from knaf import KNAFAgent
 from ksarsa import KSARSAAgent
 from kqlearning2 import KQLearningAgent2
 from policy_test import QTestAgent2
@@ -16,38 +18,30 @@ from kpolicy import KPolicyAgent
 from kpolicytab import KPolicyTabAgent
 from kdpg import KDPGAgent
 from kqtab import KQTabAgent
-from tqdm import tqdm
+#from kv import KVAgent
 
-import copy
-
-import logging
-from gym.envs.registration import register
-
-logger = logging.getLogger(__name__)
-
-import matplotlib
-import matplotlib.pyplot as plt
-import sys
-matplotlib.use('Agg')
+#sys.path.append('../gym_gazebo/envs')
+#from tqdm import tqdm
+#import matplotlib
+#import matplotlib.pyplot as plt
+#matplotlib.use('Agg')
 # ==================================================
 
 class Environment:
     def __init__(self, cfg):
         problem  = cfg.get('GymEnvironment')
-	self.reset_state = cfg.getboolean('ResetState',False)
-	print(problem)
+        self.reset_state = cfg.getboolean('ResetState',False)
+        print(problem)
         self.env = gym.make(problem)
-	#print (self.env.action_space.high)
-	#print (self.env.action_space.low)
     @property
     def stateCount(self):
         return self.env.observation_space.shape[0]
     @property
     def actionCount(self):
-	if hasattr(self.env.action_space, 'n'):
-        	return self.env.action_space.n
-	else:
-		return self.env.action_space.shape[0]
+        if hasattr(self.env.action_space, 'n'):
+            return self.env.action_space.n
+        else:
+            return self.env.action_space.shape[0]
     @property
     def bounds(self):
         return np.vstack((self.env.observation_space.high, self.env.observation_space.low))
@@ -65,28 +59,18 @@ class Environment:
         # Reset state
         s = self.env.reset()
 
-	#if nb_steps is not None:
-	#    pbar = tqdm(total=nb_steps)
-
         while (nb_steps is None) or (episodeStep < nb_steps):
-	    if self.reset_state:
-	    	s = self.env.reset()
-
-
+            if self.reset_state:
+                s = self.env.reset()
 
             callbacks.on_step_begin(episodeStep)
-
             # Choose action
             a = agent.act(s)
-
 
             # Take action
             callbacks.on_action_begin(a)
             #self.env.render()
             s_, r, done, info = self.env.step(a)
-	    
-	    #print (s_,a)
-	    #print (s)
             callbacks.on_action_end(a)
             # Process this transition
 
@@ -105,18 +89,9 @@ class Environment:
             R += r
             episodeStep += 1
 
-	    #if nb_steps is not None:
-	    #    pbar.update(1)
-            
-            #if episodeStep >= self.reset_state and self.reset_state > 0:
-	    #   done = True
-
             s = copy.deepcopy(s_)
             if done:
                 break
-
-	#if nb_steps is not None:
-	#    pbar.close()
 
         # End of episode
 	sys.stdout.flush()
@@ -136,8 +111,8 @@ class Environment:
         a = agent.act(s)
 
         while (nb_steps is None) or (episodeStep < nb_steps):
-	    if self.reset_state:
-	    	s = self.env.reset()
+            if self.reset_state:
+                s = self.env.reset()
             callbacks.on_step_begin(episodeStep)
 
             # Take action
@@ -148,8 +123,6 @@ class Environment:
             callbacks.on_action_end(a)
             # Choose next action
             a_ = agent.act(s_)
-
- 
 		
             # Process this transition
             agent.observe( (s, a, r, None if done else s_, None if done else a_) )
@@ -201,12 +174,12 @@ class Experiment(object):
         # Create our agent
         # ------------------------------
         atype = config.get('Agent')
-        if atype.lower() == 'kv':
-            self.agent = KVAgent(self.env, config)
-        elif atype.lower() == 'kqlearning':
+        if atype.lower() == 'kqlearning':
             self.agent = KQLearningAgent(self.env, config)
         elif atype.lower() == 'kqlearning2':
                 self.agent = KQLearningAgent2(self.env, config)
+        elif atype.lower() == 'knaf':
+            self.agent = KNAFAgent(self.env, config)
         elif atype.lower() == 'qtest':
                 self.agent = QTestAgent2(self.env, config)
         elif atype.lower() == 'kpolicy':
@@ -264,29 +237,19 @@ class Experiment(object):
                 'nb_episode_steps': episodeSteps,
                 'nb_steps': self.steps
                 })
-	    print(episodeSteps)
-
+        print(episodeSteps)
 
         # Collect final information
         logs = {}
         logs['agent'] = self.agent
-	#print (self.agent.model.Q.KDD)
         self.callbacks.on_train_end(logs)
         return logs
 
 # ==================================================
-
 # ------------------------------
 # Run a batch of experiments
 # ------------------------------
 def run_experiments(config):
-    print(config)
-    if isinstance(config, str):
-        fname = config
-        config = configparser.ConfigParser()
-        with open(fname, 'r') as f:
-            config.read_file(f)
-
     # The output of our experiments
     experiments = {}
     # Check if there are multiple experiments to run
@@ -305,26 +268,20 @@ def run_experiments(config):
     return experiments
 
 if __name__ == '__main__':
+
+    #'ksarsa.cfg', 'kq.cfg', kpolicy_quad.cfg, cfg/kq_quad2.cfg, 'cfg/kq_mccar_multi2.cfg'
     #run_experiments(sys.argv[1])
-    #run_experiments('ksarsa.cfg')
-    #run_experiments('kq.cfg')
-    #cfg/kpolicy_quad.cfg
-    #cfg/kq_quad2.cfg
-    ret = run_experiments('cfg/kq_mccar.cfg')
-#kq_mccar_multi
+    fname = 'cfg/kq_mccar.cfg'
+    print(fname)
+    if isinstance(fname, str):
+        config = configparser.ConfigParser()
+        with open(fname, 'r') as f:
+            config.read_file(f)
 
-#('cfg/kq_mccar_multi2.cfg')
-#('cfg/kq_mccar_multi2.cfg')
-#('cfg/peval.cfg')
-#('cfg/kq_mccar_multi2.cfg')
-#('cfg/peval.cfg')
-#
-#'cfg/kq_quadx.cfg')
-#'cfg/kdpg_quad2.cfg') # 'cfg/kq_planar1.cfg') # #)
-    #cProfile.run(run_experiments('cfg/kq_planar1.cfg'))
-	#ret = run_experiments('cfg/peval_quad2.cfg')
-    with open('exp11_14_2.pkl', 'wb') as f:
-        pickle.dump(ret, f)
-    #run_experiments('kq.cfg')
+        ret = run_experiments(config)
+        # cProfile.run(run_experiments('cfg/kq_planar1.cfg'))
 
-    #wait = input("PRESS ENTER TO CONTINUE.")
+        if 'PKLFileName' in config:
+            pkl_fname = config.get('PKLFileName')
+            with open(pkl_fname, 'wb') as f:
+                pickle.dump(ret, f)

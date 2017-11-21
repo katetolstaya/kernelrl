@@ -1,5 +1,5 @@
 from function import KernelRepresentation
-import numpy
+import numpy as np
 import sys, math, random
 from core import ScheduledParameter
 import pickle
@@ -22,109 +22,52 @@ class KQLearningModel2(object):
         # Reward discount
         self.gamma = config.getfloat('RewardDiscount')
         self.phi = config.getfloat('Phi', 0.0)
+        self.beta = ScheduledParameter('ExpectationRate', config)
+        # Running estimate of our expected TD-loss
+        self.y = 0.
 
     def bellman_error(self, s, a, r, s_):
-        x = numpy.concatenate((numpy.reshape(s, (1, -1)), numpy.reshape(a, (1, -1))), axis=1)
+        x = np.concatenate((np.reshape(s, (1, -1)), np.reshape(a, (1, -1))), axis=1)
         if s_ is None:
             return r - self.Q(x)
         else:
             a_ = self.Q.argmax(s_)
-            x_ = numpy.concatenate((numpy.reshape(s_, (1, -1)), numpy.reshape(a_, (1, -1))), axis=1)
+            x_ = np.concatenate((np.reshape(s_, (1, -1)), np.reshape(a_, (1, -1))), axis=1)
             return r + self.gamma * self.Q(x_) - self.Q(x)
 
     def bellman_error2(self, x, r, x_):
         if x_ is None:
             return r - self.Q(x)
         else:
-            #print self.Q(x_)
-            #print self.Q(x)
-            #print r
             return r + self.gamma * self.Q(x_) - self.Q(x)
 
     def model_error(self):
         return 0.5 * self.lossL * self.Q.normsq()
 
-    def train(self, step, sample):
-        pass
-
     def predict(self, s):
         pass
-        # return self.Q(s)
 
     def predictOne(self, s):
         pass
-        # "Predict the Q function values for a single state."
-        # return self.Q.argmax(s)
-        # return self.Q(s.reshape(1, len(s))).flatten()
 
     @property
     def metrics_names(self):
         return ('Training Loss', 'Model Order')
 
-
-class KQLearningModelTD2(KQLearningModel2):
-    def train(self, step, sample):
-        self.eta.step(step)
-        # Unumpack sample
-
-        s, a, r, s_ = sample
-
-        # r = r.astype(float)
-
-        x = numpy.concatenate((numpy.reshape(s, (1, -1)), numpy.reshape(a, (1, -1))), axis=1)
-        # x = x.astype(float)
-
-        if s_ is None:
-            a_ = None
-            x_ = None
-
-        else:
-            a_ = self.Q.argmax(s)
-            x_ = numpy.concatenate((numpy.reshape(s_, (1, -1)), numpy.reshape(a_, (1, -1))), axis=1)
-        # x_ = x_.astype(float)
-
-        # Compute error
-        delta = self.bellman_error2(x, r, x_)
-        # Gradient step
-        self.Q.shrink(1. - self.eta.value * self.lossL)
-        self.Q.append(x, self.eta.value * delta)
-        # Prune
-        modelOrder = len(self.Q.D)
-        self.Q.prune(self.eps * self.eta.value ** 2)
-        modelOrder_ = len(self.Q.D)
-        # Compute new error
-        loss = 0.5 * self.bellman_error(s, a, r, s_) ** 2 + self.model_error()
-        return (float(loss), float(modelOrder_))
-
-
-class KQLearningModelSCGD2(KQLearningModel2):
-    def __init__(self, stateCount, actionCount, config):
-        super(KQLearningModelSCGD2, self).__init__(stateCount, actionCount, config)
-        # TD-loss expectation approximation rate
-        self.beta = ScheduledParameter('ExpectationRate', config)
-        # Running estimate of our expected TD-loss
-        self.y = 0.
-
     def train(self, step, sample):
         self.eta.step(step)
         self.beta.step(step)
-        # Unpack sample
+        # Unpack sample and compute error
         s, a, r, s_ = sample
-        # Compute error
-        x = numpy.concatenate((numpy.reshape(numpy.array(s), (1, -1)), numpy.reshape(numpy.array(a), (1, -1))), axis=1)
-
+        x = np.concatenate((np.reshape(np.array(s), (1, -1)), np.reshape(np.array(a), (1, -1))), axis=1)
         if s_ is None:
-            #a_ = None
+
             x_ = None
         else:
             a_ = self.Q.argmax(s_)
-            x_ = numpy.concatenate((numpy.reshape(numpy.array(s_), (1, -1)), numpy.reshape(numpy.array(a_), (1, -1))),
-                                   axis=1)
-
+            x_ = np.concatenate((np.reshape(np.array(s_), (1, -1)), np.reshape(np.array(a_), (1, -1))),axis=1)
         delta = self.bellman_error2(x, r, x_)
         # Running average of TD-error
-        #if numpy.abs(delta) > 10:
-        #    print delta
         self.y += self.beta.value * (delta - self.y)
         # Gradient step
         self.Q.shrink(1. - self.eta.value * self.lossL)
@@ -132,16 +75,14 @@ class KQLearningModelSCGD2(KQLearningModel2):
         if s_ is None:
             self.Q.append(x, self.eta.value * self.y)
         else:
-            W = numpy.zeros((2, 1))
+            W = np.zeros((2, 1))
             W[0] = -1.
             W[1] = self.gamma * self.phi
-            #print -self.eta.value * self.y * W
-            self.Q.append(numpy.vstack((x, x_)), -self.eta.value * self.y * W)
+            self.Q.append(np.vstack((x, x_)), -self.eta.value * self.y * W)
 
         # Prune
-        #modelOrder = self.Q.model_order() #len(self.Q.D)
         self.Q.prune(self.eps ** 2 * self.eta.value ** 2 / self.beta.value)
-        modelOrder_ = self.Q.model_order() #len(self.Q.D)
+        modelOrder_ = self.Q.model_order()
         # Compute new error
         loss = 0.5 * self.bellman_error2(x, r, x_) ** 2 + self.model_error() # TODO should we have model error here?
         # print modelOrder_
@@ -155,43 +96,34 @@ class KQLearningAgent2(object):
     def __init__(self, env, config):
         self.stateCount = env.stateCount
         self.actionCount = env.actionCount
-        self.min_act = json.loads(config.get('MinAction'))
-        self.max_act = json.loads(config.get('MaxAction'))
-        self.max_model_order = config.getfloat('MaxModelOrder', 10000)
 
-        self.min_act = numpy.reshape(self.min_act, (-1, 1))
-        self.max_act = numpy.reshape(self.max_act, (-1, 1))
+        self.model = KQLearningModel2(self.stateCount, self.actionCount, config)
 
-        self.act_mult = config.getfloat('ActMultiplier', 1)
+        # self.save_steps = config.getint('SaveInterval', 1000000000)
+        # self.folder = config.get('Folder', 'exp')
 
-        # We can switch between SCGD and TD learning here
-        algorithm = config.get('Algorithm', 'SCGD')
-        self.save_steps = config.getint('SaveInterval', 1000000000)
-        self.folder = config.get('Folder', 'exp')
-        self.train_steps = config.getint('TrainInterval', 4)
-        if algorithm.lower() == 'scgd':
-            self.model = KQLearningModelSCGD2(self.stateCount, self.actionCount, config)
-        elif algorithm.lower() == 'td':
-            self.model = KQLearningModelTD2(self.stateCount, self.actionCount, config)
-        else:
-            raise ValueError('Unknown algorithm: {}'.format(algorithm))
         # How many steps we have observed
         self.steps = 0
+
         # ---- Configure exploration
         self.epsilon = ScheduledParameter('ExplorationRate', config)
         self.epsilon.step(0)
-        # ---- Configure rewards
-        self.gamma = config.getfloat('RewardDiscount')
+        self.min_act = np.reshape(json.loads(config.get('MinAction')), (-1, 1))
+        self.max_act = np.reshape(json.loads(config.get('MaxAction')), (-1, 1))
+        self.max_model_order = config.getfloat('MaxModelOrder', 10000)
+        self.act_mult = config.getfloat('ActMultiplier', 1)
+
+        self.lastSample = None
 
     def act(self, s, stochastic=True):
         # "Decide what action to take in state s."
         if stochastic and (random.random() < self.epsilon.value):
-            a = numpy.random.uniform(self.act_mult * self.min_act, self.act_mult * self.max_act)
+            a = np.random.uniform(self.act_mult * self.min_act, self.act_mult * self.max_act)
             # return self.action_space.sample()
         else:
             a = self.model.Q.argmax(s)
 
-        a_temp = numpy.reshape(numpy.clip(a, self.min_act, self.max_act),(-1,))
+        a_temp = np.reshape(np.clip(a, self.min_act, self.max_act),(-1,))
         return a_temp
 
     def observe(self, sample):
@@ -203,9 +135,9 @@ class KQLearningAgent2(object):
         #if len(self.model.Q.D) > self.max_model_order:
         #    self.model.eps = self.model.eps * 2
         #    # self.model.eps = self.model.eps * 1
-        if self.steps % self.save_steps == 0:
-            with open(self.folder + '/kpolicy_model_' + str(int(self.steps / self.save_steps)) + '.pkl', 'wb') as f:
-                pickle.dump(self.model.Q, f)
+        #if self.steps % self.save_steps == 0:
+        #    with open(self.folder + '/kpolicy_model_' + str(int(self.steps / self.save_steps)) + '.pkl', 'wb') as f:
+        #        pickle.dump(self.model.Q, f)
 
         return self.model.train(self.steps, self.lastSample)
 
