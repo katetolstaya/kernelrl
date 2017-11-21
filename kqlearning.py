@@ -36,35 +36,35 @@ class KQLearningModel(object):
     def metrics_names(self):
         return ('Training Loss','Model Order')
 
-class KQLearningModelTD(KQLearningModel):
-    def train(self, step, sample):
-        self.eta.step(step)
-        # Unpack sample
-        s, a, r, s_ = sample
-        # Compute error
-        delta = self.bellman_error(s,a,r,s_)
-        # Gradient step
-        self.Q.shrink(1. - self.eta.value * self.lossL)
-
-        x = np.concatenate((s, a))
-        W = np.zeros((2, 1))
-        W[0] = -1
-        W[1] = self.gamma
-        self.Q.append(np.vstack((x, x_)), -self.eta.value * delta * W)
-        self.Q.append(x, -self.eta.value * delta * W)
-
-
-        W = np.zeros((1, self.Q.W.shape[1]))
-        W[0,a] = -1.
-
-        self.Q.append(s, -self.eta.value * delta * W)
-        # Prune
-        modelOrder = len(self.Q.D)
-        self.Q.prune(self.eps * self.eta.value**2)
-        modelOrder_ = len(self.Q.D)
-        # Compute new error
-        loss = 0.5*self.bellman_error(s,a,r,s_)**2 + self.model_error()
-        return (float(loss), float(modelOrder_))
+# class KQLearningModelTD(KQLearningModel):
+#     def train(self, step, sample):
+#         self.eta.step(step)
+#         # Unpack sample
+#         s, a, r, s_ = sample
+#         # Compute error
+#         delta = self.bellman_error(s,a,r,s_)
+#         # Gradient step
+#         self.Q.shrink(1. - self.eta.value * self.lossL)
+#
+#         x = np.concatenate((s, a))
+#         W = np.zeros((2, 1))
+#         W[0] = -1
+#         W[1] = self.gamma
+#         self.Q.append(np.vstack((x, x_)), -self.eta.value * delta * W)
+#         self.Q.append(x, -self.eta.value * delta * W)
+#
+#
+#         W = np.zeros((1, self.Q.W.shape[1]))
+#         W[0,a] = -1.
+#
+#         self.Q.append(s, -self.eta.value * delta * W)
+#         # Prune
+#         modelOrder = len(self.Q.D)
+#         self.Q.prune(self.eps * self.eta.value**2)
+#         modelOrder_ = len(self.Q.D)
+#         # Compute new error
+#         loss = 0.5*self.bellman_error(s,a,r,s_)**2 + self.model_error()
+#         return (float(loss), float(modelOrder_))
 
 class KQLearningModelSCGD(KQLearningModel):
     def __init__(self, stateCount, actionCount, config):
@@ -92,7 +92,7 @@ class KQLearningModelSCGD(KQLearningModel):
             a_ = self.predictOne(s_).argmax()
             W = np.zeros((2, self.Q.W.shape[1]))
             W[0,a]  = -1.
-            W[1,a_] = self.gamma
+            W[1,a_] = 0 #self.gamma
             self.Q.append(np.vstack((s,s_)), -self.eta.value * self.y * W)
         # Prune
         modelOrder = len(self.Q.D)
@@ -109,12 +109,13 @@ class KQLearningAgent(object):
     def __init__(self, env, config):
         self.stateCount = env.stateCount
         self.actionCount = env.actionCount
+
         # We can switch between SCGD and TD learning here
         algorithm = config.get('Algorithm', 'TD')
         if algorithm.lower() == 'scgd':
             self.model = KQLearningModelSCGD(self.stateCount, self.actionCount, config)
-        elif algorithm.lower() == 'td':
-            self.model = KQLearningModelTD(self.stateCount, self.actionCount, config)
+        #elif algorithm.lower() == 'td':
+            #self.model = KQLearningModelTD(self.stateCount, self.actionCount, config)
         else:
             raise ValueError('Unknown algorithm: {}'.format(algorithm))
         # How many steps we have observed
@@ -127,6 +128,7 @@ class KQLearningAgent(object):
     def act(self, s, stochastic=True):
         "Decide what action to take in state s."
         if stochastic and (random.random() < self.epsilon.value):
+            #action =
             return random.randint(0, self.actionCount-1)
         else:
             return self.model.predictOne(s).argmax()

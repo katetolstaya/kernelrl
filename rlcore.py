@@ -7,7 +7,7 @@ import sys
 #sys.path.append('../gym_gazebo/envs')
 # Our agent types
 
-from kv import KVAgent
+#from kv import KVAgent
 from kqlearning import KQLearningAgent
 from ksarsa import KSARSAAgent
 from kqlearning2 import KQLearningAgent2
@@ -310,7 +310,7 @@ if __name__ == '__main__':
     #run_experiments('kq.cfg')
     #cfg/kpolicy_quad.cfg
     #cfg/kq_quad2.cfg
-    ret = run_experiments('cfg/kq_pendulum.cfg')
+    ret = run_experiments('cfg/kq_mccar.cfg')
 #kq_mccar_multi
 
 #('cfg/kq_mccar_multi2.cfg')
@@ -323,7 +323,7 @@ if __name__ == '__main__':
 #'cfg/kdpg_quad2.cfg') # 'cfg/kq_planar1.cfg') # #)
     #cProfile.run(run_experiments('cfg/kq_planar1.cfg'))
 	#ret = run_experiments('cfg/peval_quad2.cfg')
-    with open('exp10_01.pkl', 'wb') as f:
+    with open('exp11_14_2.pkl', 'wb') as f:
         pickle.dump(ret, f)
     #run_experiments('kq.cfg')
 
