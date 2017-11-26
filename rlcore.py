@@ -4,7 +4,7 @@ import copy
 import sys
 import logging
 import pickle
-from backports import configparser
+import configparser
 logger = logging.getLogger(__name__)
 
 # Our agent types
@@ -271,7 +271,7 @@ if __name__ == '__main__':
 
     #'ksarsa.cfg', 'kq.cfg', kpolicy_quad.cfg, cfg/kq_quad2.cfg, 'cfg/kq_mccar_multi2.cfg'
     #run_experiments(sys.argv[1])
-    fname = 'cfg/kq_mccar.cfg'
+    fname = 'cfg/knaf_pendulum.cfg'
     print(fname)
     if isinstance(fname, str):
         config = configparser.ConfigParser()
