@@ -21,7 +21,9 @@ class KNAFModel(object):
 
         self.vpl = KernelRepresentation(stateCount, self.dim_a, config)
         # Learning rate
-        self.eta = ScheduledParameter('LearningRate', config)
+        self.eta_v = ScheduledParameter('LearningRateV', config)
+        self.eta_p = ScheduledParameter('LearningRateP', config)
+        self.eta_l = ScheduledParameter('LearningRateL', config)
         # Regularization
         self.lossL = config.getfloat('Regularization', 1e-4)
         # Representation error budget
@@ -81,42 +83,47 @@ class KNAFModel(object):
 
 
     def train(self, step, sample):
-        self.eta.step(step)
+        self.eta_v.step(step)
+        self.eta_p.step(step)
+        self.eta_l.step(step)
         self.beta.step(step)
+
+        min_eta = np.min([self.eta_v.value,self.eta_p.value,self.eta_l.value])
         # Unpack sample
         s, a, r, s_ = sample
         # Compute error
         delta = self.bellman_error(s, a, r, s_)
         # Gradient step
-        self.vpl.shrink(1. - self.eta.value * self.lossL)
+
+        self.vpl.shrink(1. - min_eta * self.lossL)
 
         W = np.zeros((self.dim_a,))
-        W[0] = -1
+        W[0] = -1 * self.eta_v.value
         lmat = self.get_lmat(s)
         pi = self.get_pi(s)
 
         # pi grad
-        W[1:self.dim_p + 1] = -1 * np.matmul(np.matmul(lmat, np.transpose(lmat)), a - pi)
+        W[1:self.dim_p + 1] = -self.eta_p.value * np.matmul(np.matmul(lmat, np.transpose(lmat)), a - pi)
 
         # lmat grad
         lgrad_temp = np.matmul(np.matmul(np.transpose(lmat), a - pi), np.transpose(a - pi))
         if self.dim_p > 1:
-            W[self.dim_p + 1:self.dim_a] = np.reshape(lgrad_temp[np.tril_indices(self.dim_p)], (-1, 1))
+            W[self.dim_p + 1:self.dim_a] = np.reshape(lgrad_temp[np.tril_indices(self.dim_p)], (-1, 1)) * self.eta_l.value
         else:
-            W[-1] = lgrad_temp
+            W[-1] = lgrad_temp  * self.eta_l.value
 
-        if np.abs(delta) > 50:
+        if np.abs(delta) > 50 and False:
             print "BADDD"
             print pi
             print lmat
             print delta
 
-        self.vpl.append(s, -self.eta.value * delta * np.reshape(W, (1, -1)))
+        self.vpl.append(s, - delta * np.reshape(W, (1, -1)))
 
         self.changed = True
         # Prune
         modelOrder = len(self.vpl.D)
-        self.vpl.prune(self.eps * self.eta.value ** 2)
+        self.vpl.prune(self.eps * min_eta ** 2)
         modelOrder_ = len(self.vpl.D)
         # Compute new error
         loss = 0.5 * self.bellman_error(s, a, r, s_) ** 2  # + self.model_error()
@@ -155,8 +162,6 @@ class KNAFAgent(object):
             a = np.random.uniform(self.act_mult * self.min_act, self.act_mult * self.max_act)
         else:
             a = self.model.get_pi(s)
-        if np.abs(a) > 3:
-            print a
         return np.reshape(np.clip(a, self.min_act, self.max_act), (-1,))
 
     def observe(self, sample):

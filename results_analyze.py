@@ -15,6 +15,7 @@ filename = 'exp11_9_9.txt'
 filename = 'exp11_9_11.txt'
 filename = 'exp11_10.txt'
 filename = 'exp11_14.txt'
+filename = 'exp11_27_2.txt'
 #filename = 'exp11_6_5.txt'
 #filename = 'exp11_2_4.txt'
 window = 1
