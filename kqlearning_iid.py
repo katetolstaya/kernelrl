@@ -1,9 +1,9 @@
-from function import KernelRepresentation
+from function_pre import KernelRepresentation
 import numpy as np
 import sys, math, random
 from core import ScheduledParameter
 import pickle
-from memory import PrioritizedMemory
+from memory import PrioritizedMemory, Memory
 
 # ==================================================
 # A POLK Q-Learning Model
@@ -15,7 +15,7 @@ class KQLearningModel(object):
         self.eta   = ScheduledParameter('LearningRate', config)
         # Regularization
         self.lossL = config.getfloat('Regularization', 1e-4)
-	self.phi = config.getfloat('Phi',0.0)
+	self.phi = config.getfloat('Phi',1)
         # Representation error budget
         self.eps = config.getfloat('RepresentationError', 1.0)
         # TD-loss expectation approximation rate
@@ -59,7 +59,7 @@ class KQLearningModel(object):
 # ==================================================
 # An agent using Q-Learning
 
-class KQLearningAgentPER(object):
+class KQLearningAgentIID(object):
     def __init__(self, env, config):
         self.stateCount = env.stateCount
         self.actionCount = env.actionCount
@@ -72,7 +72,7 @@ class KQLearningAgentPER(object):
         self.act_mult = config.getfloat('ActMultiplier', 1)
 
         # ---- Configure batch size
-        self.batchSize = config.getint('MinibatchSize', 16)
+        self.batchSize = config.getint('MinibatchSize', 1)
 
         # We can switch between SCGD and TD learning here
         algorithm = config.get('Algorithm', 'SCGD')
@@ -143,8 +143,10 @@ class KQLearningAgentPER(object):
         return a_temp
 
     def observe(self, sample):
+
         error = self._computeError(*self._getStates([(0, sample)]))
-        self.memory.add(sample, np.abs((error[0] + self.eps) ** self.alpha))
+
+        self.memory.add(sample, 0)#np.abs((error[0] + self.eps) ** self.alpha))
         self.steps += 1
         self.epsilon.step(self.steps)
 
@@ -169,11 +171,6 @@ class KQLearningAgentPER(object):
         # compute updated error
         error = self._computeError(x, x_, nt, r)
 
-        # update errors in memory
-	for (idx, _), delta in zip(batch, error):
-	    #print str(idx) + str((np.abs(delta) + self.eps) ** self.alpha)
-            self.memory.update(idx, (np.abs(delta) + self.eps) ** self.alpha)
-
         # compute our average minibatch loss
         loss = 0.5*np.mean(error**2) + self.model.model_error()
         # compute our model order
@@ -193,7 +190,7 @@ class RandomAgent:
     def __init__(self, env, cfg):
 	self.act_mult = cfg.getfloat('ActMultiplier', 1)
         memoryCapacity = cfg.getint('MemoryCapacity', 10000)
-        self.memory = PrioritizedMemory(memoryCapacity)
+        self.memory = Memory(memoryCapacity) #PrioritizedMemory(memoryCapacity)
         self.eps   = cfg.getfloat('ExperiencePriorityMinimum', 0.01)
         self.alpha = cfg.getfloat('ExperiencePriorityExponent', 1.0)
         self.min_act = env.env.action_space.low
@@ -204,7 +201,7 @@ class RandomAgent:
     def observe(self, sample):
 
         error = abs(sample[2])
-        self.memory.add(sample, (error + self.eps) ** self.alpha)
+        self.memory.add(sample, 0) #(error + self.eps) ** self.alpha)
     def improve(self):
         return ()
 

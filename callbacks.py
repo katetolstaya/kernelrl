@@ -223,12 +223,15 @@ class IntervalTest(Callback):
         self.interval   = config.getint('ReportInterval', 10000)
         self.testcount  = config.getint('TestCount', 0)
         self.testlength = config.getint('TestLength', 200)
+
     def set_env(self, env):
         # Make a new copy of the environment
         self.env = env.clone()
     def test(self, logs):
-        if self.testcount <= 1: return
+
+        #if self.testcount <= 1: return
         total = 0.
+	total_reward = 0.
         for _ in range(self.testcount):
             err = 0.
             s = self.env.reset()
@@ -237,11 +240,13 @@ class IntervalTest(Callback):
                 s_, r, done, _ = self.env.step(a)
                 if done: s_ = None
                 err += 0.5*self.model.bellman_error(s,a,r,s_)**2
+		total_reward += r
                 s = s_
                 if done: break
             total += err / float(i+1)
         loss = float(total) / float(self.testcount) + self.model.model_error()
         logs.setdefault('interval_metrics',{}).setdefault('Testing Loss',[]).append(loss)
+        logs.setdefault('interval_metrics',{}).setdefault('Testing Reward',[]).append(total_reward/self.testcount)
     def on_step_end(self, step, logs):
         self.step += 1
         if self.step % self.interval == 0:
@@ -415,7 +420,11 @@ class PlotValueFunction(Callback):
 def make_callbacks(config):
     callbacks = CallbackList()
     for cls in Callback.__subclasses__():
+
         if config.getboolean(cls.__name__, False):
+	    #print(cls)
             callbacks.append(cls(config))
+	#else:
+
     return callbacks
 

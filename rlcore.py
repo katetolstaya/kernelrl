@@ -12,6 +12,7 @@ from kqlearning import KQLearningAgent
 from ksarsa import KSARSAAgent
 from kqlearning2 import KQLearningAgent2
 from kqlearning_per import KQLearningAgentPER, RandomAgent
+from kqlearning_iid import KQLearningAgentIID, RandomAgent
 from policy_test import QTestAgent2
 from kpolicy import KPolicyAgent
 from kpolicytab import KPolicyTabAgent
@@ -211,6 +212,9 @@ class Experiment(object):
         elif atype.lower() == 'kqlearningper':
             self.random_agent = RandomAgent(self.env, config)
             self.agent = KQLearningAgentPER(self.env, config)
+        elif atype.lower() == 'kqlearningiid':
+            self.random_agent = RandomAgent(self.env, config)
+            self.agent = KQLearningAgentIID(self.env, config)
         elif atype.lower() == 'qtest':
             self.agent = QTestAgent2(self.env, config)
         elif atype.lower() == 'kpolicy':
@@ -240,6 +244,7 @@ class Experiment(object):
         # Load reporting callbacks
         # ------------------------------
         self.callbacks = make_callbacks(config)
+
         self.callbacks.set_env(self.env)
         self.callbacks.set_model(self.agent)
         self.callbacks.set_params({'nb_steps': self.maximum_steps})
@@ -323,7 +328,11 @@ if __name__ == '__main__':
     #run_experiments('kq.cfg')
     #cfg/kpolicy_quad.cfg
     #cfg/kq_quad2.cfg
-    ret = run_experiments('cfg/kq_mccar_per.cfg')
+
+    fname = 'cfg/kq_pendulum_iid.cfg'
+
+    ret = run_experiments(fname)
+
 #kq_mccar_multi
 
 #('cfg/kq_mccar_multi2.cfg')
