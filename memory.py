@@ -95,4 +95,3 @@ def make_memory(config):
         return PrioritizedMemory(config.getint('MemoryCapacity', fallback=100000))
     else:
         raise ValueError('Unknown memory type: s' % config.get('MemoryType'))
-

@@ -25,8 +25,10 @@ from kdpg import KDPGAgent
 from kqtab import KQTabAgent
 from kadv import KAdvAgent
 from kgreedyq import KGreedyQAgent
-from kqlearning_per import KQLearningAgentPER, RandomAgent
-from kqlearning_iid import KQLearningAgentIID, RandomAgent
+from kqgreedy_per import KQGreedyAgentPER
+from kqlearning_per import KQLearningAgentPER
+from kqlearning_iid import KQLearningAgentIID
+from random_agent import RandomAgent
 #from kv import KVAgent
 
 #sys.path.append('../gym_gazebo/envs')
@@ -103,7 +105,7 @@ class Environment:
                 break
 
         # End of episode
-	sys.stdout.flush()
+	    sys.stdout.flush()
         return R, episodeStep
 
     # ----------------------------------------
@@ -188,6 +190,9 @@ class Experiment(object):
         elif atype.lower() == 'kqlearningper':
             self.random_agent = RandomAgent(self.env, config)
             self.agent = KQLearningAgentPER(self.env, config)
+        elif atype.lower() == 'kqgreedyper':
+            self.random_agent = RandomAgent(self.env, config)
+            self.agent = KQGreedyAgentPER(self.env, config)
         elif atype.lower() == 'kqlearningiid':
             self.random_agent = RandomAgent(self.env, config)
             self.agent = KQLearningAgentIID(self.env, config)
@@ -305,6 +310,7 @@ if __name__ == '__main__':
     #fname = sys.argv[1]
 
     fname = 'cfg/kgreedyq_pendulum.cfg'
+    fname = 'cfg/kqgreedy_pendulum_per.cfg'
 
     print(fname)
     if isinstance(fname, str):
