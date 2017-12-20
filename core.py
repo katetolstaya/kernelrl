@@ -120,18 +120,18 @@ class ConstPowerDecayParameter(Parameter):
         self.a = self.final
         self.b = self.initial-self.final
 
-	self.start      = config.getint(label+'Start')
-	self.stop      = config.getint(label+'Stop')
-	margin    = config.getfloat(label+'Margin', 0.01)
+        self.start      = config.getint(label+'Start')
+        self.stop      = config.getint(label+'Stop')
+        margin    = config.getfloat(label+'Margin', 0.01)
 
         self.rate = -math.log(margin) / math.log(float(self.stop-self.start)+1)
  
     def step(self, t):
-	if t < self.start:
-	    self._value = self.initial
-	elif t > self.stop:
-	    self._value = self.final
-	else:
+        if t < self.start:
+            self._value = self.initial
+        elif t > self.stop:
+            self._value = self.final
+        else:
             self._value = self.a + self.b*(1. / (t-self.start+1)**self.rate)
 
 class LinearParameter(Parameter):
@@ -144,17 +144,17 @@ class LinearParameter(Parameter):
         self.a = self.final
         self.b = self.initial-self.final
 
-	self.start      = config.getint(label+'Start')
-	self.stop      = config.getint(label+'Stop')
+        self.start      = config.getint(label+'Start')
+        self.stop      = config.getint(label+'Stop')
 
         self.rate = (self.b) / float(self.stop-self.start)
  
     def step(self, t):
-	if t < self.start:
-	    self._value = self.initial
-	elif t > self.stop:
-	    self._value = self.final
-	else:
+        if t < self.start:
+            self._value = self.initial
+        elif t > self.stop:
+            self._value = self.final
+        else:
             self._value = self.a + self.b*((t-self.start)*self.rate)
 
 

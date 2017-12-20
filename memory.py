@@ -16,7 +16,7 @@ class Memory(object):
         self.data = [None for _ in range(capacity)]
     def add(self, value, p):
         "Add sample to memory with score (that is ignored)."
-        self.data[self.index] = value
+        self.data[self.index] = [p, value]
         self.index = (self.index + 1) % self.capacity
         self.length = min(self.length + 1, self.capacity)
     def sample(self, n):

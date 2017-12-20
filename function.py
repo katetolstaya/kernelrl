@@ -30,6 +30,8 @@ class KernelRepresentation(object):
         self.grad_prec = config.getfloat('GradPrecision',0.005)
         self.baseline = config.getfloat('Baseline', 0)
 
+        self.divergence = False
+
     def model_order(self):
         return len(self.W)
 
@@ -37,30 +39,22 @@ class KernelRepresentation(object):
     # Evaluate a set of values
     # ------------------------------
     # X : a L x N matrix where L is number of points to evaluate
-
-
     def __call__(self, X):
+        if self.divergence:
+            return np.zeros((self.D.shape[1],1))
         value = self.kernel.f(X, self.D).dot(self.W) + self.baseline
         return value
 
-    #def df2(self, x):
-    #    return self.kernel.df2(x, self.D).dot(self.W)
-
     def df(self, x):
-        #X1 = np.shape(x)[0]
-        #X2 = np.shape(x)[1]
-        #Y1 = np.shape(self.D)[0]
-        #Y2 = np.shape(self.D)[1]
+        if self.divergence:
+            return np.zeros(np.shape(x))
 
-        tempW = np.reshape(self.W, (1,1,-1))
+        tempW = np.reshape(self.W[:,0], (1,1,-1)) # use only axis 0 for argmax, df
         tempdf = self.kernel.df(x,self.D)
-        return np.reshape(np.dot(tempW, tempdf),np.shape(x))
-
-    def hessian(self,x):
-        temp =0
-
+        return  np.reshape(np.dot(tempW, tempdf),np.shape(x))
 
     def argmax(self, Y):
+
 
         # only support 1 point in query!!!!
         Y = np.reshape(Y, (1, -1))
@@ -69,20 +63,20 @@ class KernelRepresentation(object):
         dim_d1 = self.D.shape[0]  # n points in dictionary
         dim_d2 = self.D.shape[1]  # num states + actions
 
+        if self.divergence:
+            return np.zeros((dim_d2 - dim_s2, 1))
+
+
         if dim_d1 == 0:  # dictionary is empty
             cur_x = np.zeros((dim_d2 - dim_s2, 1))
             return cur_x
 
-        ##################################################################
         # GRADIENT DESCENT PARAMS
         gamma = self.grad_step # step size
         precision = self.grad_prec
         stop_iters = 50
 
-        #N = min(int(math.ceil(float(dim_d1)/3)),20)  # num points to test
         N = min(dim_d1,20)
-        ###################################################################
-
         acts = np.zeros((N, dim_d2))
 
         # randomly generating action points
@@ -93,7 +87,8 @@ class KernelRepresentation(object):
 
         iters = 0
         keep_updating = np.full((N,), True, dtype=bool)
-        btemp = self(acts)
+
+        #btemp = self(acts)
         while (keep_updating.any()) and iters < stop_iters:
             iters = iters + 1
 
@@ -103,25 +98,17 @@ class KernelRepresentation(object):
 
             acts = acts + gamma * df
 
-            temp1 = np.logical_and(np.any(acts[:,dim_s2:] <= self.high_act,axis=1), np.any(acts[:,dim_s2:] >= self.low_act,axis=1))
+            temp1 = np.logical_and(np.any(acts[:,dim_s2:] <= self.high_act.T,axis=1), np.any(acts[:,dim_s2:] >= self.low_act.T,axis=1))
             temp2 = np.logical_and(temp1, np.linalg.norm(gamma * df, axis=1) > precision)
+
             keep_updating = temp2
 
         for i in range(0, dim_d2 - dim_s2):
             acts[:, i + dim_s2] = np.clip(acts[:,i + dim_s2], self.low_act[i], self.high_act[i])
 
-        b = self(acts)
-
-        #print np.max(b)
-        #bbtemp = np.min(b - btemp)
-        #if not np.mean(b - btemp) ==0:
-        #    print np.mean(b - btemp)
-        #    print iters
-
-        #print b
+        b = self(acts)[:,0]
         amax = np.array([np.argmax(np.random.random(b.shape) * (b == b.max()))])
         action = np.reshape(acts[amax, dim_s2:], (-1, 1))
-
         return action
 
     # def argmax2(self, Y):
@@ -183,6 +170,8 @@ class KernelRepresentation(object):
     # Shrink current dictionary weights
     # ------------------------------
     def shrink(self, s):
+        if self.divergence:
+            return
         self.W *= s
 
     # ------------------------------
@@ -190,8 +179,8 @@ class KernelRepresentation(object):
     # ------------------------------
     def append(self, Dnew, Wnew):
 
-        #print Dnew
-        #Wnew = Wnew.T
+        if self.divergence:
+            return
 
 
         if len(Dnew.shape) == 1:
@@ -200,6 +189,12 @@ class KernelRepresentation(object):
             Wnew = Wnew.reshape((1, len(Wnew)))
         # update kernel matrix
         KDX = self.kernel.f(self.D, Dnew)
+        lindep_thresh = 0.99
+
+        #new_removed = np.any(np.where(KDX >= lindep_thresh))
+        #if new_removed:
+        #    print 'LINDEP'
+
         KXX = self.kernel.f(Dnew, Dnew) + 1e-9 * np.eye(len(Dnew))
         self.KDD = np.vstack((
             np.hstack((self.KDD, KDX)),
@@ -232,6 +227,8 @@ class KernelRepresentation(object):
     #       approximation budget since the current value is moved each time to be
     #       the 'simplest' value within an eps-ball
     def prune(self, eps2):
+        if self.divergence:
+            return
         # running total of approximation error
         S = 0.
         # running computation of approximation residue
@@ -257,7 +254,12 @@ class KernelRepresentation(object):
             V[y, y] = 1.
             R[y] = 100.
             # remove point from model
-            Y.remove(y)
+            try:
+                Y.remove(y)
+            except ValueError:
+                print 'Divergence!!!!!!!!!!!!!!!!!'
+                self.divergence = True
+                break
         # project weights onto remaining indices
         self.W = V[np.ix_(Y, Y)].dot(self.KDD[Y].dot(self.W))
         # adjust our dictionary elements
@@ -272,4 +274,6 @@ class KernelRepresentation(object):
     # Hilbert-norm of this function
     # ------------------------------
     def normsq(self):
+        if self.divergence:
+            return 0
         return self.W.T.dot(self.KDD.dot(self.W)).trace()

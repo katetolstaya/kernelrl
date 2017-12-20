@@ -9,10 +9,10 @@ import json
 # ==================================================
 # A POLK Q-Learning Model
 
-class KQLearningModel2(object):
+class KGreedyQModel(object):
     def __init__(self, stateCount, actionCount, config):
 
-        self.Q = KernelRepresentation(stateCount + actionCount, 1, config)
+        self.Q = KernelRepresentation(stateCount + actionCount, 2, config)
         # Learning rate
         self.eta = ScheduledParameter('LearningRate', config)
         # Regularization
@@ -21,25 +21,30 @@ class KQLearningModel2(object):
         self.eps = config.getfloat('RepresentationError', 1.0)
         # Reward discount
         self.gamma = config.getfloat('RewardDiscount')
-        self.phi = config.getfloat('Phi', 0.0)
         self.beta = ScheduledParameter('ExpectationRate', config)
         # Running estimate of our expected TD-loss
         self.y = 0.
 
+    def get_q(self,x):
+        return self.Q(x)[0][0]
+
+    def get_delta(self,x):
+        return self.Q(x)[0][1]
+
     def bellman_error(self, s, a, r, s_):
         x = np.concatenate((np.reshape(s, (1, -1)), np.reshape(a, (1, -1))), axis=1)
         if s_ is None:
-            return r - self.Q(x)
+            return r - self.get_q(x)
         else:
             a_ = self.Q.argmax(s_)
             x_ = np.concatenate((np.reshape(s_, (1, -1)), np.reshape(a_, (1, -1))), axis=1)
-            return r + self.gamma * self.Q(x_) - self.Q(x)
+            return r + self.gamma * self.get_q(x_) - self.get_q(x)
 
     def bellman_error2(self, x, r, x_):
         if x_ is None:
-            return r - self.Q(x)
+            return r - self.get_q(x)
         else:
-            return r + self.gamma * self.Q(x_) - self.Q(x)
+            return r + self.gamma * self.get_q(x_) - self.get_q(x)
 
     def model_error(self):
         return 0.5 * self.lossL * self.Q.normsq()
@@ -61,27 +66,26 @@ class KQLearningModel2(object):
         s, a, r, s_ = sample
         x = np.concatenate((np.reshape(np.array(s), (1, -1)), np.reshape(np.array(a), (1, -1))), axis=1)
         if s_ is None:
-
             x_ = None
         else:
             a_ = self.Q.argmax(s_)
             x_ = np.concatenate((np.reshape(np.array(s_), (1, -1)), np.reshape(np.array(a_), (1, -1))),axis=1)
 
-            #print
         delta = self.bellman_error2(x, r, x_)
-        # Running average of TD-error
-        self.y += self.beta.value * (delta - self.y)
         # Gradient step
         self.Q.shrink(1. - self.eta.value * self.lossL)
-        #print delta
 
         if s_ is None:
-            self.Q.append(x, self.eta.value * self.y)
+            W = np.zeros((1, 2))
+            W[0,0] = self.eta.value * delta
+            W[0,1] = self.beta.value * (delta - self.get_delta(x))
+            self.Q.append(x, W)
         else:
-            W = np.zeros((2, 1))
-            W[0] = -1.
-            W[1] = self.gamma * self.phi
-            self.Q.append(np.vstack((x, x_)), -self.eta.value * self.y * W)
+            W = np.zeros((2, 2))
+            W[0,0] = self.eta.value * delta
+            W[1,0] = - self.eta.value * self.gamma * self.get_delta(x)
+            W[0,1] = self.beta.value * (delta - self.get_delta(x))
+            self.Q.append(np.vstack((x, x_)), W)
 
         # Prune
         self.Q.prune(self.eps ** 2 * self.eta.value ** 2 / self.beta.value)
@@ -96,15 +100,11 @@ class KQLearningModel2(object):
 # ==================================================
 # An agent using Q-Learning
 
-class KQLearningAgent2(object):
+class KGreedyQAgent(object):
     def __init__(self, env, config):
         self.stateCount = env.stateCount
         self.actionCount = env.actionCount
-
-        self.model = KQLearningModel2(self.stateCount, self.actionCount, config)
-
-        # self.save_steps = config.getint('SaveInterval', 1000000000)
-        # self.folder = config.get('Folder', 'exp')
+        self.model = KGreedyQModel(self.stateCount, self.actionCount, config)
 
         # How many steps we have observed
         self.steps = 0
@@ -123,10 +123,8 @@ class KQLearningAgent2(object):
         # "Decide what action to take in state s."
         if stochastic and (random.random() < self.epsilon.value):
             a = np.random.uniform(self.act_mult * self.min_act, self.act_mult * self.max_act)
-            # return self.action_space.sample()
         else:
             a = self.model.Q.argmax(s)
-
         a_temp = np.reshape(np.clip(a, self.min_act, self.max_act),(-1,))
         return a_temp
 
@@ -136,13 +134,6 @@ class KQLearningAgent2(object):
         self.epsilon.step(self.steps)
 
     def improve(self):
-        #if len(self.model.Q.D) > self.max_model_order:
-        #    self.model.eps = self.model.eps * 2
-        #    # self.model.eps = self.model.eps * 1
-        #if self.steps % self.save_steps == 0:
-        #    with open(self.folder + '/kpolicy_model_' + str(int(self.steps / self.save_steps)) + '.pkl', 'wb') as f:
-        #        pickle.dump(self.model.Q, f)
-
         return self.model.train(self.steps, self.lastSample)
 
     def bellman_error(self, s, a, r, s_):

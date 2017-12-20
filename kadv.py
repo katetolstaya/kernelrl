@@ -9,10 +9,10 @@ import json
 # ==================================================
 # A POLK Q-Learning Model
 
-class KQLearningModel2(object):
+class KAdvModel(object):
     def __init__(self, stateCount, actionCount, config):
-
-        self.Q = KernelRepresentation(stateCount + actionCount, 1, config)
+        self.V = KernelRepresentation(stateCount, 1, config)
+        self.A = KernelRepresentation(stateCount + actionCount, 1, config)
         # Learning rate
         self.eta = ScheduledParameter('LearningRate', config)
         # Regularization
@@ -26,23 +26,29 @@ class KQLearningModel2(object):
         # Running estimate of our expected TD-loss
         self.y = 0.
 
-    def bellman_error(self, s, a, r, s_):
-        x = np.concatenate((np.reshape(s, (1, -1)), np.reshape(a, (1, -1))), axis=1)
-        if s_ is None:
-            return r - self.Q(x)
-        else:
-            a_ = self.Q.argmax(s_)
-            x_ = np.concatenate((np.reshape(s_, (1, -1)), np.reshape(a_, (1, -1))), axis=1)
-            return r + self.gamma * self.Q(x_) - self.Q(x)
+    def eval_q(self,s,a):
 
-    def bellman_error2(self, x, r, x_):
-        if x_ is None:
-            return r - self.Q(x)
+        x = np.concatenate((np.reshape(s, (1, -1)), np.reshape(a, (1, -1))), axis=1)
+        #print "A"
+        #print self.A(x)
+        #print self.V(s)
+        return self.A(x) + self.V(s)
+
+    def bellman_error(self, s, a, r, s_):
+        if s_ is None:
+            return r - self.eval_q(s,a)
         else:
-            return r + self.gamma * self.Q(x_) - self.Q(x)
+            a_ = self.A.argmax(s_)
+            return r + self.gamma * self.eval_q(s_,a_) - self.eval_q(s,a)
+
+    def bellman_error2(self, s, a, r, s_,a_):
+        if s_ is None:
+            return r - self.eval_q(s,a)
+        else:
+            return r + self.gamma * self.eval_q(s_,a_) - self.eval_q(s,a)
 
     def model_error(self):
-        return 0.5 * self.lossL * self.Q.normsq()
+        return 0.5 * self.lossL * self.A.normsq()
 
     def predict(self, s):
         pass
@@ -61,34 +67,35 @@ class KQLearningModel2(object):
         s, a, r, s_ = sample
         x = np.concatenate((np.reshape(np.array(s), (1, -1)), np.reshape(np.array(a), (1, -1))), axis=1)
         if s_ is None:
-
-            x_ = None
+            a_ = None
         else:
-            a_ = self.Q.argmax(s_)
-            x_ = np.concatenate((np.reshape(np.array(s_), (1, -1)), np.reshape(np.array(a_), (1, -1))),axis=1)
+            a_ = self.A.argmax(s_)
+        delta = self.bellman_error2(s,a, r, s_, a_)
 
-            #print
-        delta = self.bellman_error2(x, r, x_)
         # Running average of TD-error
         self.y += self.beta.value * (delta - self.y)
+
         # Gradient step
-        self.Q.shrink(1. - self.eta.value * self.lossL)
-        #print delta
+        self.A.shrink(1. - self.eta.value * self.lossL)
+        self.V.shrink(1. - self.eta.value * self.lossL)
 
         if s_ is None:
-            self.Q.append(x, self.eta.value * self.y)
+            self.A.append(x, self.eta.value * self.y)
         else:
-            W = np.zeros((2, 1))
-            W[0] = -1.
-            W[1] = self.gamma * self.phi
-            self.Q.append(np.vstack((x, x_)), -self.eta.value * self.y * W)
+            self.A.append(x, self.eta.value * self.y)
+            self.V.append(s_, - self.eta.value * self.y * self.gamma)
 
         # Prune
-        self.Q.prune(self.eps ** 2 * self.eta.value ** 2 / self.beta.value)
-        modelOrder_ = self.Q.model_order()
-        #print modelOrder_
+        self.A.prune(self.eps ** 2 * self.eta.value ** 2 / self.beta.value)
+        self.V.prune(self.eps ** 2 * self.eta.value ** 2 / self.beta.value)
+
+        modelOrder_ = self.A.model_order() + self.V.model_order()
+
+        #print self.A.model_order()
+        #print self.V.model_order()
+
         # Compute new error
-        loss = 0.5 * self.bellman_error2(x, r, x_) ** 2 + self.model_error() # TODO should we have model error here?
+        loss = 0.5 * self.bellman_error2(s, a, r, s_,a_) ** 2 + self.model_error() # TODO should we have model error here?
         # print modelOrder_
         return (float(loss), float(modelOrder_))
 
@@ -96,12 +103,12 @@ class KQLearningModel2(object):
 # ==================================================
 # An agent using Q-Learning
 
-class KQLearningAgent2(object):
+class KAdvAgent(object):
     def __init__(self, env, config):
         self.stateCount = env.stateCount
         self.actionCount = env.actionCount
 
-        self.model = KQLearningModel2(self.stateCount, self.actionCount, config)
+        self.model = KAdvModel(self.stateCount, self.actionCount, config)
 
         # self.save_steps = config.getint('SaveInterval', 1000000000)
         # self.folder = config.get('Folder', 'exp')
@@ -125,7 +132,7 @@ class KQLearningAgent2(object):
             a = np.random.uniform(self.act_mult * self.min_act, self.act_mult * self.max_act)
             # return self.action_space.sample()
         else:
-            a = self.model.Q.argmax(s)
+            a = self.model.A.argmax(s)
 
         a_temp = np.reshape(np.clip(a, self.min_act, self.max_act),(-1,))
         return a_temp

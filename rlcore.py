@@ -1,16 +1,21 @@
 from __future__ import print_function
-import numpy as np, gym
+
 import copy
-import sys
 import logging
 import pickle
+import sys
+
 import configparser
+import gym
+import numpy as np
+
 logger = logging.getLogger(__name__)
 
 # Our agent types
 from callbacks import CallbackList, make_callbacks
 from kqlearning import KQLearningAgent
 from knaf import KNAFAgent
+from old.knaf2 import KNAF2Agent
 from ksarsa import KSARSAAgent
 from kqlearning2 import KQLearningAgent2
 from policy_test import QTestAgent2
@@ -18,6 +23,10 @@ from kpolicy import KPolicyAgent
 from kpolicytab import KPolicyTabAgent
 from kdpg import KDPGAgent
 from kqtab import KQTabAgent
+from kadv import KAdvAgent
+from kgreedyq import KGreedyQAgent
+from kqlearning_per import KQLearningAgentPER, RandomAgent
+from kqlearning_iid import KQLearningAgentIID, RandomAgent
 #from kv import KVAgent
 
 #sys.path.append('../gym_gazebo/envs')
@@ -176,10 +185,22 @@ class Experiment(object):
         atype = config.get('Agent')
         if atype.lower() == 'kqlearning':
             self.agent = KQLearningAgent(self.env, config)
+        elif atype.lower() == 'kqlearningper':
+            self.random_agent = RandomAgent(self.env, config)
+            self.agent = KQLearningAgentPER(self.env, config)
+        elif atype.lower() == 'kqlearningiid':
+            self.random_agent = RandomAgent(self.env, config)
+            self.agent = KQLearningAgentIID(self.env, config)
         elif atype.lower() == 'kqlearning2':
-                self.agent = KQLearningAgent2(self.env, config)
+            self.agent = KQLearningAgent2(self.env, config)
+        elif atype.lower() == 'kadv':
+            self.agent = KAdvAgent(self.env, config)
         elif atype.lower() == 'knaf':
             self.agent = KNAFAgent(self.env, config)
+        elif atype.lower() == 'knaf2':
+            self.agent = KNAF2Agent(self.env, config)
+        elif atype.lower() == 'kgreedyq':
+            self.agent = KGreedyQAgent(self.env, config)
         elif atype.lower() == 'qtest':
                 self.agent = QTestAgent2(self.env, config)
         elif atype.lower() == 'kpolicy':
@@ -214,6 +235,15 @@ class Experiment(object):
         self.callbacks.set_params({'nb_steps': self.maximum_steps})
 
     def run(self):
+        # Initialize our memory
+        if hasattr(self.agent, 'memory'):
+            print('Initializing memory with random agent...')
+            while not self.random_agent.memory.isFull():
+                self.env.run(self.random_agent, nb_steps=self.random_agent.memory.remaining())
+                print('%d/%d' % (self.random_agent.memory.length, self.random_agent.memory.capacity))
+            self.agent.memory = self.random_agent.memory
+            del self.random_agent
+
         # Begin our training
         self.callbacks.on_train_begin()
         # Select how our environment runs an episode
@@ -270,8 +300,12 @@ def run_experiments(config):
 if __name__ == '__main__':
 
     #'ksarsa.cfg', 'kq.cfg', kpolicy_quad.cfg, cfg/kq_quad2.cfg, 'cfg/kq_mccar_multi2.cfg'
-    #run_experiments(sys.argv[1])
-    fname = 'cfg/knaf_pendulum.cfg'
+    #'cfg/knaf_pendulum.cfg', 'cfg/kq_robot.cfg', 'cfg/kq_pendulum.cfg', 'cfg/kadv_pendulum.cfg', 'cfg/knaf_mcar.cfg',
+    # 'cfg/kq_pendulum.cfg', 'cfg/knaf_pendulum_multi.cfg', 'cfg/kq_pendulum_iid.cfg', 'cfg/kq_invpendulum.cfg'
+    #fname = sys.argv[1]
+
+    fname = 'cfg/kgreedyq_pendulum.cfg'
+
     print(fname)
     if isinstance(fname, str):
         config = configparser.ConfigParser()

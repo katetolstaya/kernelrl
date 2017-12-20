@@ -9,7 +9,7 @@ import copy
 # ==================================================
 # A POLK Q-Learning Model
 
-class KNAFModel(object):
+class KNAF2Model(object):
     def __init__(self, stateCount, actionCount, config):
         self.dim_v = 1
         self.dim_p = actionCount
@@ -18,10 +18,11 @@ class KNAFModel(object):
 
         self.min_act = np.reshape(json.loads(config.get('MinAction')), (-1, 1))
         self.max_act = np.reshape(json.loads(config.get('MaxAction')), (-1, 1))
-        self.max_act = np.reshape(json.loads(config.get('MaxAction')), (-1, 1))
-        self.init_l = config.getfloat('InitL', 0.01)
+        self.init_l = np.reshape(json.loads(config.get('InitL')), (-1, 1))
 
-        self.vpl = KernelRepresentation(stateCount, self.dim_a, config)
+        self.v = KernelRepresentation(stateCount, self.dim_v, config)
+        self.p = KernelRepresentation(stateCount, self.dim_p, config)
+        self.l = KernelRepresentation(stateCount, self.dim_l, config)
         # Learning rate
         self.eta_v = ScheduledParameter('LearningRateV', config)
         self.eta_p = ScheduledParameter('LearningRateP', config)
@@ -29,10 +30,11 @@ class KNAFModel(object):
         # Regularization
         self.lossL = config.getfloat('Regularization', 1e-6)
         # Representation error budget
-        self.eps = config.getfloat('RepresentationError', 1.0)
+        self.epsV = config.getfloat('RepresentationError', 1.0)
+        self.epsP = config.getfloat('RepresentationError', 1.0)
+        self.epsL = config.getfloat('RepresentationError', 1.0)
         # Reward discount
         self.gamma = config.getfloat('RewardDiscount')
-        self.phi = config.getfloat('Phi', 0.0)
         # TD-loss expectation approximation rate
         self.beta = ScheduledParameter('ExpectationRate', config)
         # Running estimate of our expected TD-loss
@@ -47,19 +49,17 @@ class KNAFModel(object):
         pi = self.get_pi(s)
         return self.get_v(s) - 0.5 * ((a-pi).T).dot(lmat).dot(lmat.T).dot(a-pi)
 
-
     def get_v(self, s):
-        return self.predictOne(s)[0]
+        return self.v(s.reshape(1, len(s))).flatten()
 
     def get_pi(self, s):
-        pi = self.predictOne(s)[1:self.dim_p + 1]
+        pi = self.p(s.reshape(1, len(s))).flatten()
         return np.reshape(np.clip(pi, self.min_act, self.max_act), (-1,))
 
     def get_lmat(self, s):
         lmat = np.zeros((self.dim_p, self.dim_p))
-        lmat[np.tril_indices(self.dim_p)] = self.predictOne(s)[self.dim_p + 1:]
-        return lmat + self.init_l * np.eye(self.dim_p)
-
+        lmat[np.tril_indices(self.dim_p)] = self.l(s.reshape(1, len(s))).flatten()
+        return lmat + self.init_l
 
     def bellman_error(self, s, a, r, s_):
         if s_ is None:
@@ -68,18 +68,7 @@ class KNAFModel(object):
             return r + self.gamma * self.get_v(s_) - self.get_q(s, a)
 
     def model_error(self):
-        return 0.5 * self.lossL * self.vpl.normsq()
-
-    def predict(self, s):
-        "Predict the Q function values for a batch of states."
-        return self.vpl(s)
-
-    def predictOne(self, s): #     "Predict the Q function values for a single state."
-        if not np.all(np.equal(self.last_s,s)) or self.changed:  # buffer last value to save some time
-            self.changed = False
-            self.last_s = s
-            self.last_val = self.vpl(s.reshape(1, len(s))).flatten()
-        return copy.copy(self.last_val)
+        return 0.5 * self.lossL * self.v.normsq()
 
     @property
     def metrics_names(self):
@@ -99,51 +88,49 @@ class KNAFModel(object):
         delta = self.bellman_error(s, a, r, s_)
         # Gradient step
 
-        self.vpl.shrink(1. - self.lossL)
+        self.v.shrink(1. - self.lossL)
+        self.p.shrink(1. - self.lossL)
+        self.l.shrink(1. - self.lossL)
 
-        W = np.zeros((self.dim_a,))
-        W[0] = -1 * self.eta_v.value
         lmat = self.get_lmat(s)
         pi = self.get_pi(s)
 
-        # pi grad
-        W[1:self.dim_p + 1] = -self.eta_p.value * np.matmul(np.matmul(lmat, np.transpose(lmat)), a - pi)
+        self.v.append(s, delta * self.eta_v.value)
+        self.p.append(s, delta * self.eta_p.value * np.matmul(np.matmul(lmat, np.transpose(lmat)), a - pi))
+        print delta * self.eta_p.value * np.matmul(np.matmul(lmat, np.transpose(lmat)), a - pi)
 
         # lmat grad
         lgrad_temp = np.matmul(np.matmul(np.transpose(lmat), a - pi), np.transpose(a - pi))
         if self.dim_p > 1:
-            W[self.dim_p + 1:self.dim_a] = np.reshape(lgrad_temp[np.tril_indices(self.dim_p)], (-1, 1)) * self.eta_l.value
+            W = np.reshape(lgrad_temp[np.tril_indices(self.dim_p)], (-1, 1)) * self.eta_l.value
         else:
-            W[-1] = lgrad_temp  * self.eta_l.value
+            W = lgrad_temp  * self.eta_l.value
 
-        if np.abs(delta) > 50 and False:
-            print "BADDD"
-            print pi
-            print lmat
-            print delta
+        self.l.append(s, - delta * np.reshape(W, (1, -1)))
 
-        self.vpl.append(s, - delta * np.reshape(W, (1, -1)))
-
-        self.changed = True
         # Prune
-        #modelOrder = len(self.vpl.D)
-        #self.vpl.prune(self.eps * min_eta ** 2)
-        self.vpl.prune(self.eps)
-        modelOrder_ = len(self.vpl.D)
+        self.v.prune(self.epsV*self.eta_v.value**2)
+        self.p.prune(self.epsP*self.eta_p.value**2)
+        self.l.prune(self.epsL*self.eta_l.value**2)
+
+        print len(self.v.D)
+        print len(self.p.D)
+        print len(self.l.D)
+        modelOrder_ = len(self.v.D) + len(self.p.D) + len(self.l.D)
         # Compute new error
         loss = 0.5 * self.bellman_error(s, a, r, s_) ** 2  # + self.model_error()
         return (float(loss), float(modelOrder_))  # ==================================================
 
 # An agent using Q-Learning
 
-class KNAFAgent(object):
+class KNAF2Agent(object):
     def __init__(self, env, config):
         self.stateCount = env.stateCount
         self.actionCount = env.actionCount
 
         self.min_act = np.reshape(json.loads(config.get('MinAction')), (-1, 1))
         self.max_act = np.reshape(json.loads(config.get('MaxAction')), (-1, 1))
-        self.model = KNAFModel(self.stateCount, self.actionCount, config)
+        self.model = KNAF2Model(self.stateCount, self.actionCount, config)
         self.act_mult = config.getfloat('ActMultiplier', 1)
 
         # How many steps we have observed
@@ -151,11 +138,8 @@ class KNAFAgent(object):
         # ---- Configure exploration
         self.epsilon = ScheduledParameter('ExplorationRate', config)
         self.epsilon.step(0)
-
         # ---- Configure rewards
         self.gamma = config.getfloat('RewardDiscount')
-        self.noise_var = ScheduledParameter('NoiseVariance', config)
-        self.noise_var.step(0)
 
     def act(self, s, stochastic=True):
         "Decide what action to take in state s."
@@ -166,16 +150,19 @@ class KNAFAgent(object):
 
     def act(self, s, stochastic=True):
         # "Decide what action to take in state s."
-        a = self.model.get_pi(s)
-        if stochastic and (random.random() < self.epsilon.value): # exploration
-            a = a + np.random.normal(0,self.noise_var.value,self.actionCount)
+
+        if stochastic and (random.random() < self.epsilon.value):
+            a = np.random.uniform(self.act_mult * self.min_act, self.act_mult * self.max_act)
+        else:
+
+            a = self.model.get_pi(s)
+            #print a
         return np.reshape(np.clip(a, self.min_act, self.max_act), (-1,))
 
     def observe(self, sample):
         self.lastSample = sample
         self.steps += 1
         self.epsilon.step(self.steps)
-        self.noise_var.step(self.steps)
 
     def improve(self):
         return self.model.train(self.steps, self.lastSample)
