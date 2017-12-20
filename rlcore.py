@@ -29,33 +29,39 @@ from kqgreedy_per import KQGreedyAgentPER
 from kqlearning_per import KQLearningAgentPER
 from kqlearning_iid import KQLearningAgentIID
 from random_agent import RandomAgent
-#from kv import KVAgent
 
-#sys.path.append('../gym_gazebo/envs')
-#from tqdm import tqdm
-#import matplotlib
-#import matplotlib.pyplot as plt
-#matplotlib.use('Agg')
+
+# from kv import KVAgent
+
+# sys.path.append('../gym_gazebo/envs')
+# from tqdm import tqdm
+# import matplotlib
+# import matplotlib.pyplot as plt
+# matplotlib.use('Agg')
 # ==================================================
 
 class Environment:
     def __init__(self, cfg):
-        problem  = cfg.get('GymEnvironment')
-        self.reset_state = cfg.getboolean('ResetState',False)
+        problem = cfg.get('GymEnvironment')
+        self.reset_state = cfg.getboolean('ResetState', False)
         print(problem)
         self.env = gym.make(problem)
+
     @property
     def stateCount(self):
         return self.env.observation_space.shape[0]
+
     @property
     def actionCount(self):
         if hasattr(self.env.action_space, 'n'):
             return self.env.action_space.n
         else:
             return self.env.action_space.shape[0]
+
     @property
     def bounds(self):
         return np.vstack((self.env.observation_space.high, self.env.observation_space.low))
+
     def clone(self):
         return self.env.spec.make()
 
@@ -80,12 +86,12 @@ class Environment:
 
             # Take action
             callbacks.on_action_begin(a)
-            #self.env.render()
+            # self.env.render()
             s_, r, done, info = self.env.step(a)
             callbacks.on_action_end(a)
             # Process this transition
 
-            agent.observe( (s, a, r, None if done else s_) )
+            agent.observe((s, a, r, None if done else s_))
             metrics = agent.improve()
 
             # Prepare for next step
@@ -96,7 +102,7 @@ class Environment:
                 'metrics': metrics,
                 'episode': episode,
                 'info': info,
-                })
+            })
             R += r
             episodeStep += 1
 
@@ -104,8 +110,8 @@ class Environment:
             if done:
                 break
 
-        # End of episode
-	    sys.stdout.flush()
+                # End of episode
+            sys.stdout.flush()
         return R, episodeStep
 
     # ----------------------------------------
@@ -128,15 +134,15 @@ class Environment:
 
             # Take action
             callbacks.on_action_begin(a)
-            #self.env.render()
+            # self.env.render()
 
             s_, r, done, info = self.env.step(a)
             callbacks.on_action_end(a)
             # Choose next action
             a_ = agent.act(s_)
-		
+
             # Process this transition
-            agent.observe( (s, a, r, None if done else s_, None if done else a_) )
+            agent.observe((s, a, r, None if done else s_, None if done else a_))
 
             metrics = agent.improve()
 
@@ -148,7 +154,7 @@ class Environment:
                 'metrics': metrics,
                 'episode': episode,
                 'info': info,
-                })
+            })
             R += r
             episodeStep += 1
             s = copy.deepcopy(s_)
@@ -173,6 +179,7 @@ class Environment:
             s, _, done, _ = self.env.step(a)
             step += 1
             if done: break
+
 
 # ==================================================
 
@@ -207,13 +214,13 @@ class Experiment(object):
         elif atype.lower() == 'kgreedyq':
             self.agent = KGreedyQAgent(self.env, config)
         elif atype.lower() == 'qtest':
-                self.agent = QTestAgent2(self.env, config)
+            self.agent = QTestAgent2(self.env, config)
         elif atype.lower() == 'kpolicy':
-                self.agent = KPolicyAgent(self.env, config)
+            self.agent = KPolicyAgent(self.env, config)
         elif atype.lower() == 'kpolicytab':
-                self.agent = KPolicyTabAgent(self.env, config)
+            self.agent = KPolicyTabAgent(self.env, config)
         elif atype.lower() == 'kqtab':
-                self.agent = KQTabAgent(self.env, config)
+            self.agent = KQTabAgent(self.env, config)
         elif atype.lower() == 'ksarsa':
             self.agent = KSARSAAgent(self.env, config)
         elif atype.lower() == 'kdpg':
@@ -226,7 +233,7 @@ class Experiment(object):
         # Start progress
         # ------------------------------
         self.episode = 0
-        self.steps   = 0
+        self.steps = 0
         # Number of steps
         if 'TrainingSteps' not in config:
             raise ValueError("'TrainingSteps' not specified")
@@ -252,7 +259,9 @@ class Experiment(object):
         # Begin our training
         self.callbacks.on_train_begin()
         # Select how our environment runs an episode
-        if isinstance(self.agent, KSARSAAgent) or isinstance(self.agent, KPolicyAgent) or isinstance(self.agent, KPolicyTabAgent) or isinstance(self.agent, KDPGAgent):
+        if isinstance(self.agent, KSARSAAgent) or isinstance(self.agent, KPolicyAgent) or isinstance(self.agent,
+                                                                                                     KPolicyTabAgent) or isinstance(
+                self.agent, KDPGAgent):
             erun = self.env.runSARSA
         else:
             erun = self.env.run
@@ -262,16 +271,16 @@ class Experiment(object):
             # Beginning of an episode
             self.callbacks.on_episode_begin(self.episode)
             R, episodeSteps = erun(self.agent,
-                    nb_steps = self.maximum_steps - self.steps,
-                    episode = self.episode,
-                    callbacks = self.callbacks)
+                                   nb_steps=self.maximum_steps - self.steps,
+                                   episode=self.episode,
+                                   callbacks=self.callbacks)
             self.steps += episodeSteps
             self.episode += 1
             self.callbacks.on_episode_end(self.episode, {
                 'episode_reward': R,
                 'nb_episode_steps': episodeSteps,
                 'nb_steps': self.steps
-                })
+            })
         print(episodeSteps)
 
         # Collect final information
@@ -279,6 +288,7 @@ class Experiment(object):
         logs['agent'] = self.agent
         self.callbacks.on_train_end(logs)
         return logs
+
 
 # ==================================================
 # ------------------------------
@@ -297,17 +307,18 @@ def run_experiments(config):
     else:
         # Create our default experiment
         experiment = Experiment(config[config.default_section])
-     # Run and append to our output
+        # Run and append to our output
         experiments[config.default_section] = experiment.run()
     # Return data
     return experiments
 
+
 if __name__ == '__main__':
 
-    #'ksarsa.cfg', 'kq.cfg', kpolicy_quad.cfg, cfg/kq_quad2.cfg, 'cfg/kq_mccar_multi2.cfg'
-    #'cfg/knaf_pendulum.cfg', 'cfg/kq_robot.cfg', 'cfg/kq_pendulum.cfg', 'cfg/kadv_pendulum.cfg', 'cfg/knaf_mcar.cfg',
+    # 'ksarsa.cfg', 'kq.cfg', kpolicy_quad.cfg, cfg/kq_quad2.cfg, 'cfg/kq_mccar_multi2.cfg'
+    # 'cfg/knaf_pendulum.cfg', 'cfg/kq_robot.cfg', 'cfg/kq_pendulum.cfg', 'cfg/kadv_pendulum.cfg', 'cfg/knaf_mcar.cfg',
     # 'cfg/kq_pendulum.cfg', 'cfg/knaf_pendulum_multi.cfg', 'cfg/kq_pendulum_iid.cfg', 'cfg/kq_invpendulum.cfg'
-    #fname = sys.argv[1]
+    # fname = sys.argv[1]
 
     fname = 'cfg/kgreedyq_pendulum.cfg'
     fname = 'cfg/kqgreedy_pendulum_per.cfg'

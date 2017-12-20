@@ -166,8 +166,9 @@ class KQGreedyAgentPER(object):
         error, _ = self._computeError(x, x_, nt, r)
 
         # update errors in memory
-        for (idx, _), delta in zip(batch, error):
-            self.memory.update(idx, (np.abs(delta) + self.eps) ** self.alpha)
+        if self.memory is PrioritizedMemory:
+            for (idx, _), delta in zip(batch, error):
+                self.memory.update(idx, (np.abs(delta) + self.eps) ** self.alpha)
 
         # compute our average minibatch loss
         loss = 0.5 * np.mean(error ** 2) + self.model.model_error()
