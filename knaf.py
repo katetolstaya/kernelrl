@@ -117,10 +117,10 @@ class KNAFModel(object):
             W[-1] = lgrad_temp  * self.eta_l.value
 
         if np.abs(delta) > 50 and False:
-            print "BADDD"
-            print pi
-            print lmat
-            print delta
+            print ("Divergence!")
+            print (pi)
+            print (lmat)
+            print (delta)
 
         self.vpl.append(s, - delta * np.reshape(W, (1, -1)))
 

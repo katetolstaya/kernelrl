@@ -54,14 +54,14 @@ class GaussianKernel(object):
             ret = np.exp(_distEucSq(self.s, X, Y))
         except AttributeError:
             print ("Attribute Error")
-            print self.s
-            print X
-            print Y
+            print (self.s)
+            print (X)
+            print (Y)
         except ValueError:
-            print "Value Error"
-            print self.s
-            print np.shape(X)
-            print np.shape(Y)
+            print ("Value Error")
+            print (self.s)
+            print (np.shape(X))
+            print (np.shape(Y))
 
         return ret
 

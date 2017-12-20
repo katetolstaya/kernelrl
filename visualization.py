@@ -1,7 +1,6 @@
 import numpy as np
 import numpy.random as nr
 import matplotlib.pyplot as plt
-import ConfigParser
 
 def testGrid(X, kernel, resolution=None, count=None, bounds=None):
     '''Generate a test grid to evaluate kernel functions against.

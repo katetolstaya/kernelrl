@@ -1,5 +1,6 @@
 import math
 
+
 # ==================================================
 # Scheduled Parameter Model
 # ------------------------------
@@ -26,11 +27,14 @@ import math
 class Parameter(object):
     def __init__(self, label, config):
         pass
+
     def step(self, t):
         pass
+
     @property
     def value(self):
         return self._value
+
 
 class ConstantParameter(Parameter):
     @classmethod
@@ -40,132 +44,144 @@ class ConstantParameter(Parameter):
             return True
         except ValueError:
             return False
+
     def __init__(self, label, config):
         self._value = config.getfloat(label)
+
 
 class ExponentialDecayParameter(Parameter):
     @classmethod
     def matches(cls, label, config):
         return config.get(label).lower() == 'exponentialdecay'
+
     def __init__(self, label, config):
-        initial = config.getfloat('Initial'+label)
-        final   = config.getfloat('Final'+label, 0.)
+        initial = config.getfloat('Initial' + label)
+        final = config.getfloat('Final' + label, 0.)
         self.a = final
-        self.b = initial-final
-        if label+'Decay' in config:
-            self.rate = config.getfloat(label+'Decay')
-        elif label+'Stop' in config:
-            stop      = config.getint(label+'Stop')
-            margin    = config.getfloat(label+'Margin', 0.01)
+        self.b = initial - final
+        if label + 'Decay' in config:
+            self.rate = config.getfloat(label + 'Decay')
+        elif label + 'Stop' in config:
+            stop = config.getint(label + 'Stop')
+            margin = config.getfloat(label + 'Margin', 0.01)
             self.rate = -math.log(margin) / float(stop)
         else:
             msg = "Must specifiy '{}Decay' or '{}Stop'".format(label, label)
             raise ValueError(msg)
+
     def step(self, t):
-        self._value = self.a + self.b*math.exp(-self.rate*t)
+        self._value = self.a + self.b * math.exp(-self.rate * t)
+
 
 class ConstExponentialDecayParameter(Parameter):
     @classmethod
     def matches(cls, label, config):
         return config.get(label).lower() == 'constexponentialdecay'
+
     def __init__(self, label, config):
-        self.initial = config.getfloat('Initial'+label)
-        self.final   = config.getfloat('Final'+label, 0.)
+        self.initial = config.getfloat('Initial' + label)
+        self.final = config.getfloat('Final' + label, 0.)
 
         self.a = self.final
-        self.b = self.initial-self.final
+        self.b = self.initial - self.final
 
-	self.start      = config.getint(label+'Start')
-	self.stop      = config.getint(label+'Stop')
-	margin    = config.getfloat(label+'Margin', 0.01)
+        self.start = config.getint(label + 'Start')
+        self.stop = config.getint(label + 'Stop')
+        margin = config.getfloat(label + 'Margin', 0.01)
 
-	self.rate = -math.log(margin) / float(self.stop-self.start)
+        self.rate = -math.log(margin) / float(self.stop - self.start)
 
     def step(self, t):
-	if t < self.start:
-	    self._value = self.initial
-	elif t > self.stop:
-	    self._value = self.final
-	else:
-            self._value = self.a + self.b*math.exp(-self.rate*(t-self.start))
+        if t < self.start:
+            self._value = self.initial
+        elif t > self.stop:
+            self._value = self.final
+        else:
+            self._value = self.a + self.b * math.exp(-self.rate * (t - self.start))
+
 
 class PowerDecayParameter(Parameter):
     @classmethod
     def matches(cls, label, config):
         return config.get(label).lower() == 'powerdecay'
+
     def __init__(self, label, config):
-        initial = config.getfloat('Initial'+label)
-        final   = config.getfloat('Final'+label, 0.)
+        initial = config.getfloat('Initial' + label)
+        final = config.getfloat('Final' + label, 0.)
         self.a = final
-        self.b = initial-final
-        if label+'Decay' in config:
-            self.rate = config.getfloat(label+'Decay')
-        elif label+'Stop' in config:
-            stop      = config.getint(label+'Stop')
-            margin    = config.getfloat(label+'Margin', 0.01)
-            self.rate = -math.log(margin) / math.log(float(stop)+1)
+        self.b = initial - final
+        if label + 'Decay' in config:
+            self.rate = config.getfloat(label + 'Decay')
+        elif label + 'Stop' in config:
+            stop = config.getint(label + 'Stop')
+            margin = config.getfloat(label + 'Margin', 0.01)
+            self.rate = -math.log(margin) / math.log(float(stop) + 1)
         else:
             msg = "Must specifiy '{}Decay' or '{}Stop'".format(label, label)
             raise ValueError(msg)
+
     def step(self, t):
-        self._value = self.a + self.b*(1. / (t+1)**self.rate)
+        self._value = self.a + self.b * (1. / (t + 1) ** self.rate)
+
 
 class ConstPowerDecayParameter(Parameter):
     @classmethod
     def matches(cls, label, config):
         return config.get(label).lower() == 'constpowerdecay'
+
     def __init__(self, label, config):
-        self.initial = config.getfloat('Initial'+label)
-        self.final   = config.getfloat('Final'+label, 0.)
+        self.initial = config.getfloat('Initial' + label)
+        self.final = config.getfloat('Final' + label, 0.)
         self.a = self.final
-        self.b = self.initial-self.final
+        self.b = self.initial - self.final
 
-        self.start      = config.getint(label+'Start')
-        self.stop      = config.getint(label+'Stop')
-        margin    = config.getfloat(label+'Margin', 0.01)
+        self.start = config.getint(label + 'Start')
+        self.stop = config.getint(label + 'Stop')
+        margin = config.getfloat(label + 'Margin', 0.01)
 
-        self.rate = -math.log(margin) / math.log(float(self.stop-self.start)+1)
- 
+        self.rate = -math.log(margin) / math.log(float(self.stop - self.start) + 1)
+
     def step(self, t):
         if t < self.start:
             self._value = self.initial
         elif t > self.stop:
             self._value = self.final
         else:
-            self._value = self.a + self.b*(1. / (t-self.start+1)**self.rate)
+            self._value = self.a + self.b * (1. / (t - self.start + 1) ** self.rate)
+
 
 class LinearParameter(Parameter):
     @classmethod
     def matches(cls, label, config):
         return config.get(label).lower() == 'linear'
+
     def __init__(self, label, config):
-        self.initial = config.getfloat('Initial'+label)
-        self.final   = config.getfloat('Final'+label, 0.)
+        self.initial = config.getfloat('Initial' + label)
+        self.final = config.getfloat('Final' + label, 0.)
         self.a = self.final
-        self.b = self.initial-self.final
+        self.b = self.initial - self.final
 
-        self.start      = config.getint(label+'Start')
-        self.stop      = config.getint(label+'Stop')
+        self.start = config.getint(label + 'Start')
+        self.stop = config.getint(label + 'Stop')
 
-        self.rate = (self.b) / float(self.stop-self.start)
- 
+        self.rate = (self.b) / float(self.stop - self.start)
+
     def step(self, t):
         if t < self.start:
             self._value = self.initial
         elif t > self.stop:
             self._value = self.final
         else:
-            self._value = self.a + self.b*((t-self.start)*self.rate)
+            self._value = self.a + self.b * ((t - self.start) * self.rate)
 
 
 # ==================================================
 # Factory function for Parameters
 # ==================================================
 def ScheduledParameter(label, config):
-    #if label not in config:
+    # if label not in config:
     #    raise ValueError("'{}' not specifed".format(label))
     for cls in Parameter.__subclasses__():
         if cls.matches(label, config):
             return cls(label, config)
     raise ValueError("Invalid value for '{}': {}".format(label, config.get(label)))
-

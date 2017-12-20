@@ -5,12 +5,12 @@ import logging
 import pickle
 import sys
 
-import configparser
-
 try:
-    from ConfigParser import ConfigParser
-except ImportError:
     from configparser import ConfigParser
+except ImportError:
+    from ConfigParser import ConfigParser
+
+
 
 import gym
 import numpy as np

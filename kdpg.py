@@ -202,7 +202,7 @@ class KDPGAgent(object):
             mean_a = self.model.predictOne(np.reshape(s,(1,-1)))
             #print mean_a
             a = np.random.normal(mean_a, self.model.pivar.value * self.model.pi_variance.T)
-            print mean_a
+            #print mean_a
         a_temp = np.reshape(np.clip(a, self.min_act.T, self.max_act.T), (-1,))
         return a_temp
     def observe(self, sample):

@@ -236,7 +236,7 @@ class KernelRepresentation(object):
         # running computation of projection of dictionary elements
         V = self.U.dot(self.U.T)
         # the set of indices of D that we are keeping
-        Y = range(self.D.shape[0])
+        Y = list(range(self.D.shape[0]))
         # remove points as long as we can
         while len(Y) > 0:
             # current error if we remove each point
@@ -257,7 +257,7 @@ class KernelRepresentation(object):
             try:
                 Y.remove(y)
             except ValueError:
-                print 'Divergence!!!!!!!!!!!!!!!!!'
+                print ('Divergence!!!!!!!!!!!!!!!!!')
                 self.divergence = True
                 break
         # project weights onto remaining indices
