@@ -6,6 +6,12 @@ import pickle
 import sys
 
 import configparser
+
+try:
+    from ConfigParser import ConfigParser
+except ImportError:
+    from configparser import ConfigParser
+
 import gym
 import numpy as np
 
@@ -325,7 +331,7 @@ if __name__ == '__main__':
 
     print(fname)
     if isinstance(fname, str):
-        config = configparser.ConfigParser()
+        config = ConfigParser()
         with open(fname, 'r') as f:
             config.read_file(f)
 
