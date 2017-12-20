@@ -97,7 +97,7 @@ class KNAF2Model(object):
 
         self.v.append(s, delta * self.eta_v.value)
         self.p.append(s, delta * self.eta_p.value * np.matmul(np.matmul(lmat, np.transpose(lmat)), a - pi))
-        print delta * self.eta_p.value * np.matmul(np.matmul(lmat, np.transpose(lmat)), a - pi)
+        #print (delta * self.eta_p.value * np.matmul(np.matmul(lmat, np.transpose(lmat)), a - pi)
 
         # lmat grad
         lgrad_temp = np.matmul(np.matmul(np.transpose(lmat), a - pi), np.transpose(a - pi))
@@ -113,9 +113,9 @@ class KNAF2Model(object):
         self.p.prune(self.epsP*self.eta_p.value**2)
         self.l.prune(self.epsL*self.eta_l.value**2)
 
-        print len(self.v.D)
-        print len(self.p.D)
-        print len(self.l.D)
+        #print len(self.v.D)
+        #print len(self.p.D)
+        #print len(self.l.D)
         modelOrder_ = len(self.v.D) + len(self.p.D) + len(self.l.D)
         # Compute new error
         loss = 0.5 * self.bellman_error(s, a, r, s_) ** 2  # + self.model_error()
