@@ -18,23 +18,23 @@ import numpy as np
 logger = logging.getLogger(__name__)
 
 # Our agent types
-from callbacks import CallbackList, make_callbacks
-from kqlearning import KQLearningAgent
-from knaf import KNAFAgent
+from corerl.callbacks import CallbackList, make_callbacks
+from algs.kqlearning import KQLearningAgent
+from algs.knaf import KNAFAgent
 from old.knaf2 import KNAF2Agent
-from ksarsa import KSARSAAgent
-from kqlearning2 import KQLearningAgent2
-from policy_test import QTestAgent2
-from kpolicy import KPolicyAgent
-from kpolicytab import KPolicyTabAgent
-from kdpg import KDPGAgent
-from kqtab import KQTabAgent
-from kadv import KAdvAgent
-from kgreedyq import KGreedyQAgent
-from kqgreedy_per import KQGreedyAgentPER
-from kqlearning_per import KQLearningAgentPER
-from kqlearning_iid import KQLearningAgentIID
-from random_agent import RandomAgent
+from algs.ksarsa import KSARSAAgent
+from algs.kqlearning2 import KQLearningAgent2
+from algs.policy_test import QTestAgent2
+from algs.kpolicy import KPolicyAgent
+from algs.kpolicytab import KPolicyTabAgent
+from algs.kdpg import KDPGAgent
+from algs.kqtab import KQTabAgent
+from algs.kadv import KAdvAgent
+from algs.kqgreedy import KGreedyQAgent
+from algs.kqgreedy_per import KQGreedyAgentPER
+from algs.kqlearning_per import KQLearningAgentPER
+from algs.kqlearning_iid import KQLearningAgentIID
+from corerl.random_agent import RandomAgent
 
 
 # from kv import KVAgent
@@ -327,7 +327,7 @@ if __name__ == '__main__':
     # fname = sys.argv[1]
 
     fname = 'cfg/kgreedyq_pendulum.cfg'
-    fname = 'cfg/kqgreedy_pendulum_per.cfg'
+    #fname = 'cfg/kqgreedy_pendulum_per.cfg'
 
     print(fname)
     if isinstance(fname, str):

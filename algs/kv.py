@@ -1,7 +1,9 @@
-from function import KernelRepresentation
 import numpy as np
-from core import ScheduledParameter
+
+from corerl.core import ScheduledParameter
+from corerl.function import KernelRepresentation
 from policy import make_policy
+
 
 # ==================================================
 # Kernelized Policy Evaluation techniques

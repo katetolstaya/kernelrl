@@ -1,15 +1,16 @@
-from function import KernelRepresentation
-import numpy as np
-import sys, math, random
-from core import ScheduledParameter
 import copy
 import pickle
+import random
+
+import numpy as np
+
+from corerl.core import ScheduledParameter
 
 
 # ==================================================
 # A POLK Policy improvements Model
 
-class KQTabModel(object):
+class KPolicyTabModel(object):
     def __init__(self, config):
 
         # Learning rate
@@ -68,7 +69,7 @@ class KQTabModel(object):
         return ('Training Loss')
 
     def train(self, step, sample):
-        s, a, r, s_ = sample
+        s, a, r, s_, a_ = sample
 
         (s1n, s2n) = self.getStateIndex(s)
         an = self.getActionIndex(a)
@@ -77,17 +78,21 @@ class KQTabModel(object):
             td = r - self.table[s1n, s2n, an]
         else:
             (s1_n, s2_n) = self.getStateIndex(s_)
-            a_n = np.argmax(self.table[s1_n, s2_n, :])
+            a_n = self.getActionIndex(a_)
             td = r + self.gamma * self.table[s1_n, s2_n, a_n] - self.table[s1n, s2n, an]
 
         self.table[s1n, s2n, an] += self.eta.value * td
         return float(td), 0
 
+    def reset(self):
+        self.table2 = copy.deepcopy(self.table)
+        self.table = np.random.normal(0., 0.001, (self.n_p, self.n_v, self.n_a))
+
 
 # ==================================================
 # An agent using policy improvement
 
-class KQTabAgent(object):
+class KPolicyTabAgent(object):
     def __init__(self, env, config):
 
         self.config = config
@@ -103,7 +108,7 @@ class KQTabAgent(object):
         self.last_avg_error = 0
         self.avg_error = 0
 
-        self.model = KQTabModel(config)
+        self.model = KPolicyTabModel(config)
 
         # How many steps we have observed
         self.steps = 0
@@ -120,7 +125,7 @@ class KQTabAgent(object):
         # return random.randint(0, self.actionCount-1)
         else:
             (s1n, s2n) = self.model.getStateIndex(s)
-            action = self.model.getAction(np.argmax(self.model.table[s1n, s2n, :]))
+            action = self.model.getAction(np.argmax(self.model.table2[s1n, s2n, :]))
         # print action
         return np.array([action])
 
@@ -128,18 +133,18 @@ class KQTabAgent(object):
     def observe(self, sample):
         self.lastSample = sample
         self.steps += 1
-        self.epsilon.step(self.steps)
+
+    # self.epsilon.step(self.steps)
 
     def improve(self):
         loss = self.model.train(self.steps, self.lastSample)
 
         if self.steps % self.sarsa_steps == 0:
-            # self.epsilon.step(self.steps)
-            with open(self.folder + '/kq_model_' + str(int(self.steps / self.sarsa_steps)) + '.pkl', 'wb') as f:
+            self.epsilon.step(self.steps)
+            with open(self.folder + '/kpolicy_model_' + str(int(self.steps / self.sarsa_steps)) + '.pkl', 'wb') as f:
                 pickle.dump(self.model.table, f)
 
-
-            # self.model.reset()
+            self.model.reset()
         return loss
 
     # def bellman_error(self, s, a, r, s_, a_):

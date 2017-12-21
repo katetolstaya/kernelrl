@@ -1,9 +1,9 @@
-from function import KernelRepresentation
+import random
+
 import numpy as np
-import sys, math, random
-from core import ScheduledParameter
-import pickle
-from memory import PrioritizedMemory
+
+from corerl.core import ScheduledParameter
+from corerl.function import KernelRepresentation
 
 
 # ==================================================

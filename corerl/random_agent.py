@@ -1,5 +1,7 @@
-from memory import PrioritizedMemory, Memory
 import numpy as np
+
+from corerl.memory import PrioritizedMemory, Memory
+
 
 # ==================================================
 class RandomAgent:

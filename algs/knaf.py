@@ -1,9 +1,11 @@
-from function import KernelRepresentation
-import numpy as np
-import sys, math, random
-from core import ScheduledParameter
-import json
 import copy
+import json
+import random
+
+import numpy as np
+
+from corerl.core import ScheduledParameter
+from corerl.function import KernelRepresentation
 
 
 # ==================================================

@@ -1,21 +1,22 @@
-from function import KernelRepresentation
+import random
+
 import numpy as np
-import sys, math, random
-from core import ScheduledParameter
-import pickle
-from memory import PrioritizedMemory, Memory
+
+from corerl.core import ScheduledParameter
+from corerl.function import KernelRepresentation
 
 
 # ==================================================
 # A POLK Q-Learning Model
 
-class KQGreedyModel(object):
+class KQLearningModel(object):
     def __init__(self, stateCount, actionCount, config):
-        self.Q = KernelRepresentation(stateCount + actionCount, 2, config)
+        self.Q = KernelRepresentation(stateCount + actionCount, 1, config)
         # Learning rate
         self.eta = ScheduledParameter('LearningRate', config)
         # Regularization
         self.lossL = config.getfloat('Regularization', 1e-4)
+        self.phi = config.getfloat('Phi', 1)
         # Representation error budget
         self.eps = config.getfloat('RepresentationError', 1.0)
         # TD-loss expectation approximation rate
@@ -23,48 +24,53 @@ class KQGreedyModel(object):
         # Running estimate of our expected TD-loss
         self.y = 0  # np.zeros((0,1))
 
-    def train(self, step, x, x_, nonterminal, delta, g, gamma):
+    def train(self, step, x, x_, nonterminal, delta, gamma):
         self.eta.step(step)
         self.beta.step(step)
+
+        yy = self.y + self.beta.value * (delta - self.y)
 
         self.Q.shrink(1. - self.eta.value * self.lossL)
 
         # Stack sample points
         X = np.vstack((x, x_[nonterminal]))
-        W = np.zeros((len(X), 2))
+        W = np.zeros((len(X), 1))
         N = float(len(delta))
 
-        W[:len(x),0] = self.eta.value / N * delta
-        W[len(x):,0] = - self.eta.value / N * gamma * g[nonterminal][:]
-        W[:len(x),1] = self.beta.value / N * (delta[:] - g[:])
+        W[:len(x)] = self.eta.value / N * yy
+        W[len(x):] = -self.phi * self.eta.value / N * gamma * yy[nonterminal]
+        self.y = np.mean(yy)  # Running average of TAD error
+
         self.Q.append(X, W)
         # Prune
         self.Q.prune((self.eps / N) ** 2 * self.eta.value ** 2 / self.beta.value)
 
+
     def evaluate(self, xs):
         "Evaluate the Q function for a list of (s,a) pairs."
-        return np.reshape(self.Q(np.array(xs))[:,0],(-1,1)) #self.Q(np.array(xs))
+        return self.Q(np.array(xs))
+
 
     def evaluateOne(self, x):
         "Evaluate the Q function for a single (s,a) pair."
-        return self.Q(x)[:,0]
+        return self.Q(x)
+
 
     def maximize(self, ss):
         "Find the maximizing action for a batch of states."
         return [self.Q.argmax(s) for s in ss]
 
+
     def maximizeOne(self, s):
         "Find the maximizing action for a single state."
         return self.Q.argmax(s)
 
+
     def model_error(self):
-        return 0.5 * self.lossL * self.Q.normsq()
+        return 0.5 * self.lossL * self.Q.normsq()  # ==================================================
+    # An agent using Q-Learning
 
-
-# ==================================================
-# An agent using Q-Learning
-
-class KQGreedyAgentPER(object):
+class KQLearningAgentIID(object):
     def __init__(self, env, config):
         self.stateCount = env.stateCount
         self.actionCount = env.actionCount
@@ -77,7 +83,7 @@ class KQGreedyAgentPER(object):
         self.act_mult = config.getfloat('ActMultiplier', 1)
 
         # ---- Configure batch size
-        self.batchSize = config.getint('MinibatchSize', 16)
+        self.batchSize = config.getint('MinibatchSize', 1)
 
         # We can switch between SCGD and TD learning here
         algorithm = config.get('Algorithm', 'SCGD')
@@ -85,7 +91,7 @@ class KQGreedyAgentPER(object):
         self.folder = config.get('Folder', 'exp')
         self.train_steps = config.getint('TrainInterval', 4)
         if algorithm.lower() == 'scgd':
-            self.model = KQGreedyModel(self.stateCount, self.actionCount, config)
+            self.model = KQLearningModel(self.stateCount, self.actionCount, config)
         else:
             raise ValueError('Unknown algorithm: {}'.format(algorithm))
         # How many steps we have observed
@@ -120,10 +126,9 @@ class KQGreedyAgentPER(object):
         return x, x_, nonterminal, r
 
     def _computeError(self, x, x_, nonterminal, r):
-        qgvals = self.model.Q(np.array(x))
-        error = r.reshape((-1, 1)) - np.reshape(qgvals[:,0],(-1,1))
+        error = r.reshape((-1, 1)) - self.model.evaluate(x)
         error[nonterminal] += self.gamma * self.model.evaluate(x_[nonterminal])
-        return error.flatten(), (qgvals[:,1]).flatten() # return error, g
+        return error
 
     def bellman_error(self, s, a, r, s_):
         x = np.concatenate((np.reshape(s, (1, -1)), np.reshape(a, (1, -1))), axis=1)
@@ -139,16 +144,20 @@ class KQGreedyAgentPER(object):
 
         if stochastic and (random.random() < self.epsilon.value):
             a = np.random.uniform(self.act_mult * self.min_act, self.act_mult * self.max_act)
+            # return self.action_space.sample()
         else:
             a = self.model.Q.argmax(s)
-            #x = np.concatenate((np.reshape(s, (1, -1)), np.reshape(a, (1, -1))), axis=1)
+            x = np.concatenate((np.reshape(s, (1, -1)), np.reshape(a, (1, -1))), axis=1)
+            # print self.model.Q(x)
 
         a_temp = np.reshape(np.clip(a, self.min_act, self.max_act), (-1,))
         return a_temp
 
     def observe(self, sample):
-        error, _ = self._computeError(*self._getStates([(0, sample)]))
-        self.memory.add(sample, np.abs((error[0] + self.eps) ** self.alpha))
+
+        error = self._computeError(*self._getStates([(0, sample)]))
+
+        self.memory.add(sample, 0)  # np.abs((error[0] + self.eps) ** self.alpha))
         self.steps += 1
         self.epsilon.step(self.steps)
 
@@ -157,18 +166,13 @@ class KQGreedyAgentPER(object):
         x, x_, nt, r = self._getStates(batch)
 
         # compute bellman error
-        error, g = self._computeError(x, x_, nt, r)
+        error = self._computeError(x, x_, nt, r)
 
         # update model
-        self.model.train(self.steps, x, x_, nt, error, g, self.gamma)
+        self.model.train(self.steps, x, x_, nt, error, self.gamma)
 
         # compute updated error
-        error, _ = self._computeError(x, x_, nt, r)
-
-        # update errors in memory
-        if self.memory is PrioritizedMemory:
-            for (idx, _), delta in zip(batch, error):
-                self.memory.update(idx, (np.abs(delta) + self.eps) ** self.alpha)
+        error = self._computeError(x, x_, nt, r)
 
         # compute our average minibatch loss
         loss = 0.5 * np.mean(error ** 2) + self.model.model_error()
