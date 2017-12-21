@@ -64,6 +64,7 @@ class KernelRepresentation(object):
     # Argmax - given a state, find the optimal action using gradient ascent
     # ------------------------------
     def argmax(self, Y):
+        # only supports 1 point in query!!!!
         Y = np.reshape(Y, (1, -1))
         dim_s2 = np.shape(Y)[1]  # num states
         dim_d1 = np.count_nonzero(self.idxs)  # n points in dictionary
@@ -108,7 +109,6 @@ class KernelRepresentation(object):
     # ------------------------------
     # Helper function for indexing preallocated arrays
     # ------------------------------
-
     def get_new_idxs(self,n):
         new_idxs = list()
         for i in range(0, n):

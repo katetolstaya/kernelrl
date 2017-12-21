@@ -27,10 +27,14 @@ class KernelRepresentation(object):
 
         self.grad_step = config.getfloat('GradStep', 0.05)
         self.grad_prec = config.getfloat('GradPrecision',0.005)
-        self.baseline = config.getfloat('Baseline', 0)
+        self.n_iters = config.getint('GradIters', 20)
+        self.n_points = config.getint('GradPoints', 10)
 
         self.divergence = False
 
+    # ------------------------------
+    # Get model order
+    # ------------------------------
     def model_order(self):
         return len(self.W)
 
@@ -44,6 +48,9 @@ class KernelRepresentation(object):
         value = self.kernel.f(X, self.D).dot(self.W) + self.baseline
         return value
 
+    # ------------------------------
+    # Gradient with respect to (x,a)
+    # ------------------------------
     def df(self, x):
         if self.divergence:
             return np.zeros(np.shape(x))
@@ -52,10 +59,11 @@ class KernelRepresentation(object):
         tempdf = self.kernel.df(x,self.D)
         return  np.reshape(np.dot(tempW, tempdf),np.shape(x))
 
+    # ------------------------------
+    # Argmax - given a state, find the optimal action using gradient ascent
+    # ------------------------------
     def argmax(self, Y):
-
-
-        # only support 1 point in query!!!!
+        # only supports 1 point in query!!!!
         Y = np.reshape(Y, (1, -1))
         dim_s2 = np.shape(Y)[1]  # num states
 
@@ -70,12 +78,7 @@ class KernelRepresentation(object):
             cur_x = np.zeros((dim_d2 - dim_s2, 1))
             return cur_x
 
-        # GRADIENT DESCENT PARAMS
-        gamma = self.grad_step # step size
-        precision = self.grad_prec
-        stop_iters = 50
-
-        N = min(dim_d1,20)
+        N = min(dim_d1,self.n_points)
         acts = np.zeros((N, dim_d2))
 
         # randomly generating action points
@@ -87,18 +90,17 @@ class KernelRepresentation(object):
         iters = 0
         keep_updating = np.full((N,), True, dtype=bool)
 
-        #btemp = self(acts)
-        while (keep_updating.any()) and iters < stop_iters:
+        while (keep_updating.any()) and iters < self.n_iters:
             iters = iters + 1
 
             df = np.zeros((N,dim_d2))
             df[keep_updating, :] = self.df(acts[keep_updating, :])
             df[:, 0:dim_s2] = 0
 
-            acts = acts + gamma * df
+            acts = acts + self.grad_step * df
 
             temp1 = np.logical_and(np.any(acts[:,dim_s2:] <= self.high_act.T,axis=1), np.any(acts[:,dim_s2:] >= self.low_act.T,axis=1))
-            temp2 = np.logical_and(temp1, np.linalg.norm(gamma * df, axis=1) > precision)
+            temp2 = np.logical_and(temp1, np.linalg.norm(self.grad_step * df, axis=1) > self.grad_prec)
 
             keep_updating = temp2
 
@@ -109,61 +111,6 @@ class KernelRepresentation(object):
         amax = np.array([np.argmax(np.random.random(b.shape) * (b == b.max()))])
         action = np.reshape(acts[amax, dim_s2:], (-1, 1))
         return action
-
-    # def argmax2(self, Y):
-    #     # print Y
-    #     tempD = np.copy(self.D)
-    #     dim1 = np.max(np.shape(Y))
-    #     dim2 = self.D.shape[0]
-    #
-    #     if dim2 == 0:
-    #         cur_x = np.zeros((self.D.shape[1] - dim1, 1))
-    #         return cur_x
-    #
-    #     tempD[:, 0:dim1] = np.tile(np.reshape(Y, (1, -1)), (dim2, 1))
-    #     b = self.kernel.f(tempD, self.D).dot(self.W)
-    #
-    #     amax = np.array([np.argmax(np.random.random(b.shape) * (b == b.max()))])
-    #     cur_x = np.reshape(tempD[amax, :], (-1, 1))
-    #
-    #     gamma = 0.05  # step size
-    #     precision = 0.0005
-    #     stop_iters = 50
-    #     iters = 0
-    #     previous_step_size = np.linalg.norm(cur_x)
-    #
-    #     while previous_step_size > precision and iters < stop_iters:
-    #         iters = iters + 1
-    #         prev_x = cur_x
-    #         df = self.df(prev_x.T)
-    #
-    #         df[0:dim1] = 0
-    #         cur_x = cur_x + gamma * df.T
-    #         previous_step_size = np.linalg.norm(cur_x - prev_x)
-    #         # print previous_step_size
-    #         if (cur_x[dim1:] <= self.low_act).any() or (cur_x[dim1:] >= self.high_act).any():
-    #             break
-    #
-    #     action = np.clip(cur_x[dim1:], self.low_act, self.high_act)
-    #
-    #     return action
-
-        # def actmax (self,Y,sN,aN, M):
-        #     sampleN = M*10
-        #     x = np.linspace(-M, M, sampleN)
-        #     y = np.linspace(-M, M, sampleN)
-        #     xv, yv = np.meshgrid(x, y)
-        #
-        #     temp = np.zeros((sampleN*sampleN, sN+aN))
-        #     dim1 = np.max(np.shape(Y))
-        #     temp[:, 0:dim1] = np.tile(np.reshape(Y, (1, -1)), (sampleN*sampleN, 1))
-        #     temp[:,dim1:dim1+1] = np.reshape(xv,(-1,1))
-        #     temp[:,dim1+1:dim1+2] = np.reshape(yv,(-1,1))
-
-        #     value = self.kernel.f(temp, self.D).dot(self.W)
-        #     amax = np.argmax(value)
-        #
-        #     return temp[amax, dim1:]
 
     # ------------------------------
     # Shrink current dictionary weights
