@@ -1,2 +1,9 @@
 *.txt
 *.pkl
+*.pyc
+*.xml
+*.iml
+*.dat
+*.index
+*.data
+*.idx
