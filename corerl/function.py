@@ -45,7 +45,7 @@ class KernelRepresentation(object):
     def __call__(self, X):
         if self.divergence:
             return np.zeros((self.D.shape[1],1))
-        value = self.kernel.f(X, self.D).dot(self.W) + self.baseline
+        value = self.kernel.f(X, self.D).dot(self.W)
         return value
 
     # ------------------------------
