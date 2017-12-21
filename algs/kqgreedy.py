@@ -2,7 +2,7 @@ import json
 import random
 import numpy as np
 from corerl.core import ScheduledParameter
-from corerl.function_pre import KernelRepresentation
+from corerl.function import KernelRepresentation
 
 
 # ==================================================
