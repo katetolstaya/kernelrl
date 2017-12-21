@@ -8,9 +8,18 @@ class KernelRepresentation(object):
     # M = dimension of output space
     # K = number of dictionary elements
     def __init__(self, N, M, config):
-        self.kernel = make_kernelN(config, N)
+        # Action space boundaries for clipping
+        self.min_act = np.reshape(json.loads(config.get('MinAction')), (-1, 1))
+        self.max_act = np.reshape(json.loads(config.get('MaxAction')), (-1, 1))
 
-        self.preallocate = 300
+        # Argmax gradient routine parameters
+        self.preallocate = config.getfloat('Preallocate', 300)
+        self.grad_step = config.getfloat('GradStep', 0.05)
+        self.grad_prec = config.getfloat('GradPrecision', 0.005)
+        self.n_iters = config.getint('GradIters', 20)
+        self.n_points = config.getint('GradPoints', 10)
+
+        self.kernel = make_kernelN(config, N)
         self.N = N
         self.M = M
 
@@ -23,17 +32,16 @@ class KernelRepresentation(object):
         self.D = np.zeros((self.preallocate, N))
         # W is a K x M matrix of weights
         self.W = np.zeros((self.preallocate, M))
+        # KDD is a K x K kernel matrix
         self.KDD = np.zeros((self.preallocate, self.preallocate))
         # U is the upper triangular decomposition of KDDinv
         self.U = np.zeros((self.preallocate, self.preallocate))
 
-        self.min_act = np.reshape(json.loads(config.get('MinAction')), (-1, 1))
-        self.max_act = np.reshape(json.loads(config.get('MaxAction')), (-1, 1))
 
-        self.grad_step = config.getfloat('GradStep', 0.05)
-        self.grad_prec = config.getfloat('GradPrecision', 0.005)
-        self.baseline = config.getfloat('Baseline', 0)
 
+    # ------------------------------
+    # Get model order
+    # ------------------------------
     def model_order(self):
         return np.count_nonzero(self.idxs)
 
@@ -41,58 +49,53 @@ class KernelRepresentation(object):
     # Evaluate a set of values
     # ------------------------------
     # X : a L x N matrix where L is number of points to evaluate
-
     def __call__(self, X):
         # value = self.kernel.f(X, self.D).dot(self.W) + self.baseline
         value = self.kernel.f(X, self.D[self.idxs, :]).dot(self.W[self.idxs, :])
         return value
 
+    # ------------------------------
+    # Gradient with respect to (x,a)
+    # ------------------------------
     def df(self, x):
         tempW = np.reshape(self.W[self.idxs,0], (1, 1, -1))
         tempdf = self.kernel.df(x, self.D[self.idxs, :])
         return np.reshape(np.dot(tempW, tempdf), np.shape(x))
 
+    # ------------------------------
+    # Argmax - given a state, find the optimal action using gradient ascent
+    # ------------------------------
     def argmax(self, Y):
         Y = np.reshape(Y, (1, -1))
         dim_s2 = np.shape(Y)[1]  # num states
-
-        dim_d1 = np.sum(self.idxs)  # n points in dictionary
+        dim_d1 = np.count_nonzero(self.idxs)  # n points in dictionary
         dim_d2 = self.N  # num states + actions
 
         if dim_d1 == 0:  # dictionary is empty
             cur_x = np.zeros((dim_d2 - dim_s2, 1))
             return cur_x
 
-        # Gradient Descent Parameters
-        gamma = self.grad_step  # step size
-        precision = self.grad_prec
-        stop_iters = 0  # 20
-
-        # N = min(int(math.ceil(float(dim_d1)/3)),20)  # num points to misc
-        N = min(max(dim_d1, 2), 20)
-
-        acts = np.zeros((N, dim_d2))
-
         # randomly generating action points
+        acts = np.zeros((self.n_points, dim_d2))
         for i in range(0, dim_d2 - dim_s2):
-            acts[:, i + dim_s2] = np.random.uniform(self.min_act[i], self.max_act[i], (N,))
+            acts[:, i + dim_s2] = np.random.uniform(self.min_act[i], self.max_act[i], (self.n_points,))
+        acts[:, 0:dim_s2] = np.tile(Y, (self.n_points, 1))
 
-        acts[:, 0:dim_s2] = np.tile(Y, (N, 1))
-        keep_updating = np.full((N,), True, dtype=bool)
-
+        # start gradient descent iterations
+        keep_updating = np.full((self.n_points,), True, dtype=bool)
         iters = 0
-        while (keep_updating.any()) and iters < stop_iters:
+        while (keep_updating.any()) and iters < self.n_iters:
             iters = iters + 1
 
-            df = np.zeros((N, dim_d2))
-            df[keep_updating, :] = self.df(acts[keep_updating, :], None)
+            df = np.zeros((self.n_points, dim_d2))
+            df[keep_updating, :] = self.df(acts[keep_updating, :])
             df[:, 0:dim_s2] = 0
 
-            acts = acts + gamma * df
+            acts = acts + self.grad_step  * df
 
             temp1 = np.logical_and(np.any(acts[:, dim_s2:] <= self.max_act, axis=1),
                                    np.any(acts[:, dim_s2:] >= self.min_act, axis=1))
-            temp2 = np.logical_and(temp1, np.linalg.norm(gamma * df, axis=1) > precision)
+            temp2 = np.logical_and(temp1, np.linalg.norm(self.grad_step * df, axis=1) > self.grad_prec)
             keep_updating = temp2
 
         for i in range(0, dim_d2 - dim_s2):
@@ -105,8 +108,9 @@ class KernelRepresentation(object):
         return action
 
     # ------------------------------
-    # Append new dictionary points and weights
+    # Helper function for indexing preallocated arrays
     # ------------------------------
+
     def get_new_idxs(self,n):
         new_idxs = list()
         for i in range(0, n):
@@ -126,58 +130,47 @@ class KernelRepresentation(object):
             new_idxs.append(idx)
         return new_idxs
 
-
     # ------------------------------
     # Shrink current dictionary weights
     # ------------------------------
     def shrink(self, s):
         self.W *= s
 
+    # ------------------------------
+    # Append new dictionary points and weights
+    # ------------------------------
     def append(self, Dnew, Wnew):
 
+        Nnew = len(Dnew)
+
         if len(Dnew.shape) == 1:
-            Dnew = Dnew.reshape((1, len(Dnew)))
+            Dnew = Dnew.reshape((1, Nnew))
         if len(Wnew.shape) == 1:
-            Wnew = Wnew.reshape((1, len(Wnew)))
+            Wnew = Wnew.reshape((1, Nnew))
 
         # update kernel matrix
         KDX = self.kernel.f(self.D[self.idxs, :], Dnew)
-        KXX = self.kernel.f(Dnew, Dnew) + 1e-9 * np.eye(len(Dnew))
-        # recompute = False
-        # #######
-        # lindep_thresh = 0.99
-        # if self.idxs.any():
-        #     notlindep = np.where(np.max(KDX, axis=0) <= lindep_thresh)
-        #     if len(notlindep[0]) == 0:
-        #         return
-        #     if not len(notlindep[0]) == len(Dnew):
-        #         Dnew = Dnew[notlindep[0],:]
-        #         Wnew = Wnew[notlindep[0],:]
-        #         recompute = True
-        #
-        # #if np.linalg.det(KXX) < (1-lindep_thresh):
-        # #    Dnew = Dnew[0, :]
-        # #    Wnew = Wnew[0, :]
-        # #    recompute = True
-        #
-        # if recompute:
-        #     KDX = self.kernel.f(self.D[self.idxs, :], Dnew)
-        #     KXX = self.kernel.f(Dnew, Dnew) + 1e-9 * np.eye(len(Dnew))
+        KXX = self.kernel.f(Dnew, Dnew) + 1e-9 * np.eye(Nnew)
+        C12 = self.U[np.ix_(self.idxs, self.idxs)].T.dot(KDX)
 
-        new_idxs = self.get_new_idxs(len(Dnew))
+        try:
+            C22 = sl.cholesky(KXX - C12.T.dot(C12))  # TODO - error here
+        except np.linalg.linalg.LinAlgError:
+            print ("np.linalg.linalg.LinAlgError" + str((np.linalg.det(KXX - C12.T.dot(C12)))))
+            return
+
+        new_idxs = self.get_new_idxs(Nnew)
         self.KDD[np.ix_(new_idxs, new_idxs)] = KXX
         self.KDD[np.ix_(new_idxs, self.idxs)] = KDX.T
         self.KDD[np.ix_(self.idxs, new_idxs)] = KDX
 
         # update kernel matrix inverse decomposition
-        C12 = self.U[np.ix_(self.idxs, self.idxs)].T.dot(KDX)
-        C22 = sl.cholesky(KXX - C12.T.dot(C12)) #TODO - error here
-        U22 = sl.solve_triangular(C22, np.eye(len(Dnew)), overwrite_b=True)
+        U22 = sl.solve_triangular(C22, np.eye(Nnew), overwrite_b=True)
         U12 = -self.U[np.ix_(self.idxs, self.idxs)].dot(C12).dot(U22)
 
         self.U[np.ix_(new_idxs, new_idxs)] = U22
         self.U[np.ix_(self.idxs, new_idxs)] = U12
-        self.U[np.ix_(new_idxs,self.idxs)] = np.zeros((len(Dnew), np.count_nonzero(self.idxs)))#U12.T
+        self.U[np.ix_(new_idxs,self.idxs)] = np.zeros((Nnew, np.count_nonzero(self.idxs)))#U12.T
         self.D[new_idxs, :] = Dnew
         self.W[new_idxs, :] = Wnew
         self.idxs[new_idxs] = True
@@ -197,6 +190,7 @@ class KernelRepresentation(object):
         R = self.W[self.idxs,:].copy() #TODO preallocate
         # running computation of projection of dictionary elements
         V = self.U[np.ix_(self.idxs, self.idxs)].dot(self.U[np.ix_(self.idxs, self.idxs)].T)
+
         # the set of indices of D that we are keeping
         Y = self.idxs[self.idxs].copy()#self.idxs.copy()
 
@@ -225,6 +219,8 @@ class KernelRepresentation(object):
 
             # project weights onto remaining indices
             self.W[tY, :] = V[np.ix_(Y, Y)].dot(self.KDD[np.ix_(tY, self.idxs)].dot(self.W[self.idxs, :]))
+
+            # reclaim unused idxs
             self.unused.extend(np.where(np.logical_and(np.logical_not(tY),self.idxs))[0])
 
             self.idxs = tY
