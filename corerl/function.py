@@ -78,7 +78,7 @@ class KernelRepresentation(object):
             cur_x = np.zeros((dim_d2 - dim_s2, 1))
             return cur_x
 
-        N = min(dim_d1,self.n_points)
+        N = self.n_points #min(dim_d1,self.n_points)
         acts = np.zeros((N, dim_d2))
 
         # randomly generating action points
