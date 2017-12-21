@@ -1,10 +1,9 @@
 import numpy as np
-import numpy.linalg as nl
 import scipy.linalg as sl
-from kernel import make_kernel
-from kernel import make_kernelN
+#from corerl.kernel import make_kernel
+from corerl.kernel import make_kernelN
 import json
-import math
+#import math
 
 
 class KernelRepresentation(object):
@@ -189,12 +188,7 @@ class KernelRepresentation(object):
             Wnew = Wnew.reshape((1, len(Wnew)))
         # update kernel matrix
         KDX = self.kernel.f(self.D, Dnew)
-        lindep_thresh = 0.99
-
-        #new_removed = np.any(np.where(KDX >= lindep_thresh))
-        #if new_removed:
-        #    print 'LINDEP'
-
+        #lindep_thresh = 0.99
         KXX = self.kernel.f(Dnew, Dnew) + 1e-9 * np.eye(len(Dnew))
         self.KDD = np.vstack((
             np.hstack((self.KDD, KDX)),

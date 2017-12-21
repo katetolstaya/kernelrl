@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt, numpy as np
 import random
 
 plt.ion()
-from visualization import testGrid, plotKernelFunction
+#from corerl.visualization import testGrid, plotKernelFunction
 
 
 # ==================================================
