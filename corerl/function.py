@@ -27,8 +27,8 @@ class KernelRepresentation(object):
 
         self.grad_step = config.getfloat('GradStep', 0.05)
         self.grad_prec = config.getfloat('GradPrecision',0.005)
-        self.n_iters = config.getint('GradIters', 20)
-        self.n_points = config.getint('GradPoints', 10)
+        self.n_iters = config.getint('GradIters', 40)
+        self.n_points = config.getint('GradPoints', 20)
 
         self.divergence = False
 
