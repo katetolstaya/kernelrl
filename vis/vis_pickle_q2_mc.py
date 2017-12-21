@@ -15,7 +15,7 @@ images = []
 folder = 'exp7_6_2'
 num_files = 10
 
-teststatecount = 100 # count of test states
+teststatecount = 100 # count of misc states
 testtrajlength = 10000 # count of trajectory length
 env = gym.make('PlanarAccel1-v0')
 gamma = 0.99
@@ -56,9 +56,9 @@ def make_trajectory(model, N):
 
 def mc_rollout(model):
 
-    # Generate test trajectory
+    # Generate misc trajectory
     testTrajectory = make_trajectory(model, testtrajlength)
-    # Select test points
+    # Select misc points
     samples = random.sample(testTrajectory, teststatecount)
     testStates = [tup[0] for tup in samples]
     testActions = [tup[1] for tup in samples]
@@ -66,11 +66,11 @@ def mc_rollout(model):
     testActions = np.reshape(testActions,(-1,1))
 
     x = np.concatenate((testStates,testActions),axis=1)
-    # Evaluate the rollouts from the test states
+    # Evaluate the rollouts from the misc states
     testValues = []
     for i, s0 in enumerate(testStates):
 
-        # Perform many rollouts from each test state to get average returns
+        # Perform many rollouts from each misc state to get average returns
         R0 = 0.
         for k in range(testtrajlength):
             # Get the list of rewards

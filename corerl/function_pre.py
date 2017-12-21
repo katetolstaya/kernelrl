@@ -72,7 +72,7 @@ def argmax(self, Y):
     precision = self.grad_prec
     stop_iters = 0  # 20
 
-    # N = min(int(math.ceil(float(dim_d1)/3)),20)  # num points to test
+    # N = min(int(math.ceil(float(dim_d1)/3)),20)  # num points to misc
     N = min(max(dim_d1, 2), 20)
 
     acts = np.zeros((N, dim_d2))

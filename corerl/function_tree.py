@@ -10,7 +10,7 @@ import copy
 
 from rtree import index
 
-# TODO- profile functions, test on montain car
+# TODO- profile functions, misc on montain car
 
 class KernelRepresentation(object):
     # N = dimension of state space
@@ -127,7 +127,7 @@ class KernelRepresentation(object):
         precision = self.grad_prec
         stop_iters = 0 #20
 
-        #N = min(int(math.ceil(float(dim_d1)/3)),20)  # num points to test
+        #N = min(int(math.ceil(float(dim_d1)/3)),20)  # num points to misc
         N = min(max(dim_d1,2),20)
 
         acts = np.zeros((N, dim_d2))
@@ -187,7 +187,7 @@ class KernelRepresentation(object):
         precision = self.grad_prec
         stop_iters = 6
 
-        #N = min(int(math.ceil(float(dim_d1)/3)),20)  # num points to test
+        #N = min(int(math.ceil(float(dim_d1)/3)),20)  # num points to misc
         N = min(max(dim_d1,2),20)
 
         acts = np.zeros((N, dim_d2))

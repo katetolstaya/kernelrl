@@ -351,7 +351,7 @@ class IntervalMCTest(Callback):
         self.step = 0
         self.interval = config.getint('ReportInterval', 10000)
 
-        self.teststatecount = config.getint('TestStateCount', 100)  # count of test states
+        self.teststatecount = config.getint('TestStateCount', 100)  # count of misc states
         self.testtrajlength = config.getint('TestTrajLength', 1000)  # count of trajectory length
 
         # self.sarsa_steps = config.getint('SARSASteps', 100000)
@@ -402,9 +402,9 @@ class IntervalMCTest(Callback):
         return traj
 
     def mc_rollout(self):
-        # Generate test trajectory
+        # Generate misc trajectory
         testTrajectory = self.make_trajectory(self.testtrajlength)
-        # Select test points
+        # Select misc points
         samples = random.sample(testTrajectory, self.teststatecount)
         self.testStates = [tup[0] for tup in samples]
         self.testActions = [tup[1] for tup in samples]
@@ -412,11 +412,11 @@ class IntervalMCTest(Callback):
         self.testActions = np.reshape(self.testActions, (-1, 1))
 
         self.x = np.concatenate((self.testStates, self.testActions), axis=1)
-        # Evaluate the rollouts from the test states
+        # Evaluate the rollouts from the misc states
         self.testValues = []
         for i, s0 in enumerate(self.testStates):
             # print(i)
-            # Perform many rollouts from each test state to get average returns
+            # Perform many rollouts from each misc state to get average returns
             R0 = 0.
             for k in range(self.testtrajlength):
                 # Get the list of rewards
@@ -428,7 +428,7 @@ class IntervalMCTest(Callback):
             # Save this value
             self.testValues.append(R0)
             # if (i + 1) % 100 == 0:
-            #    print('Computing test point {}/{}'.format(i + 1, self.teststatecount))
+            #    print('Computing misc point {}/{}'.format(i + 1, self.teststatecount))
 
     def on_step_end(self, step, logs):
         self.step += 1

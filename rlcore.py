@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 from corerl.callbacks import CallbackList, make_callbacks
 from algs.kqlearning import KQLearningAgent
 from algs.knaf import KNAFAgent
-from old.knaf2 import KNAF2Agent
+from misc.knaf2 import KNAF2Agent
 from algs.ksarsa import KSARSAAgent
 from algs.kqlearning2 import KQLearningAgent2
 from algs.policy_test import QTestAgent2

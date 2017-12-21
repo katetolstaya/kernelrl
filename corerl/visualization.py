@@ -3,7 +3,7 @@ import numpy.random as nr
 import matplotlib.pyplot as plt
 
 def testGrid(X, kernel, resolution=None, count=None, bounds=None):
-    '''Generate a test grid to evaluate kernel functions against.
+    '''Generate a misc grid to evaluate kernel functions against.
 
     Arguments:
       X (Nx2 array) : kernel basis elements
@@ -20,7 +20,7 @@ def testGrid(X, kernel, resolution=None, count=None, bounds=None):
       X,Y  : the X,Y arrays found as outputs of 'meshgrid' command
       dims : the dimensions of the grid
       Kg   : kernel function of every grid point evaluated against every
-             test point
+             misc point
 
     To use Kg, it should be dotted with the weight vector, i.e.
       Kg.dot(w) will be a 2-dimensional matrix with each entry corresponding
@@ -51,7 +51,7 @@ def testGrid(X, kernel, resolution=None, count=None, bounds=None):
     size = tGrid['X'].size
     tGrid['dims'] = dims
 
-    # Evaluate our test points against every grid point
+    # Evaluate our misc points against every grid point
     tGrid['Kg'] = kernel.f(
             np.hstack((
                 tGrid['X'].reshape(size, 1),
