@@ -27,7 +27,7 @@ class KGreedyQModel(object):
     def get_q(self,x):
         return self.Q(x)[0][0]
 
-    def get_delta(self,x):
+    def get_g(self, x):
         return self.Q(x)[0][1]
 
     def bellman_error(self, s, a, r, s_):
@@ -77,13 +77,13 @@ class KGreedyQModel(object):
         if s_ is None:
             W = np.zeros((1, 2))
             W[0,0] = self.eta.value * delta
-            W[0,1] = self.beta.value * (delta - self.get_delta(x))
+            W[0,1] = self.beta.value * (delta - self.get_g(x))
             self.Q.append(x, W)
         else:
             W = np.zeros((2, 2))
             W[0,0] = self.eta.value * delta
-            W[1,0] = - self.eta.value * self.gamma * self.get_delta(x)
-            W[0,1] = self.beta.value * (delta - self.get_delta(x))
+            W[1,0] = - self.eta.value * self.gamma * self.get_g(x)
+            W[0,1] = self.beta.value * (delta - self.get_g(x))
             self.Q.append(np.vstack((x, x_)), W)
 
         # Prune

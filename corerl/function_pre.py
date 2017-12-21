@@ -37,8 +37,6 @@ class KernelRepresentation(object):
         # U is the upper triangular decomposition of KDDinv
         self.U = np.zeros((self.preallocate, self.preallocate))
 
-
-
     # ------------------------------
     # Get model order
     # ------------------------------
