@@ -6,23 +6,25 @@ from corerl.function import KernelRepresentation
 
 
 # ==================================================
-# A POLK Q-Learning Model
+# A POLK Kernel Q-Greedy Algorithm
 
 class KGreedyQModel(object):
     def __init__(self, stateCount, actionCount, config):
 
         self.Q = KernelRepresentation(stateCount + actionCount, 2, config)
-        # Learning rate
+
+        # Learning rates
         self.eta = ScheduledParameter('LearningRate', config)
+        self.beta = ScheduledParameter('ExpectationRate', config)
+
         # Regularization
         self.lossL = config.getfloat('Regularization', 1e-4)
+
         # Representation error budget
         self.eps = config.getfloat('RepresentationError', 1.0)
+
         # Reward discount
         self.gamma = config.getfloat('RewardDiscount')
-        self.beta = ScheduledParameter('ExpectationRate', config)
-        # Running estimate of our expected TD-loss
-        self.y = 0.
 
     def get_q(self,x):
         return self.Q(x)[0][0]
@@ -48,12 +50,6 @@ class KGreedyQModel(object):
     def model_error(self):
         return 0.5 * self.lossL * self.Q.normsq()
 
-    def predict(self, s):
-        pass
-
-    def predictOne(self, s):
-        pass
-
     @property
     def metrics_names(self):
         return ('Training Loss', 'Model Order')
@@ -61,6 +57,7 @@ class KGreedyQModel(object):
     def train(self, step, sample):
         self.eta.step(step)
         self.beta.step(step)
+
         # Unpack sample and compute error
         s, a, r, s_ = sample
         x = np.concatenate((np.reshape(np.array(s), (1, -1)), np.reshape(np.array(a), (1, -1))), axis=1)
@@ -71,9 +68,9 @@ class KGreedyQModel(object):
             x_ = np.concatenate((np.reshape(np.array(s_), (1, -1)), np.reshape(np.array(a_), (1, -1))),axis=1)
 
         delta = self.bellman_error2(x, r, x_)
+
         # Gradient step
         self.Q.shrink(1. - self.eta.value * self.lossL)
-
         if s_ is None:
             W = np.zeros((1, 2))
             W[0,0] = self.eta.value * delta
@@ -89,10 +86,10 @@ class KGreedyQModel(object):
         # Prune
         self.Q.prune(self.eps ** 2 * self.eta.value ** 2 / self.beta.value)
         modelOrder_ = self.Q.model_order()
-        #print modelOrder_
+
         # Compute new error
         loss = 0.5 * self.bellman_error2(x, r, x_) ** 2 + self.model_error() # TODO should we have model error here?
-        # print modelOrder_
+
         return (float(loss), float(modelOrder_))
 
 
@@ -103,20 +100,20 @@ class KGreedyQAgent(object):
     def __init__(self, env, config):
         self.stateCount = env.stateCount
         self.actionCount = env.actionCount
-        self.model = KGreedyQModel(self.stateCount, self.actionCount, config)
-
-        # How many steps we have observed
-        self.steps = 0
 
         # ---- Configure exploration
         self.epsilon = ScheduledParameter('ExplorationRate', config)
         self.epsilon.step(0)
         self.min_act = np.reshape(json.loads(config.get('MinAction')), (-1, 1))
         self.max_act = np.reshape(json.loads(config.get('MaxAction')), (-1, 1))
-        self.max_model_order = config.getfloat('MaxModelOrder', 10000)
         self.act_mult = config.getfloat('ActMultiplier', 1)
 
+        # How many steps we have observed
+        self.steps = 0
         self.lastSample = None
+
+        # Initialize model
+        self.model = KGreedyQModel(self.stateCount, self.actionCount, config)
 
     def act(self, s, stochastic=True):
         # "Decide what action to take in state s."
@@ -124,8 +121,7 @@ class KGreedyQAgent(object):
             a = np.random.uniform(self.act_mult * self.min_act, self.act_mult * self.max_act)
         else:
             a = self.model.Q.argmax(s)
-        a_temp = np.reshape(np.clip(a, self.min_act, self.max_act),(-1,))
-        return a_temp
+        return np.reshape(np.clip(a, self.min_act, self.max_act),(-1,))
 
     def observe(self, sample):
         self.lastSample = sample

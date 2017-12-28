@@ -321,9 +321,12 @@ def run_experiments(config):
 
 if __name__ == '__main__':
 
+    # Some options for CFG files:
+
     # 'ksarsa.cfg', 'kq.cfg', kpolicy_quad.cfg, cfg/kq_quad2.cfg, 'cfg/kq_mccar_multi2.cfg'
     # 'cfg/knaf_pendulum.cfg', 'cfg/kq_robot.cfg', 'cfg/kq_pendulum.cfg', 'cfg/kadv_pendulum.cfg', 'cfg/knaf_mcar.cfg',
     # 'cfg/kq_pendulum.cfg', 'cfg/knaf_pendulum_multi.cfg', 'cfg/kq_pendulum_iid.cfg', 'cfg/kq_invpendulum.cfg'
+
     # fname = sys.argv[1]
 
     fname = 'cfg/kgreedyq_pendulum.cfg'

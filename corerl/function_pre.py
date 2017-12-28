@@ -3,6 +3,8 @@ import scipy.linalg as sl
 from corerl.kernel import make_kernelN
 import json
 
+# Function class with preallocated matrices!
+
 class KernelRepresentation(object):
     # N = dimension of state space
     # M = dimension of output space

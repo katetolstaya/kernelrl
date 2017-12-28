@@ -1,16 +1,12 @@
 import numpy as np
-import numpy.linalg as nl
 import scipy.linalg as sl
-from kernel import make_kernel
 from kernel import make_kernelN
 import json
-import math
-import scipy
-import copy
-
 from rtree import index
 
 # TODO- profile functions, misc on montain car
+
+# Function class with tree index for points for pruning faster
 
 class KernelRepresentation(object):
     # N = dimension of state space

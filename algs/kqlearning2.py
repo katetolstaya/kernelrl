@@ -12,18 +12,24 @@ from corerl.function import KernelRepresentation
 
 class KQLearningModel2(object):
     def __init__(self, stateCount, actionCount, config):
-
         self.Q = KernelRepresentation(stateCount + actionCount, 1, config)
-        # Learning rate
+
+        # Learning rates
         self.eta = ScheduledParameter('LearningRate', config)
+        self.beta = ScheduledParameter('ExpectationRate', config)
+
         # Regularization
         self.lossL = config.getfloat('Regularization', 1e-4)
+
         # Representation error budget
         self.eps = config.getfloat('RepresentationError', 1.0)
+
         # Reward discount
         self.gamma = config.getfloat('RewardDiscount')
-        self.phi = config.getfloat('Phi', 0.0)
-        self.beta = ScheduledParameter('ExpectationRate', config)
+
+        # Multiplier (see Baird paper)
+        self.phi = config.getfloat('Phi', 1.0)
+
         # Running estimate of our expected TD-loss
         self.y = 0.
 
@@ -58,24 +64,22 @@ class KQLearningModel2(object):
     def train(self, step, sample):
         self.eta.step(step)
         self.beta.step(step)
+
         # Unpack sample and compute error
         s, a, r, s_ = sample
         x = np.concatenate((np.reshape(np.array(s), (1, -1)), np.reshape(np.array(a), (1, -1))), axis=1)
         if s_ is None:
-
             x_ = None
         else:
             a_ = self.Q.argmax(s_)
             x_ = np.concatenate((np.reshape(np.array(s_), (1, -1)), np.reshape(np.array(a_), (1, -1))),axis=1)
-
-            #print
         delta = self.bellman_error2(x, r, x_)
+
         # Running average of TD-error
         self.y += self.beta.value * (delta - self.y)
+
         # Gradient step
         self.Q.shrink(1. - self.eta.value * self.lossL)
-        #print delta
-
         if s_ is None:
             self.Q.append(x, self.eta.value * self.y)
         else:
@@ -87,28 +91,19 @@ class KQLearningModel2(object):
         # Prune
         self.Q.prune(self.eps ** 2 * self.eta.value ** 2 / self.beta.value)
         modelOrder_ = self.Q.model_order()
-        #print modelOrder_
+
         # Compute new error
         loss = 0.5 * self.bellman_error2(x, r, x_) ** 2 + self.model_error() # TODO should we have model error here?
-        # print modelOrder_
+
         return (float(loss), float(modelOrder_))
 
 
 # ==================================================
 # An agent using Q-Learning
-
 class KQLearningAgent2(object):
     def __init__(self, env, config):
         self.stateCount = env.stateCount
         self.actionCount = env.actionCount
-
-        self.model = KQLearningModel2(self.stateCount, self.actionCount, config)
-
-        # self.save_steps = config.getint('SaveInterval', 1000000000)
-        # self.folder = config.get('Folder', 'exp')
-
-        # How many steps we have observed
-        self.steps = 0
 
         # ---- Configure exploration
         self.epsilon = ScheduledParameter('ExplorationRate', config)
@@ -118,7 +113,15 @@ class KQLearningAgent2(object):
         self.max_model_order = config.getfloat('MaxModelOrder', 10000)
         self.act_mult = config.getfloat('ActMultiplier', 1)
 
+        # How many steps we have observed
+        self.steps = 0
         self.lastSample = None
+
+        # Initialize model
+        self.model = KQLearningModel2(self.stateCount, self.actionCount, config)
+
+        # self.save_steps = config.getint('SaveInterval', 1000000000)
+        # self.folder = config.get('Folder', 'exp')
 
     def act(self, s, stochastic=True):
         # "Decide what action to take in state s."
@@ -137,13 +140,9 @@ class KQLearningAgent2(object):
         self.epsilon.step(self.steps)
 
     def improve(self):
-        #if len(self.model.Q.D) > self.max_model_order:
-        #    self.model.eps = self.model.eps * 2
-        #    # self.model.eps = self.model.eps * 1
         #if self.steps % self.save_steps == 0:
         #    with open(self.folder + '/kpolicy_model_' + str(int(self.steps / self.save_steps)) + '.pkl', 'wb') as f:
         #        pickle.dump(self.model.Q, f)
-
         return self.model.train(self.steps, self.lastSample)
 
     def bellman_error(self, s, a, r, s_):
