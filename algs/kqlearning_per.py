@@ -84,13 +84,11 @@ class KQLearningAgentPER(object):
 
         # We can switch between SCGD and TD learning here
         algorithm = config.get('Algorithm', 'SCGD')
-        self.save_steps = config.getint('SaveInterval', 10000000)
-        self.folder = config.get('Folder', 'exp')
-        self.train_steps = config.getint('TrainInterval', 4)
         if algorithm.lower() == 'scgd':
             self.model = KQLearningModel(self.stateCount, self.actionCount, config)
         else:
             raise ValueError('Unknown algorithm: {}'.format(algorithm))
+
         # How many steps we have observed
         self.steps = 0
         # ---- Configure exploration
@@ -98,6 +96,7 @@ class KQLearningAgentPER(object):
         self.epsilon.step(0)
         # ---- Configure rewards
         self.gamma = config.getfloat('RewardDiscount')
+
         # ---- Configure priority experience replay
         self.memory = None
         self.eps = config.getfloat('ExperiencePriorityMinimum', 0.01)
@@ -141,11 +140,8 @@ class KQLearningAgentPER(object):
 
         if stochastic and (random.random() < self.epsilon.value):
             a = np.random.uniform(self.act_mult * self.min_act, self.act_mult * self.max_act)
-            # return self.action_space.sample()
         else:
             a = self.model.Q.argmax(s)
-            x = np.concatenate((np.reshape(s, (1, -1)), np.reshape(a, (1, -1))), axis=1)
-            # print self.model.Q(x)
 
         a_temp = np.reshape(np.clip(a, self.min_act, self.max_act), (-1,))
         return a_temp
@@ -171,7 +167,6 @@ class KQLearningAgentPER(object):
 
         # update errors in memory
         for (idx, _), delta in zip(batch, error):
-            # print str(idx) + str((np.abs(delta) + self.eps) ** self.alpha)
             self.memory.update(idx, (np.abs(delta) + self.eps) ** self.alpha)
 
         # compute our average minibatch loss

@@ -1,19 +1,17 @@
 import numpy as np
-
-from corerl.memory import PrioritizedMemory, Memory
-
+from corerl.memory import PrioritizedMemory, make_memory
 
 # ==================================================
 class RandomAgent:
     def __init__(self, env, cfg):
-        memoryCapacity = cfg.getint('MemoryCapacity', 10000)
-        memoryType = cfg.get('MemoryType','Priority')
-        if memoryType == 'Priority':
-            self.memory = PrioritizedMemory(memoryCapacity)
+
+        # Initialize memory and parameters
+        self.memory = make_memory(cfg)
+        if self.memory is PrioritizedMemory:
             self.eps = cfg.getfloat('ExperiencePriorityMinimum', 0.01)
             self.alpha = cfg.getfloat('ExperiencePriorityExponent', 1.0)
-        else:
-            self.memory = Memory(memoryCapacity)
+
+        # Action space parameters
         self.min_act = env.env.action_space.low
         self.max_act = env.env.action_space.high
 
