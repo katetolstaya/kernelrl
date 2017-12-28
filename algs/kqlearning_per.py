@@ -1,7 +1,5 @@
 import random
-
 import numpy as np
-
 from corerl.core import ScheduledParameter
 from corerl.function import KernelRepresentation
 

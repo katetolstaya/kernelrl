@@ -27,7 +27,6 @@ class KQGreedyModel(object):
     def train(self, step, x, x_, nonterminal, delta, g, gamma):
         self.eta.step(step)
         self.beta.step(step)
-
         self.Q.shrink(1. - self.eta.value * self.lossL)
 
         # Stack sample points
@@ -35,10 +34,12 @@ class KQGreedyModel(object):
         W = np.zeros((len(X), 2))
         N = float(len(delta))
 
+        # Compute gradient weights
         W[:len(x),0] = self.eta.value / N * delta
         W[len(x):,0] = - self.eta.value / N * gamma * g[nonterminal][:]
         W[:len(x),1] = self.beta.value / N * (delta[:] - g[:])
         self.Q.append(X, W)
+        
         # Prune
         self.Q.prune((self.eps / N) ** 2 * self.eta.value ** 2 / self.beta.value)
 
@@ -69,40 +70,38 @@ class KQGreedyAgentPER(object):
     def __init__(self, env, config):
         self.stateCount = env.stateCount
         self.actionCount = env.actionCount
-        self.min_act = env.env.action_space.low
-        self.max_act = env.env.action_space.high
-        self.max_model_order = config.getfloat('MaxModelOrder', 10000)
-
-        # Reward discount
-        self.gamma = config.getfloat('RewardDiscount')
-        self.act_mult = config.getfloat('ActMultiplier', 1)
-
-        # ---- Configure batch size
-        self.batchSize = config.getint('MinibatchSize', 16)
+        # How many steps we have observed
+        self.steps = 0
 
         # We can switch between SCGD and TD learning here
         algorithm = config.get('Algorithm', 'SCGD')
-        self.save_steps = config.getint('SaveInterval', 10000000)
-        self.folder = config.get('Folder', 'exp')
-        self.train_steps = config.getint('TrainInterval', 4)
         if algorithm.lower() == 'scgd':
             self.model = KQGreedyModel(self.stateCount, self.actionCount, config)
         else:
             raise ValueError('Unknown algorithm: {}'.format(algorithm))
-        # How many steps we have observed
-        self.steps = 0
+
+        # Reward discount
+        self.gamma = config.getfloat('RewardDiscount')
+
         # ---- Configure exploration
         self.epsilon = ScheduledParameter('ExplorationRate', config)
         self.epsilon.step(0)
+        self.min_act = env.env.action_space.low
+        self.max_act = env.env.action_space.high
+        self.act_mult = config.getfloat('ActMultiplier', 1)
+
         # ---- Configure rewards
         self.gamma = config.getfloat('RewardDiscount')
+
+        # ---- Configure batch size
+        self.batchSize = config.getint('MinibatchSize', 16)
+
         # ---- Configure priority experience replay
         self.memory = None
         self.eps = config.getfloat('ExperiencePriorityMinimum', 0.01)
         self.alpha = config.getfloat('ExperiencePriorityExponent', 1.)
 
     def _getStates(self, batch):
-        no_state = np.zeros(self.stateCount + self.actionCount)
 
         def assemble(s, a):
             return np.concatenate((s.reshape((1, -1)), a.reshape((1, -1))), axis=1).flatten()
@@ -137,15 +136,11 @@ class KQGreedyAgentPER(object):
 
     def act(self, s, stochastic=True):
         "Decide what action to take in state s."
-
         if stochastic and (random.random() < self.epsilon.value):
             a = np.random.uniform(self.act_mult * self.min_act, self.act_mult * self.max_act)
         else:
             a = self.model.Q.argmax(s)
-            #x = np.concatenate((np.reshape(s, (1, -1)), np.reshape(a, (1, -1))), axis=1)
-
-        a_temp = np.reshape(np.clip(a, self.min_act, self.max_act), (-1,))
-        return a_temp
+        return np.reshape(np.clip(a, self.min_act, self.max_act), (-1,))
 
     def observe(self, sample):
         error, _ = self._computeError(*self._getStates([(0, sample)]))

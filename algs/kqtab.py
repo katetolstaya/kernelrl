@@ -30,25 +30,6 @@ class KQTabModel(object):
 
         self.table = np.random.normal(0., 0.001, (self.n_p, self.n_v, self.n_a))
 
-    # def bellman_error(self, s, a, r, s_, a_):
-    # x = np.concatenate((np.reshape(s,(1,-1)), np.reshape(a,(1,-1))),axis=1)
-    #    if s_ is None:
-    #        return r - self.Q(x)
-    #    else:
-    #        x_ = np.concatenate((np.reshape(s_,(1,-1)), np.reshape(a_,(1,-1))),axis=1)
-    #        return r + self.Q(x_) - self.Q(x)
-    # def model_error(self):
-    #    return 0.5*self.lossL*self.Q.normsq()
-    # def predict(self, s):
-
-    # pass
-    ##"Predict the Q function values for a batch of states."
-    #    #return self.Q(s)
-    # def predictOne(self, s):
-    # pass
-    # "Predict the Q function values for a single state."
-    # return self.Q(s.reshape(1, len(s))).flatten()
-
     def getStateIndex(self, s):
         s1 = s[0]
         s2 = s[1]
@@ -132,20 +113,7 @@ class KQTabAgent(object):
 
     def improve(self):
         loss = self.model.train(self.steps, self.lastSample)
-
-        if self.steps % self.sarsa_steps == 0:
-            # self.epsilon.step(self.steps)
-            with open(self.folder + '/kq_model_' + str(int(self.steps / self.sarsa_steps)) + '.pkl', 'wb') as f:
-                pickle.dump(self.model.table, f)
-
-
-            # self.model.reset()
         return loss
-
-    # def bellman_error(self, s, a, r, s_, a_):
-    #    return self.model.bellman_error(s,a,r,s_,a_)
-    # def model_error(self):
-    #    return self.model.model_error()
     @property
     def metrics_names(self):
         return self.model.metrics_names
