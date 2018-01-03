@@ -51,7 +51,7 @@ class KernelRepresentation(object):
     def __call__(self, X):
 
         # Use buffered value
-        if not self.changed and np.equal(X,self.last_x).all():
+        if not self.changed and np.array_equal(X,self.last_x):
             return self.last_val
 
         # Handle model divergence

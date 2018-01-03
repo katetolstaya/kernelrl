@@ -1,11 +1,8 @@
 import random
-
 import numpy as np
-
 from corerl.core import ScheduledParameter
 from corerl.function import KernelRepresentation
 from corerl.memory import PrioritizedMemory
-
 
 # ==================================================
 # A POLK Q-Learning Model
@@ -39,7 +36,7 @@ class KQGreedyModel(object):
         W[len(x):,0] = - self.eta.value / N * gamma * g[nonterminal][:]
         W[:len(x),1] = self.beta.value / N * (delta[:] - g[:])
         self.Q.append(X, W)
-        
+
         # Prune
         self.Q.prune((self.eps / N) ** 2 * self.eta.value ** 2 / self.beta.value)
 
