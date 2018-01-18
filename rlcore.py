@@ -35,6 +35,7 @@ from algs.kqgreedy_per import KQGreedyAgentPER
 from algs.kqlearning_per import KQLearningAgentPER
 from algs.kqlearning_iid import KQLearningAgentIID
 from corerl.random_agent import RandomAgent
+from algs.kqlearningalt import KQLearningAltAgent
 
 
 # from kv import KVAgent
@@ -211,6 +212,8 @@ class Experiment(object):
             self.agent = KQLearningAgentIID(self.env, config)
         elif atype.lower() == 'kqlearning2':
             self.agent = KQLearningAgent2(self.env, config)
+        elif atype.lower() == 'kqlearningalt':
+            self.agent = KQLearningAltAgent(self.env, config)
         elif atype.lower() == 'kadv':
             self.agent = KAdvAgent(self.env, config)
         elif atype.lower() == 'knaf':
@@ -329,7 +332,8 @@ if __name__ == '__main__':
 
     # fname = sys.argv[1]
 
-    fname = 'cfg/kgreedyq_pendulum.cfg'
+    #fname = 'cfg/kgreedyq_pendulum.cfg'
+    fname = 'cfg/kqalt_pendulum.cfg'
     #fname = 'cfg/kqgreedy_pendulum_per.cfg'
 
     print(fname)
