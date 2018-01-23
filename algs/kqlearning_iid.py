@@ -7,59 +7,71 @@ from corerl.function import KernelRepresentation
 
 
 # ==================================================
-# A POLK Q-Learning Model
+# A POLK Q-Learning Model\
+
+def assemble(s, a):
+    return np.concatenate((s.reshape((1, -1)), a.reshape((1, -1))), axis=1).flatten()
 
 class KQLearningModel(object):
     def __init__(self, stateCount, actionCount, config):
+        self.algorithm = config.get('Algorithm', 'td').lower() # gtd, td or hybrid
         self.Q = KernelRepresentation(stateCount + actionCount, 1, config)
         # Learning rate
         self.eta = ScheduledParameter('LearningRate', config)
         # Regularization
         self.lossL = config.getfloat('Regularization', 1e-4)
-        self.phi = config.getfloat('Phi', 1)
+        #self.phi = config.getfloat('Phi', 1)
         # Representation error budget
         self.eps = config.getfloat('RepresentationError', 1.0)
         # TD-loss expectation approximation rate
         self.beta = ScheduledParameter('ExpectationRate', config)
         # Running estimate of our expected TD-loss
-        self.y = 0  # np.zeros((0,1))
+        self.y = 0
 
-    def train(self, step, x, x_, nonterminal, delta, gamma):
+    def train(self, step, x, x_, nonterminal, delta, gamma, rand):
         self.eta.step(step)
         self.beta.step(step)
 
         yy = self.y + self.beta.value * (delta - self.y)
-
-        self.Q.shrink(1. - self.eta.value * self.lossL)
-
-        # Stack sample points
-        X = np.vstack((x, x_[nonterminal]))
-        W = np.zeros((len(X), 1))
-        N = float(len(delta))
-
-        W[:len(x)] = self.eta.value / N * yy
-        W[len(x):] = -self.phi * self.eta.value / N * gamma * yy[nonterminal]
         self.y = np.mean(yy)  # Running average of TAD error
 
-        self.Q.append(X, W)
+        self.Q.shrink(1. - self.eta.value * self.lossL)
+        N = float(len(delta))
+
+        if self.algorithm == 'td':
+            self.Q.append(x, self.eta.value / N * yy)
+        elif self.algorithm == 'hybrid' or self.algorithm == 'gtd':
+            # Stack sample points
+            X = np.vstack((x, x_[nonterminal]))
+            W = np.zeros((len(X), 1))
+
+            W[:len(x)] = self.eta.value / N * yy
+
+            if self.algorithm == 'hybrid': # TD steps for the greedy actions
+                yy[np.logical_not(rand)] = 0
+
+
+            W[len(x):] = -self.eta.value / N * gamma * yy[nonterminal]
+            print W
+
+            self.Q.append(X, W)
+        else:
+            raise ValueError('Unknown algorithm: {}'.format(self.algorithm))
+
         # Prune
         self.Q.prune((self.eps / N) ** 2 * self.eta.value ** 2 / self.beta.value)
-
 
     def evaluate(self, xs):
         "Evaluate the Q function for a list of (s,a) pairs."
         return self.Q(np.array(xs))
 
-
     def evaluateOne(self, x):
         "Evaluate the Q function for a single (s,a) pair."
         return self.Q(x)
 
-
     def maximize(self, ss):
         "Find the maximizing action for a batch of states."
         return [self.Q.argmax(s) for s in ss]
-
 
     def maximizeOne(self, s):
         "Find the maximizing action for a single state."
@@ -67,8 +79,10 @@ class KQLearningModel(object):
 
 
     def model_error(self):
-        return 0.5 * self.lossL * self.Q.normsq()  # ==================================================
-    # An agent using Q-Learning
+        return 0.5 * self.lossL * self.Q.normsq()
+
+# ==================================================
+# An agent using Q-Learning
 
 class KQLearningAgentIID(object):
     def __init__(self, env, config):
@@ -76,24 +90,14 @@ class KQLearningAgentIID(object):
         self.actionCount = env.actionCount
         self.min_act = env.env.action_space.low
         self.max_act = env.env.action_space.high
-        self.max_model_order = config.getfloat('MaxModelOrder', 10000)
 
         # Reward discount
         self.gamma = config.getfloat('RewardDiscount')
-        self.act_mult = config.getfloat('ActMultiplier', 1)
 
         # ---- Configure batch size
         self.batchSize = config.getint('MinibatchSize', 1)
+        self.model = KQLearningModel(self.stateCount, self.actionCount, config)
 
-        # We can switch between SCGD and TD learning here
-        algorithm = config.get('Algorithm', 'SCGD')
-        self.save_steps = config.getint('SaveInterval', 10000000)
-        self.folder = config.get('Folder', 'exp')
-        self.train_steps = config.getint('TrainInterval', 4)
-        if algorithm.lower() == 'scgd':
-            self.model = KQLearningModel(self.stateCount, self.actionCount, config)
-        else:
-            raise ValueError('Unknown algorithm: {}'.format(algorithm))
         # How many steps we have observed
         self.steps = 0
         # ---- Configure exploration
@@ -107,13 +111,12 @@ class KQLearningAgentIID(object):
         self.alpha = config.getfloat('ExperiencePriorityExponent', 1.)
 
     def _getStates(self, batch):
-        no_state = np.zeros(self.stateCount + self.actionCount)
-
-        def assemble(s, a):
-            return np.concatenate((s.reshape((1, -1)), a.reshape((1, -1))), axis=1).flatten()
+        #no_state = np.zeros(self.stateCount + self.actionCount)
 
         x = np.array([assemble(e[0], e[1]) for (_, e) in batch])
+        rand = np.array([e[4] for (_, e) in batch])
         x_ = np.zeros((len(batch), self.stateCount + self.actionCount))
+
         nonterminal = []
         for i, (_, e) in enumerate(batch):
             if e[3] is not None:
@@ -123,7 +126,7 @@ class KQLearningAgentIID(object):
                 nonterminal.append(i)
 
         r = np.array([e[2] for (_, e) in batch])
-        return x, x_, nonterminal, r
+        return x, x_, nonterminal, r, rand
 
     def _computeError(self, x, x_, nonterminal, r):
         error = r.reshape((-1, 1)) - self.model.evaluate(x)
@@ -143,33 +146,32 @@ class KQLearningAgentIID(object):
         "Decide what action to take in state s."
 
         if stochastic and (random.random() < self.epsilon.value):
-            a = np.random.uniform(self.act_mult * self.min_act, self.act_mult * self.max_act)
-            # return self.action_space.sample()
+
+            a = np.random.uniform(self.min_act, self.max_act)
+            rand = True
         else:
             a = self.model.Q.argmax(s)
-            x = np.concatenate((np.reshape(s, (1, -1)), np.reshape(a, (1, -1))), axis=1)
-            # print self.model.Q(x)
+            rand = False
 
         a_temp = np.reshape(np.clip(a, self.min_act, self.max_act), (-1,))
-        return a_temp
+        return a_temp, rand
 
     def observe(self, sample):
-
-        error = self._computeError(*self._getStates([(0, sample)]))
-
-        self.memory.add(sample, 0)  # np.abs((error[0] + self.eps) ** self.alpha))
+        error = self.bellman_error(sample[0],sample[1],sample[2],sample[3])
+        self.memory.add(sample, np.abs((error[0] + self.eps) ** self.alpha))
         self.steps += 1
         self.epsilon.step(self.steps)
 
     def improve(self):
         batch = self.memory.sample(self.batchSize)
-        x, x_, nt, r = self._getStates(batch)
+
+        x, x_, nt, r, rand = self._getStates(batch)
 
         # compute bellman error
         error = self._computeError(x, x_, nt, r)
 
         # update model
-        self.model.train(self.steps, x, x_, nt, error, self.gamma)
+        self.model.train(self.steps, x, x_, nt, error, self.gamma, rand)
 
         # compute updated error
         error = self._computeError(x, x_, nt, r)

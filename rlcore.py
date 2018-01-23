@@ -88,8 +88,15 @@ class Environment:
                 s = self.env.reset()
 
             callbacks.on_step_begin(episodeStep)
+
             # Choose action
-            a = agent.act(s)
+            if isinstance(agent, KQLearningAgentIID):
+                a, rand = agent.act(s)
+            elif isinstance(agent, RandomAgent):
+                a = agent.act(s)
+                rand = True
+            else:
+                a = agent.act(s)
 
             # Take action
             callbacks.on_action_begin(a)
@@ -98,7 +105,10 @@ class Environment:
             callbacks.on_action_end(a)
             # Process this transition
 
-            agent.observe((s, a, r, None if done else s_))
+            if isinstance(agent,KQLearningAgentIID) or isinstance(agent,RandomAgent):
+                agent.observe((s, a, r, (None if done else s_),rand))
+            else:
+                agent.observe((s, a, r, None if done else s_))
             metrics = agent.improve()
 
             # Prepare for next step
@@ -334,6 +344,11 @@ if __name__ == '__main__':
 
     #fname = 'cfg/kgreedyq_pendulum.cfg'
     fname = 'cfg/kqalt_pendulum.cfg'
+    fname = 'cfg/kqalt_ccar.cfg'
+    #fname = 'cfg/kq2_pendulum.cfg'
+    fname = 'cfg/kq_car_iid.cfg'
+    #fname = 'cfg/kq_pendulum_iid.cfg'
+
     #fname = 'cfg/kqgreedy_pendulum_per.cfg'
 
     print(fname)

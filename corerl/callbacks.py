@@ -6,6 +6,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt, numpy as np
 import random
+from algs.kqlearning_iid import KQLearningAgentIID
 
 plt.ion()
 #from corerl.visualization import testGrid, plotKernelFunction
@@ -291,7 +292,10 @@ class IntervalTest(Callback):
             reward = 0
             s = self.env.reset()
             for i in range(self.testlength):
-                a = self.model.act(s, stochastic=False)
+                if isinstance(self.model, KQLearningAgentIID):
+                    a, _ = self.model.act(s, stochastic=False)
+                else:
+                    a = self.model.act(s, stochastic=False)
                 s_, r, done, _ = self.env.step(a)
                 if done: s_ = None
                 err += 0.5 * self.model.bellman_error(s, a, r, s_) ** 2

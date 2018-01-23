@@ -172,7 +172,7 @@ class LinearParameter(Parameter):
         elif t > self.stop:
             self._value = self.final
         else:
-            self._value = self.a + self.b * ((t - self.start) * self.rate)
+            self._value = self.a + self.b * (1 - (t - self.start) * self.rate)
 
 
 # ==================================================
