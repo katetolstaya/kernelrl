@@ -240,7 +240,11 @@ class IntervalProgress(Callback):
         if 'interval_metrics' in logs:
             for name, values in logs['interval_metrics'].items():
                 if name == 'step': continue
-                formatted_metrics += ' - {}: {:.4f}'.format(name, values[-1])
+
+                if type(values[-1]) is not float:
+                    formatted_metrics += ' - {}: {}'.format(name, values[-1])
+                else:
+                    formatted_metrics += ' - {}: {:.4f}'.format(name, values[-1])
         formatted_rewards = ''
         if 'interval_rewards' in logs:
             eps = logs['interval_rewards']['nb_episodes']
@@ -283,7 +287,7 @@ class IntervalTest(Callback):
 
     def set_env(self, env):
         # Make a new copy of the environment
-        self.env = env.clone()
+        self.env = env.env #.clone()
 
     def test(self, logs):
         total = 0.

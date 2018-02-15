@@ -50,7 +50,7 @@ m = 0
 k = 0
 p = 0
 for i, line in enumerate(open(filename)):
-    for match in re.finditer(pattern6, line): # test reward
+    for match in re.finditer(pattern1, line): # test reward - change back to 6
         a[k] = float(match.groups()[0])
         k = k + 1
     for match in re.finditer(pattern3, line): # Model order
@@ -78,7 +78,7 @@ plt.figure(1)
 plt.subplot(411)
 plt.tight_layout()
 plt.plot(np.linspace(0, 1000 * len(a), len(a)), a)
-plt.title('Testing Reward')
+plt.title('Training Reward')
 # plt.xlabel('Training Steps')
 #plt.ylabel('Average Reward, (w=' + str(window) + ')')
 # plt.xlim([0,10000000])

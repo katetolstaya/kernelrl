@@ -22,6 +22,7 @@ from corerl.callbacks import CallbackList, make_callbacks
 from algs.kqlearning import KQLearningAgent
 from algs.knaf import KNAFAgent
 from misc.knaf2 import KNAF2Agent
+from algs.knaf_iid import KNAFIIDAgent
 from algs.ksarsa import KSARSAAgent
 from algs.kqlearning2 import KQLearningAgent2
 from algs.policy_test import QTestAgent2
@@ -36,6 +37,8 @@ from algs.kqlearning_per import KQLearningAgentPER
 from algs.kqlearning_iid import KQLearningAgentIID
 from corerl.random_agent import RandomAgent
 from algs.kqlearningalt import KQLearningAltAgent
+from algs.rbf import RBFAgentIID
+import gym_gazebo
 
 
 # from kv import KVAgent
@@ -90,7 +93,7 @@ class Environment:
             callbacks.on_step_begin(episodeStep)
 
             # Choose action
-            if isinstance(agent, KQLearningAgentIID):
+            if isinstance(agent, KQLearningAgentIID) or isinstance(agent,RBFAgentIID):
                 a, rand = agent.act(s)
             elif isinstance(agent, RandomAgent):
                 a = agent.act(s)
@@ -105,7 +108,7 @@ class Environment:
             callbacks.on_action_end(a)
             # Process this transition
 
-            if isinstance(agent,KQLearningAgentIID) or isinstance(agent,RandomAgent):
+            if isinstance(agent,KQLearningAgentIID) or isinstance(agent,RandomAgent) or isinstance(agent, RBFAgentIID):
                 agent.observe((s, a, r, (None if done else s_),rand))
             else:
                 agent.observe((s, a, r, None if done else s_))
@@ -220,6 +223,9 @@ class Experiment(object):
         elif atype.lower() == 'kqlearningiid':
             self.random_agent = RandomAgent(self.env, config)
             self.agent = KQLearningAgentIID(self.env, config)
+        elif atype.lower() == 'rbf':
+            self.random_agent = RandomAgent(self.env, config)
+            self.agent = RBFAgentIID(self.env, config)
         elif atype.lower() == 'kqlearning2':
             self.agent = KQLearningAgent2(self.env, config)
         elif atype.lower() == 'kqlearningalt':
@@ -228,6 +234,9 @@ class Experiment(object):
             self.agent = KAdvAgent(self.env, config)
         elif atype.lower() == 'knaf':
             self.agent = KNAFAgent(self.env, config)
+        elif atype.lower() == 'knafiid':
+            self.agent = KNAFIIDAgent(self.env, config)
+            self.random_agent = RandomAgent(self.env, config)
         elif atype.lower() == 'knaf2':
             self.agent = KNAF2Agent(self.env, config)
         elif atype.lower() == 'kgreedyq':
@@ -340,13 +349,13 @@ if __name__ == '__main__':
     # 'cfg/knaf_pendulum.cfg', 'cfg/kq_robot.cfg', 'cfg/kq_pendulum.cfg', 'cfg/kadv_pendulum.cfg', 'cfg/knaf_mcar.cfg',
     # 'cfg/kq_pendulum.cfg', 'cfg/knaf_pendulum_multi.cfg', 'cfg/kq_pendulum_iid.cfg', 'cfg/kq_invpendulum.cfg'
 
-    # fname = sys.argv[1]
+    fname = sys.argv[1]
 
     #fname = 'cfg/kgreedyq_pendulum.cfg'
-    fname = 'cfg/kqalt_pendulum.cfg'
-    fname = 'cfg/kqalt_ccar.cfg'
+    #fname = 'cfg/kqalt_pendulum.cfg'
+    #fname = 'cfg/kqalt_ccar.cfg'
     #fname = 'cfg/kq2_pendulum.cfg'
-    fname = 'cfg/kq_car_iid.cfg'
+    #fname = 'cfg/kq_car_iid.cfg'
     #fname = 'cfg/kq_pendulum_iid.cfg'
 
     #fname = 'cfg/kqgreedy_pendulum_per.cfg'

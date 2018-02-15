@@ -32,29 +32,47 @@ class KQLearningModel(object):
         self.eta.step(step)
         self.beta.step(step)
 
+        # Following 2 lines are under debate - what's the right way to do batch SCGD?
         yy = self.y + self.beta.value * (delta - self.y)
         self.y = np.mean(yy)  # Running average of TAD error
+        ######
 
-        self.Q.shrink(1. - self.eta.value * self.lossL)
+
         N = float(len(delta))
 
-        if self.algorithm == 'td':
-            self.Q.append(x, self.eta.value / N * yy)
-        elif self.algorithm == 'hybrid' or self.algorithm == 'gtd':
+        if self.algorithm == 'td' or self.algorithm == 'td0':
+            if self.algorithm == 'td0': # No steps for exploratory actions
+                yy[rand] = 0
+
+            if np.flatnonzero(yy).size > 0:
+                self.Q.shrink(1. - self.eta.value * self.lossL)
+                self.Q.append(x, self.eta.value / N * yy)
+        elif self.algorithm == 'hybrid' or self.algorithm == 'gtd' or self.algorithm == 'gtdrandom':
             # Stack sample points
             X = np.vstack((x, x_[nonterminal]))
             W = np.zeros((len(X), 1))
+
+            if self.algorithm == 'gtd': # No steps for greedy actions...
+                yy[np.logical_not(rand)] = 0
 
             W[:len(x)] = self.eta.value / N * yy
 
             if self.algorithm == 'hybrid': # TD steps for the greedy actions
                 yy[np.logical_not(rand)] = 0
 
-
             W[len(x):] = -self.eta.value / N * gamma * yy[nonterminal]
-            print W
 
-            self.Q.append(X, W)
+            if np.flatnonzero(W).size > 0:
+                self.Q.shrink(1. - self.eta.value * self.lossL)
+                X = X[np.flatnonzero(W), :]
+                W = W[np.flatnonzero(W)]
+                if self.algorithm == 'gtdrandom':
+                    randX = np.reshape(np.random.uniform([-1,-1,-8,-2],[1,1,8,2]),(1,-1))
+                    randW = np.reshape(np.random.normal(0, 5*np.sqrt(2*self.eta.value)),(1,-1))
+                    X = np.append(X,randX,axis=0)
+                    W = np.append(W,randW,axis=0)
+                self.Q.append(X[np.flatnonzero(W),:], W[np.flatnonzero(W)])
+
         else:
             raise ValueError('Unknown algorithm: {}'.format(self.algorithm))
 
@@ -146,7 +164,6 @@ class KQLearningAgentIID(object):
         "Decide what action to take in state s."
 
         if stochastic and (random.random() < self.epsilon.value):
-
             a = np.random.uniform(self.min_act, self.max_act)
             rand = True
         else:
@@ -163,6 +180,7 @@ class KQLearningAgentIID(object):
         self.epsilon.step(self.steps)
 
     def improve(self):
+
         batch = self.memory.sample(self.batchSize)
 
         x, x_, nt, r, rand = self._getStates(batch)

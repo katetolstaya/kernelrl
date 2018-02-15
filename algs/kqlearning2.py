@@ -17,6 +17,7 @@ class KQLearningModel2(object):
         # Learning rates
         self.eta = ScheduledParameter('LearningRate', config)
         self.beta = ScheduledParameter('ExpectationRate', config)
+        self.algorithm = config.get('Algorithm', 'td').lower() # gtd, td or hybrid
 
         # Regularization
         self.lossL = config.getfloat('Regularization', 1e-4)
@@ -28,10 +29,12 @@ class KQLearningModel2(object):
         self.gamma = config.getfloat('RewardDiscount')
 
         # Multiplier (see Baird paper)
-        self.phi = config.getfloat('Phi', 1.0)
+        #self.phi = config.getfloat('Phi', 1.0)
 
         # Running estimate of our expected TD-loss
         self.y = 0.
+
+        self.rand_act = True
 
     def bellman_error(self, s, a, r, s_):
         x = np.concatenate((np.reshape(s, (1, -1)), np.reshape(a, (1, -1))), axis=1)
@@ -80,13 +83,18 @@ class KQLearningModel2(object):
 
         # Gradient step
         self.Q.shrink(1. - self.eta.value * self.lossL)
-        if s_ is None:
+        if self.algorithm == 'td' or (self.algorithm == 'hybrid' and not self.rand_act):
             self.Q.append(x, self.eta.value * self.y)
+        elif self.algorithm == 'gtd' or (self.algorithm == 'hybrid' and self.rand_act):
+            if s_ is None:
+                self.Q.append(x, self.eta.value * self.y)
+            else:
+                W = np.zeros((2, 1))
+                W[0] = -1.
+                W[1] = self.gamma #* self.phi
+                self.Q.append(np.vstack((x, x_)), -self.eta.value * self.y * W)
         else:
-            W = np.zeros((2, 1))
-            W[0] = -1.
-            W[1] = self.gamma * self.phi
-            self.Q.append(np.vstack((x, x_)), -self.eta.value * self.y * W)
+            raise ValueError('Unknown algorithm: {}'.format(self.algorithm))
 
         # Prune
         self.Q.prune(self.eps ** 2 * self.eta.value ** 2 / self.beta.value)
@@ -110,8 +118,8 @@ class KQLearningAgent2(object):
         self.epsilon.step(0)
         self.min_act = np.reshape(json.loads(config.get('MinAction')), (-1, 1))
         self.max_act = np.reshape(json.loads(config.get('MaxAction')), (-1, 1))
-        self.max_model_order = config.getfloat('MaxModelOrder', 10000)
-        self.act_mult = config.getfloat('ActMultiplier', 1)
+
+
 
         # How many steps we have observed
         self.steps = 0
@@ -120,16 +128,17 @@ class KQLearningAgent2(object):
         # Initialize model
         self.model = KQLearningModel2(self.stateCount, self.actionCount, config)
 
-        # self.save_steps = config.getint('SaveInterval', 1000000000)
-        # self.folder = config.get('Folder', 'exp')
+
 
     def act(self, s, stochastic=True):
         # "Decide what action to take in state s."
         if stochastic and (random.random() < self.epsilon.value):
-            a = np.random.uniform(self.act_mult * self.min_act, self.act_mult * self.max_act)
-            # return self.action_space.sample()
+            #a = self.model.Q.argmin1(s)
+            a = np.random.uniform( self.min_act, self.max_act)
+            self.model.rand_act = True
         else:
             a = self.model.Q.argmax(s)
+            self.model.rand_act = False
 
         a_temp = np.reshape(np.clip(a, self.min_act, self.max_act),(-1,))
         return a_temp
@@ -140,9 +149,6 @@ class KQLearningAgent2(object):
         self.epsilon.step(self.steps)
 
     def improve(self):
-        #if self.steps % self.save_steps == 0:
-        #    with open(self.folder + '/kpolicy_model_' + str(int(self.steps / self.save_steps)) + '.pkl', 'wb') as f:
-        #        pickle.dump(self.model.Q, f)
         return self.model.train(self.steps, self.lastSample)
 
     def bellman_error(self, s, a, r, s_):
