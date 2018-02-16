@@ -157,10 +157,11 @@ class KNAFAgent(object):
     def act(self, s, stochastic=True):
         # "Decide what action to take in state s."
         a = self.model.get_pi(s)
-        #noise = np.sum(self.model.vpl.kernel.f(s, self.model.vpl.D))
-        #print noise
+        noise = np.sum(self.model.vpl.kernel.f(s, self.model.vpl.D))
+        print (noise)
         #if noise < 1:
         #    noise = 1
+        
 
         if stochastic: # if exploration, add noise
             a = a + np.random.normal(0,self.noise_var.value,self.actionCount)

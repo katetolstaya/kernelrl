@@ -38,7 +38,7 @@ from algs.kqlearning_iid import KQLearningAgentIID
 from corerl.random_agent import RandomAgent
 from algs.kqlearningalt import KQLearningAltAgent
 from algs.rbf import RBFAgentIID
-import gym_gazebo
+#import gym_gazebo
 
 
 # from kv import KVAgent
