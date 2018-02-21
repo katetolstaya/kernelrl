@@ -158,10 +158,9 @@ class KNAFAgent(object):
         # "Decide what action to take in state s."
         a = self.model.get_pi(s)
         #noise = np.sum(self.model.vpl.kernel.f(s, self.model.vpl.D))
-        #print (noise)
+        #print noise
         #if noise < 1:
         #    noise = 1
-        
 
         if stochastic: # if exploration, add noise
             a = a + np.random.normal(0,self.noise_var.value,self.actionCount)
@@ -175,7 +174,7 @@ class KNAFAgent(object):
         self.noise_var.step(self.steps)
 
         if self.steps % 10000 == 0 :
-            with open('rob19_model'+str(int(self.steps/10000))+'.txt', 'wb') as f:
+            with open('rob11_model'+str(int(self.steps/10000))+'.txt', 'wb') as f:
                 pickle.dump(self.model, f)
 
 

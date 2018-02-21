@@ -1,0 +1,1076 @@
+
+########################################################################
+# Colfax Cluster - https://colfaxresearch.com/
+#      Date:           Fri Feb 16 12:11:24 PST 2018
+#    Job ID:           44356.c009
+#      User:           u8635
+# Resources:           neednodes=1,nodes=1,walltime=06:00:00
+########################################################################
+
+cfg/exp/p3multi.cfg
+Pendulum-v0
+[33mWARN: gym.spaces.Box autodetected dtype as <type 'numpy.float32'>. Please provide explicit dtype.[0m
+[33mWARN: gym.spaces.Box autodetected dtype as <type 'numpy.float32'>. Please provide explicit dtype.[0m
+Initializing memory with random agent...
+200/10000
+400/10000
+600/10000
+800/10000
+1000/10000
+1200/10000
+1400/10000
+1600/10000
+1800/10000
+2000/10000
+2200/10000
+2400/10000
+2600/10000
+2800/10000
+3000/10000
+3200/10000
+3400/10000
+3600/10000
+3800/10000
+4000/10000
+4200/10000
+4400/10000
+4600/10000
+4800/10000
+5000/10000
+5200/10000
+5400/10000
+5600/10000
+5800/10000
+6000/10000
+6200/10000
+6400/10000
+6600/10000
+6800/10000
+7000/10000
+7200/10000
+7400/10000
+7600/10000
+7800/10000
+8000/10000
+8200/10000
+8400/10000
+8600/10000
+8800/10000
+9000/10000
+9200/10000
+9400/10000
+9600/10000
+9800/10000
+10000/10000
+Training for 500000 steps ...
+Interval 1 (0 steps performed)
+4 episodes - episode_rewards: -1169.098 [-1614.401, -850.800] - Model Order: 114.06 - Training Loss: 2.9973145495
+Interval 2 (1000 steps performed)
+5 episodes - episode_rewards: -1187.897 [-1739.051, -905.746] - Model Order: 118.591 - Testing Reward: -1313.31058813 - Training Loss: 1.67183674417 - Testing Loss: 30.6982227738
+Interval 3 (2000 steps performed)
+5 episodes - episode_rewards: -1239.606 [-1645.429, -855.325] - Model Order: 118.844 - Testing Reward: -1542.88287197 - Training Loss: 1.51251966047 - Testing Loss: 36.6133885417
+Interval 4 (3000 steps performed)
+5 episodes - episode_rewards: -1189.326 [-1789.795, -874.029] - Model Order: 111.449 - Testing Reward: -1381.65293021 - Training Loss: 1.05318107703 - Testing Loss: 31.9613830809
+Interval 5 (4000 steps performed)
+5 episodes - episode_rewards: -1234.637 [-1710.682, -981.868] - Model Order: 116.362 - Testing Reward: -1651.64844547 - Training Loss: 1.06602101726 - Testing Loss: 36.1292702067
+Interval 6 (5000 steps performed)
+5 episodes - episode_rewards: -1271.460 [-1733.355, -924.647] - Model Order: 116.134 - Testing Reward: -1609.40481531 - Training Loss: 0.994358564395 - Testing Loss: 34.4937696892
+Interval 7 (6000 steps performed)
+5 episodes - episode_rewards: -1215.944 [-1684.205, -797.605] - Model Order: 121.946 - Testing Reward: -1480.1309014 - Training Loss: 1.06087024269 - Testing Loss: 37.0126686486
+Interval 8 (7000 steps performed)
+5 episodes - episode_rewards: -1362.980 [-1760.882, -1042.277] - Model Order: 120.371 - Testing Reward: -1520.95208685 - Training Loss: 1.03619400972 - Testing Loss: 32.239877674
+Interval 9 (8000 steps performed)
+5 episodes - episode_rewards: -1277.583 [-1847.297, -793.174] - Model Order: 115.934 - Testing Reward: -1634.78614826 - Training Loss: 1.13742908152 - Testing Loss: 38.7451514542
+Interval 10 (9000 steps performed)
+5 episodes - episode_rewards: -1417.423 [-1692.543, -1175.309] - Model Order: 118.222 - Testing Reward: -1656.32090041 - Training Loss: 0.84285738836 - Testing Loss: 33.3835084474
+Interval 11 (10000 steps performed)
+5 episodes - episode_rewards: -1240.704 [-1531.444, -938.374] - Model Order: 118.861 - Testing Reward: -1288.3897315 - Training Loss: 0.909720507095 - Testing Loss: 31.1148323594
+Interval 12 (11000 steps performed)
+5 episodes - episode_rewards: -1302.593 [-1707.421, -968.547] - Model Order: 117.543 - Testing Reward: -1312.21497344 - Training Loss: 1.19249701147 - Testing Loss: 27.3765787608
+Interval 13 (12000 steps performed)
+5 episodes - episode_rewards: -1088.215 [-1589.943, -796.593] - Model Order: 119.508 - Testing Reward: -1625.53816468 - Training Loss: 1.01128626473 - Testing Loss: 30.9983152127
+Interval 14 (13000 steps performed)
+5 episodes - episode_rewards: -1135.885 [-1420.037, -859.874] - Model Order: 119.277 - Testing Reward: -1508.37650558 - Training Loss: 1.17257880325 - Testing Loss: 28.636687351
+Interval 15 (14000 steps performed)
+5 episodes - episode_rewards: -1325.036 [-1729.527, -966.652] - Model Order: 122.44 - Testing Reward: -1549.26078724 - Training Loss: 1.3427148282 - Testing Loss: 31.3257122985
+Interval 16 (15000 steps performed)
+5 episodes - episode_rewards: -1312.446 [-1721.959, -967.208] - Model Order: 121.385 - Testing Reward: -1653.62071845 - Training Loss: 1.54315656329 - Testing Loss: 35.7339511381
+Interval 17 (16000 steps performed)
+5 episodes - episode_rewards: -1258.693 [-1534.308, -970.597] - Model Order: 122.315 - Testing Reward: -1258.81906298 - Training Loss: 1.28780524834 - Testing Loss: 21.3673582899
+Interval 18 (17000 steps performed)
+5 episodes - episode_rewards: -1197.712 [-1425.398, -1014.275] - Model Order: 129.417 - Testing Reward: -1565.06230314 - Training Loss: 1.58303188528 - Testing Loss: 38.219824154
+Interval 19 (18000 steps performed)
+5 episodes - episode_rewards: -1149.942 [-1404.092, -897.594] - Model Order: 130.651 - Testing Reward: -1399.74793996 - Training Loss: 1.65362536663 - Testing Loss: 31.0442968544
+Interval 20 (19000 steps performed)
+5 episodes - episode_rewards: -1337.215 [-1739.350, -977.861] - Model Order: 132.134 - Testing Reward: -1335.15047319 - Training Loss: 0.889298086006 - Testing Loss: 35.4059018307
+Interval 21 (20000 steps performed)
+5 episodes - episode_rewards: -1250.437 [-1439.980, -975.147] - Model Order: 133.68 - Testing Reward: -1464.81320572 - Training Loss: 1.17824818064 - Testing Loss: 33.5442029959
+Interval 22 (21000 steps performed)
+5 episodes - episode_rewards: -1322.125 [-1629.928, -761.146] - Model Order: 133.466 - Testing Reward: -1642.2028504 - Training Loss: 1.46156264977 - Testing Loss: 34.9983925999
+Interval 23 (22000 steps performed)
+5 episodes - episode_rewards: -1089.449 [-1543.312, -749.576] - Model Order: 136.663 - Testing Reward: -1551.17275238 - Training Loss: 1.22206821173 - Testing Loss: 35.9917606523
+Interval 24 (23000 steps performed)
+5 episodes - episode_rewards: -1121.071 [-1332.366, -768.812] - Model Order: 143.056 - Testing Reward: -1562.71877814 - Training Loss: 1.53417964944 - Testing Loss: 37.1075925368
+Interval 25 (24000 steps performed)
+5 episodes - episode_rewards: -1138.981 [-1689.520, -838.839] - Model Order: 143.335 - Testing Reward: -1552.99984228 - Training Loss: 1.3153554144 - Testing Loss: 35.0692347691
+Interval 26 (25000 steps performed)
+5 episodes - episode_rewards: -1268.117 [-1599.751, -875.428] - Model Order: 145.534 - Testing Reward: -1647.96487176 - Training Loss: 1.61766820743 - Testing Loss: 35.1213922798
+Interval 27 (26000 steps performed)
+5 episodes - episode_rewards: -1233.494 [-1812.957, -893.623] - Model Order: 142.04 - Testing Reward: -1656.91002078 - Training Loss: 1.03718105729 - Testing Loss: 37.5927818911
+Interval 28 (27000 steps performed)
+5 episodes - episode_rewards: -1142.554 [-1320.518, -968.627] - Model Order: 144.642 - Testing Reward: -1561.94743764 - Training Loss: 1.16916467274 - Testing Loss: 38.3605742817
+Interval 29 (28000 steps performed)
+5 episodes - episode_rewards: -1275.830 [-1804.160, -856.253] - Model Order: 151.947 - Testing Reward: -1649.83741706 - Training Loss: 1.69492899099 - Testing Loss: 32.6074426538
+Interval 30 (29000 steps performed)
+5 episodes - episode_rewards: -1370.278 [-1691.491, -969.612] - Model Order: 153.104 - Testing Reward: -1653.27750176 - Training Loss: 1.47952205178 - Testing Loss: 39.6291946875
+Interval 31 (30000 steps performed)
+5 episodes - episode_rewards: -1227.309 [-1536.099, -853.912] - Model Order: 151.713 - Testing Reward: -1651.05916301 - Training Loss: 1.18161714388 - Testing Loss: 29.2345302758
+Interval 32 (31000 steps performed)
+5 episodes - episode_rewards: -1240.569 [-1630.953, -885.676] - Model Order: 157.023 - Testing Reward: -1655.42341222 - Training Loss: 1.98794191417 - Testing Loss: 38.7753106646
+Interval 33 (32000 steps performed)
+5 episodes - episode_rewards: -1031.728 [-1277.196, -861.503] - Model Order: 159.259 - Testing Reward: -1622.86778713 - Training Loss: 1.21306549642 - Testing Loss: 36.3738616518
+Interval 34 (33000 steps performed)
+5 episodes - episode_rewards: -990.123 [-1310.162, -873.144] - Model Order: 164.15 - Testing Reward: -1547.64281815 - Training Loss: 1.57326111571 - Testing Loss: 37.5298050837
+Interval 35 (34000 steps performed)
+5 episodes - episode_rewards: -1190.007 [-1577.962, -924.454] - Model Order: 165.556 - Testing Reward: -1597.53355403 - Training Loss: 1.34140864098 - Testing Loss: 35.8767274603
+Interval 36 (35000 steps performed)
+5 episodes - episode_rewards: -1311.847 [-1695.654, -880.040] - Model Order: 171.452 - Testing Reward: -1525.29298422 - Training Loss: 1.46695340388 - Testing Loss: 34.4243286413
+Interval 37 (36000 steps performed)
+5 episodes - episode_rewards: -1179.473 [-1487.341, -849.712] - Model Order: 179.035 - Testing Reward: -1507.17937997 - Training Loss: 1.98695667495 - Testing Loss: 30.4322358009
+Interval 38 (37000 steps performed)
+5 episodes - episode_rewards: -1403.722 [-1838.837, -987.727] - Model Order: 183.23 - Testing Reward: -1501.69184621 - Training Loss: 1.98713439301 - Testing Loss: 21.8423024374
+Interval 39 (38000 steps performed)
+5 episodes - episode_rewards: -985.086 [-1274.623, -752.729] - Model Order: 179.4 - Testing Reward: -1442.96583176 - Training Loss: 1.49305511529 - Testing Loss: 31.2892563358
+Interval 40 (39000 steps performed)
+5 episodes - episode_rewards: -1134.854 [-1802.767, -754.618] - Model Order: 184.63 - Testing Reward: -3.34437919948 - Training Loss: 1.59260265264 - Testing Loss: 19.5461424026
+Interval 41 (40000 steps performed)
+5 episodes - episode_rewards: -1276.194 [-1503.833, -1022.118] - Model Order: 187.416 - Testing Reward: -1609.75169513 - Training Loss: 2.16529011891 - Testing Loss: 35.1860890355
+Interval 42 (41000 steps performed)
+5 episodes - episode_rewards: -1201.545 [-1737.942, -659.656] - Model Order: 200.294 - Testing Reward: -1519.91775551 - Training Loss: 2.38606678419 - Testing Loss: 22.2473514522
+Interval 43 (42000 steps performed)
+5 episodes - episode_rewards: -975.111 [-1199.203, -682.532] - Model Order: 197.732 - Testing Reward: -4.99184245141 - Training Loss: 2.62010187965 - Testing Loss: 12.0924607219
+Interval 44 (43000 steps performed)
+5 episodes - episode_rewards: -1214.460 [-1746.822, -910.606] - Model Order: 204.251 - Testing Reward: -1031.25386183 - Training Loss: 2.17875975441 - Testing Loss: 29.0664467202
+Interval 45 (44000 steps performed)
+5 episodes - episode_rewards: -1059.126 [-1677.441, -834.134] - Model Order: 207.973 - Testing Reward: -1454.66825815 - Training Loss: 2.50921384493 - Testing Loss: 29.2719512971
+Interval 46 (45000 steps performed)
+5 episodes - episode_rewards: -1115.929 [-1481.147, -864.511] - Model Order: 209.596 - Testing Reward: -1570.61843292 - Training Loss: 2.62943380135 - Testing Loss: 26.9559196239
+Interval 47 (46000 steps performed)
+5 episodes - episode_rewards: -1187.561 [-1484.939, -862.679] - Model Order: 212.953 - Testing Reward: -1581.39742447 - Training Loss: 1.97276312697 - Testing Loss: 34.3422747323
+Interval 48 (47000 steps performed)
+5 episodes - episode_rewards: -1088.740 [-1244.689, -898.424] - Model Order: 214.198 - Testing Reward: -1524.18583675 - Training Loss: 1.62485664896 - Testing Loss: 28.6245922897
+Interval 49 (48000 steps performed)
+5 episodes - episode_rewards: -1113.415 [-1559.398, -913.283] - Model Order: 215.882 - Testing Reward: -1035.87339103 - Training Loss: 1.38475108573 - Testing Loss: 33.0128706135
+Interval 50 (49000 steps performed)
+5 episodes - episode_rewards: -1154.017 [-1467.906, -982.907] - Model Order: 218.482 - Testing Reward: -1588.18351331 - Training Loss: 2.37373185228 - Testing Loss: 34.0270167114
+Interval 51 (50000 steps performed)
+5 episodes - episode_rewards: -1135.746 [-1560.513, -918.240] - Model Order: 225.468 - Testing Reward: -1512.16819454 - Training Loss: 2.4111090276 - Testing Loss: 33.6387805354
+Interval 52 (51000 steps performed)
+5 episodes - episode_rewards: -1086.923 [-1497.282, -755.355] - Model Order: 228.951 - Testing Reward: -1385.95565969 - Training Loss: 1.82761915914 - Testing Loss: 33.8003184199
+Interval 53 (52000 steps performed)
+5 episodes - episode_rewards: -957.927 [-1183.774, -820.127] - Model Order: 223.027 - Testing Reward: -1525.02273112 - Training Loss: 1.75838233867 - Testing Loss: 32.736418766
+Interval 54 (53000 steps performed)
+5 episodes - episode_rewards: -1455.314 [-1822.317, -867.429] - Model Order: 227.49 - Testing Reward: -1241.69805171 - Training Loss: 1.81246423689 - Testing Loss: 33.7639864404
+Interval 55 (54000 steps performed)
+5 episodes - episode_rewards: -1144.538 [-1681.268, -855.531] - Model Order: 231.373 - Testing Reward: -1508.12302318 - Training Loss: 1.54887706926 - Testing Loss: 39.2023135566
+Interval 56 (55000 steps performed)
+5 episodes - episode_rewards: -1259.483 [-1752.792, -990.745] - Model Order: 232.231 - Testing Reward: -1521.04978651 - Training Loss: 1.71601129419 - Testing Loss: 37.6032594304
+Interval 57 (56000 steps performed)
+5 episodes - episode_rewards: -1004.951 [-1198.508, -881.782] - Model Order: 236.683 - Testing Reward: -1551.35348345 - Training Loss: 2.48017583512 - Testing Loss: 36.2556038991
+Interval 58 (57000 steps performed)
+5 episodes - episode_rewards: -1200.242 [-1416.641, -877.100] - Model Order: 241.736 - Testing Reward: -1612.8937281 - Training Loss: 2.48673479077 - Testing Loss: 36.6409501954
+Interval 59 (58000 steps performed)
+5 episodes - episode_rewards: -1170.295 [-1411.453, -905.761] - Model Order: 247.872 - Testing Reward: -1501.94440269 - Training Loss: 1.55827058293 - Testing Loss: 34.8221066025
+Interval 60 (59000 steps performed)
+5 episodes - episode_rewards: -1308.587 [-1594.622, -880.343] - Model Order: 260.314 - Testing Reward: -1369.86794671 - Training Loss: 1.18779001475 - Testing Loss: 32.840489931
+Interval 61 (60000 steps performed)
+5 episodes - episode_rewards: -1176.607 [-1421.276, -857.958] - Model Order: 265.111 - Testing Reward: -1572.73015614 - Training Loss: 2.64896343884 - Testing Loss: 25.8971271334
+Interval 62 (61000 steps performed)
+5 episodes - episode_rewards: -957.635 [-1177.532, -696.989] - Model Order: 267.047 - Testing Reward: -1458.35481377 - Training Loss: 4.50966423444 - Testing Loss: 36.346440921
+Interval 63 (62000 steps performed)
+5 episodes - episode_rewards: -1076.600 [-1527.491, -891.240] - Model Order: 274.542 - Testing Reward: -1423.62553141 - Training Loss: 3.61051822801 - Testing Loss: 12.5642525507
+Interval 64 (63000 steps performed)
+5 episodes - episode_rewards: -1135.758 [-1467.066, -965.315] - Model Order: 281.641 - Testing Reward: -1211.02931245 - Training Loss: 2.26176414471 - Testing Loss: 29.265885167
+Interval 65 (64000 steps performed)
+5 episodes - episode_rewards: -1025.760 [-1327.505, -862.471] - Model Order: 280.646 - Testing Reward: -903.006089271 - Training Loss: 3.38231561062 - Testing Loss: 34.7264345853
+Interval 66 (65000 steps performed)
+5 episodes - episode_rewards: -1048.370 [-1402.690, -864.424] - Model Order: 287.88 - Testing Reward: -1579.84593047 - Training Loss: 1.40430591153 - Testing Loss: 35.8158254144
+Interval 67 (66000 steps performed)
+5 episodes - episode_rewards: -994.978 [-1099.255, -840.039] - Model Order: 287.455 - Testing Reward: -1505.00858815 - Training Loss: 1.54807732585 - Testing Loss: 34.2228232346
+Interval 68 (67000 steps performed)
+5 episodes - episode_rewards: -1247.921 [-1552.080, -988.745] - Model Order: 284.285 - Testing Reward: -1647.44760556 - Training Loss: 1.76356107867 - Testing Loss: 48.6728868267
+Interval 69 (68000 steps performed)
+5 episodes - episode_rewards: -1169.874 [-1661.183, -872.609] - Model Order: 289.696 - Testing Reward: -1634.96658373 - Training Loss: 2.12248048831 - Testing Loss: 41.8563549545
+Interval 70 (69000 steps performed)
+5 episodes - episode_rewards: -1157.935 [-1522.181, -940.883] - Model Order: 295.171 - Testing Reward: -1554.53477825 - Training Loss: 1.91433115394 - Testing Loss: 30.7444962941
+Interval 71 (70000 steps performed)
+5 episodes - episode_rewards: -1281.428 [-1464.925, -1188.168] - Model Order: 292.941 - Testing Reward: -1588.04409636 - Training Loss: 2.51971356536 - Testing Loss: 49.3377986896
+Interval 72 (71000 steps performed)
+5 episodes - episode_rewards: -1051.583 [-1226.273, -917.637] - Model Order: 299.553 - Testing Reward: -1550.40847786 - Training Loss: 2.77501839714 - Testing Loss: 44.1509305472
+Interval 73 (72000 steps performed)
+5 episodes - episode_rewards: -1039.347 [-1280.319, -859.608] - Model Order: 303.941 - Testing Reward: -1231.84956339 - Training Loss: 2.1169718458 - Testing Loss: 31.4751318614
+Interval 74 (73000 steps performed)
+5 episodes - episode_rewards: -1147.565 [-1462.517, -755.197] - Model Order: 305.263 - Testing Reward: -127.545471387 - Training Loss: 1.88849965082 - Testing Loss: 20.7566186488
+Interval 75 (74000 steps performed)
+5 episodes - episode_rewards: -924.990 [-1453.166, -756.032] - Model Order: 310.322 - Testing Reward: -988.607904541 - Training Loss: 3.75070924551 - Testing Loss: 21.714907121
+Interval 76 (75000 steps performed)
+5 episodes - episode_rewards: -1160.711 [-1233.441, -1067.829] - Model Order: 313.997 - Testing Reward: -1487.45604982 - Training Loss: 3.18788470005 - Testing Loss: 30.9381570235
+Interval 77 (76000 steps performed)
+5 episodes - episode_rewards: -854.856 [-890.845, -764.757] - Model Order: 315.073 - Testing Reward: -1627.36825509 - Training Loss: 5.22673216528 - Testing Loss: 36.5617892138
+Interval 78 (77000 steps performed)
+5 episodes - episode_rewards: -1169.311 [-1522.217, -957.500] - Model Order: 323.322 - Testing Reward: -126.398924769 - Training Loss: 5.06852337407 - Testing Loss: 29.7353495881
+Interval 79 (78000 steps performed)
+5 episodes - episode_rewards: -997.631 [-1390.965, -778.147] - Model Order: 319.833 - Testing Reward: -1652.86312836 - Training Loss: 3.16850799962 - Testing Loss: 46.330508986
+Interval 80 (79000 steps performed)
+5 episodes - episode_rewards: -1061.401 [-1227.494, -874.642] - Model Order: 326.5 - Testing Reward: -1258.59174734 - Training Loss: 5.40286635245 - Testing Loss: 28.3179484081
+Interval 81 (80000 steps performed)
+5 episodes - episode_rewards: -1120.464 [-1442.225, -997.023] - Model Order: 328.733 - Testing Reward: -253.991286433 - Training Loss: 2.52518593525 - Testing Loss: 3.25924713735
+Interval 82 (81000 steps performed)
+5 episodes - episode_rewards: -1187.556 [-1503.029, -789.676] - Model Order: 329.596 - Testing Reward: -1515.31148832 - Training Loss: 3.60646774688 - Testing Loss: 25.5474504209
+Interval 83 (82000 steps performed)
+5 episodes - episode_rewards: -1063.546 [-1337.256, -877.390] - Model Order: 333.82 - Testing Reward: -1458.92814265 - Training Loss: 7.15242817118 - Testing Loss: 28.3387170922
+Interval 84 (83000 steps performed)
+5 episodes - episode_rewards: -981.113 [-1025.296, -876.206] - Model Order: 339.193 - Testing Reward: -1653.34370122 - Training Loss: 3.47990206403 - Testing Loss: 48.9978084758
+Interval 85 (84000 steps performed)
+5 episodes - episode_rewards: -1062.215 [-1308.776, -872.349] - Model Order: 344.372 - Testing Reward: -1124.23926945 - Training Loss: 4.6630034371 - Testing Loss: 24.6746406928
+Interval 86 (85000 steps performed)
+5 episodes - episode_rewards: -1118.765 [-1312.388, -906.614] - Model Order: 349.271 - Testing Reward: -12.0436000033 - Training Loss: 3.33434390365 - Testing Loss: 5.84105137615
+Interval 87 (86000 steps performed)
+5 episodes - episode_rewards: -1050.380 [-1442.990, -756.117] - Model Order: 348.489 - Testing Reward: -121.104363948 - Training Loss: 4.72453070536 - Testing Loss: 11.0400896831
+Interval 88 (87000 steps performed)
+5 episodes - episode_rewards: -1072.849 [-1175.837, -959.041] - Model Order: 361.11 - Testing Reward: -1368.89372352 - Training Loss: 5.90274565408 - Testing Loss: 31.6440017176
+Interval 89 (88000 steps performed)
+5 episodes - episode_rewards: -1226.509 [-1495.618, -883.353] - Model Order: 362.206 - Testing Reward: -361.232641506 - Training Loss: 3.64956447594 - Testing Loss: 14.1135657188
+Interval 90 (89000 steps performed)
+5 episodes - episode_rewards: -968.610 [-1086.931, -857.405] - Model Order: 369.152 - Testing Reward: -131.878031348 - Training Loss: 2.83154163454 - Testing Loss: 2.74200708222
+Interval 91 (90000 steps performed)
+5 episodes - episode_rewards: -1022.852 [-1180.657, -931.827] - Model Order: 369.657 - Testing Reward: -1069.69240713 - Training Loss: 2.45942634404 - Testing Loss: 11.7288331818
+Interval 92 (91000 steps performed)
+5 episodes - episode_rewards: -1048.897 [-1199.078, -747.236] - Model Order: 369.299 - Testing Reward: -1060.61575089 - Training Loss: 2.0252897741 - Testing Loss: 13.1358816995
+Interval 93 (92000 steps performed)
+5 episodes - episode_rewards: -977.669 [-1173.195, -872.675] - Model Order: 370.958 - Testing Reward: -1346.15548406 - Training Loss: 2.96176118219 - Testing Loss: 31.8188320077
+Interval 94 (93000 steps performed)
+5 episodes - episode_rewards: -980.190 [-1091.239, -875.656] - Model Order: 374.168 - Testing Reward: -1395.39912876 - Training Loss: 5.95145093619 - Testing Loss: 34.8235255046
+Interval 95 (94000 steps performed)
+5 episodes - episode_rewards: -1108.896 [-1520.926, -877.237] - Model Order: 379.715 - Testing Reward: -1202.06215209 - Training Loss: 3.66621552666 - Testing Loss: 30.4514072821
+Interval 96 (95000 steps performed)
+5 episodes - episode_rewards: -1036.518 [-1344.478, -869.433] - Model Order: 380.24 - Testing Reward: -126.050537603 - Training Loss: 1.94703984587 - Testing Loss: 23.6292163691
+Interval 97 (96000 steps performed)
+5 episodes - episode_rewards: -1007.517 [-1305.470, -815.675] - Model Order: 380.007 - Testing Reward: -985.21235577 - Training Loss: 2.66124587871 - Testing Loss: 24.8381547838
+Interval 98 (97000 steps performed)
+5 episodes - episode_rewards: -1035.670 [-1200.615, -922.190] - Model Order: 384.72 - Testing Reward: -134.025995508 - Training Loss: 4.97391255416 - Testing Loss: 14.7050850602
+Interval 99 (98000 steps performed)
+5 episodes - episode_rewards: -1236.842 [-1495.835, -900.740] - Model Order: 388.457 - Testing Reward: -239.625999006 - Training Loss: 3.39682232776 - Testing Loss: 23.5540992676
+Interval 100 (99000 steps performed)
+5 episodes - episode_rewards: -1102.201 [-1243.967, -828.844] - Model Order: 389.558 - Testing Reward: -894.165017853 - Training Loss: 5.81852855448 - Testing Loss: 32.7489141607
+Interval 101 (100000 steps performed)
+5 episodes - episode_rewards: -1062.339 [-1357.022, -900.593] - Model Order: 393.496 - Testing Reward: -248.406303205 - Training Loss: 2.50714776569 - Testing Loss: 17.7578199236
+Interval 102 (101000 steps performed)
+5 episodes - episode_rewards: -985.265 [-1125.040, -766.638] - Model Order: 398.087 - Testing Reward: -1330.10209075 - Training Loss: 6.20450401367 - Testing Loss: 45.9442125278
+Interval 103 (102000 steps performed)
+5 episodes - episode_rewards: -1031.015 [-1124.001, -900.186] - Model Order: 402.745 - Testing Reward: -1492.51721023 - Training Loss: 4.98923835856 - Testing Loss: 29.4859998174
+Interval 104 (103000 steps performed)
+5 episodes - episode_rewards: -1031.273 [-1315.230, -883.527] - Model Order: 407.32 - Testing Reward: -6.07830431035 - Training Loss: 3.44818439978 - Testing Loss: 13.7869356999
+Interval 105 (104000 steps performed)
+5 episodes - episode_rewards: -1004.644 [-1290.447, -801.176] - Model Order: 413.308 - Testing Reward: -952.005912036 - Training Loss: 3.3036353061 - Testing Loss: 11.8622922907
+Interval 106 (105000 steps performed)
+5 episodes - episode_rewards: -1055.924 [-1376.012, -781.101] - Model Order: 413.553 - Testing Reward: -1151.00754985 - Training Loss: 6.12752433342 - Testing Loss: 14.9785848081
+Interval 107 (106000 steps performed)
+5 episodes - episode_rewards: -1106.198 [-1359.472, -934.990] - Model Order: 410.572 - Testing Reward: -1255.86882983 - Training Loss: 1.49820430098 - Testing Loss: 21.4399348724
+Interval 108 (107000 steps performed)
+5 episodes - episode_rewards: -1029.134 [-1192.592, -872.289] - Model Order: 407.41 - Testing Reward: -1377.13561209 - Training Loss: 2.32122390761 - Testing Loss: 22.1746531762
+Interval 109 (108000 steps performed)
+5 episodes - episode_rewards: -1063.917 [-1139.389, -978.367] - Model Order: 406.877 - Testing Reward: -4.14696353136 - Training Loss: 5.01720694164 - Testing Loss: 26.8367035567
+Interval 110 (109000 steps performed)
+5 episodes - episode_rewards: -1103.180 [-1511.673, -765.500] - Model Order: 412.315 - Testing Reward: -1346.84476397 - Training Loss: 4.87996002395 - Testing Loss: 12.9578846757
+Interval 111 (110000 steps performed)
+5 episodes - episode_rewards: -896.257 [-1059.907, -774.230] - Model Order: 416.769 - Testing Reward: -1410.30953484 - Training Loss: 3.1420353806 - Testing Loss: 27.1614358121
+Interval 112 (111000 steps performed)
+5 episodes - episode_rewards: -968.971 [-1131.325, -771.788] - Model Order: 420.054 - Testing Reward: -1504.3796799 - Training Loss: 3.06006597837 - Testing Loss: 38.2332772159
+Interval 113 (112000 steps performed)
+5 episodes - episode_rewards: -953.067 [-1222.375, -744.576] - Model Order: 421.353 - Testing Reward: -131.061702904 - Training Loss: 1.99197288275 - Testing Loss: 10.8522159524
+Interval 114 (113000 steps performed)
+5 episodes - episode_rewards: -1029.070 [-1210.188, -867.066] - Model Order: 413.408 - Testing Reward: -372.586083998 - Training Loss: 5.95146900812 - Testing Loss: 21.8537228307
+Interval 115 (114000 steps performed)
+5 episodes - episode_rewards: -992.626 [-1160.775, -734.745] - Model Order: 418.598 - Testing Reward: -1260.83865325 - Training Loss: 3.20309702903 - Testing Loss: 38.9839211551
+Interval 116 (115000 steps performed)
+5 episodes - episode_rewards: -1060.611 [-1199.659, -861.988] - Model Order: 425.384 - Testing Reward: -1370.50151963 - Training Loss: 3.88423259698 - Testing Loss: 29.2307536517
+Interval 117 (116000 steps performed)
+5 episodes - episode_rewards: -1080.318 [-1392.687, -969.107] - Model Order: 427.818 - Testing Reward: -1331.08746117 - Training Loss: 5.00455139596 - Testing Loss: 32.0268795519
+Interval 118 (117000 steps performed)
+5 episodes - episode_rewards: -1047.205 [-1204.184, -899.445] - Model Order: 434.362 - Testing Reward: -1412.91487552 - Training Loss: 5.05209913551 - Testing Loss: 46.6700682407
+Interval 119 (118000 steps performed)
+5 episodes - episode_rewards: -938.693 [-1136.827, -743.236] - Model Order: 431.664 - Testing Reward: -1492.1277679 - Training Loss: 3.40006752092 - Testing Loss: 42.7651779928
+Interval 120 (119000 steps performed)
+5 episodes - episode_rewards: -1032.259 [-1130.999, -791.539] - Model Order: 429.282 - Testing Reward: -117.576979033 - Training Loss: 4.4892781419 - Testing Loss: 18.2253091294
+Interval 121 (120000 steps performed)
+5 episodes - episode_rewards: -1000.553 [-1115.638, -889.882] - Model Order: 429.384 - Testing Reward: -1594.13996089 - Training Loss: 4.58565478796 - Testing Loss: 51.0063756146
+Interval 122 (121000 steps performed)
+5 episodes - episode_rewards: -960.798 [-1091.016, -866.666] - Model Order: 433.168 - Testing Reward: -1584.69210106 - Training Loss: 3.48380013506 - Testing Loss: 20.2461120768
+Interval 123 (122000 steps performed)
+5 episodes - episode_rewards: -1076.701 [-1252.383, -838.612] - Model Order: 433.273 - Testing Reward: -9.48026149507 - Training Loss: 3.75911859705 - Testing Loss: 15.6091361122
+Interval 124 (123000 steps performed)
+5 episodes - episode_rewards: -1028.471 [-1304.191, -723.625] - Model Order: 438.739 - Testing Reward: -1652.35126583 - Training Loss: 4.89832297006 - Testing Loss: 49.1991158067
+Interval 125 (124000 steps performed)
+5 episodes - episode_rewards: -1067.959 [-1320.550, -900.478] - Model Order: 437.722 - Testing Reward: -1400.45322983 - Training Loss: 5.70373087166 - Testing Loss: 31.9400318856
+Interval 126 (125000 steps performed)
+5 episodes - episode_rewards: -945.922 [-1082.906, -769.605] - Model Order: 438.589 - Testing Reward: -1550.58857145 - Training Loss: 9.02572105349 - Testing Loss: 27.6442326403
+Interval 127 (126000 steps performed)
+5 episodes - episode_rewards: -1072.932 [-1227.226, -971.984] - Model Order: 449.643 - Testing Reward: -1598.51287998 - Training Loss: 4.66808263356 - Testing Loss: 47.0170382531
+Interval 128 (127000 steps performed)
+5 episodes - episode_rewards: -1108.454 [-1296.655, -958.334] - Model Order: 455.212 - Testing Reward: -119.343189076 - Training Loss: 8.44664441196 - Testing Loss: 11.3401618871
+Interval 129 (128000 steps performed)
+5 episodes - episode_rewards: -938.373 [-1174.343, -740.641] - Model Order: 458.337 - Testing Reward: -1343.96158142 - Training Loss: 7.67351177013 - Testing Loss: 12.0617576921
+Interval 130 (129000 steps performed)
+5 episodes - episode_rewards: -983.069 [-1389.833, -752.992] - Model Order: 458.805 - Testing Reward: -1353.69668137 - Training Loss: 3.80384443838 - Testing Loss: 35.0022371847
+Interval 131 (130000 steps performed)
+5 episodes - episode_rewards: -949.330 [-1188.663, -636.611] - Model Order: 459.46 - Testing Reward: -117.172883879 - Training Loss: 2.3484529392 - Testing Loss: 16.3715221386
+Interval 132 (131000 steps performed)
+5 episodes - episode_rewards: -1001.807 [-1199.331, -889.792] - Model Order: 457.257 - Testing Reward: -1497.24741243 - Training Loss: 3.52496816364 - Testing Loss: 42.4491649855
+Interval 133 (132000 steps performed)
+5 episodes - episode_rewards: -1093.497 [-1413.565, -899.211] - Model Order: 458.473 - Testing Reward: -1463.82404345 - Training Loss: 6.01682763056 - Testing Loss: 47.8551625446
+Interval 134 (133000 steps performed)
+5 episodes - episode_rewards: -1079.449 [-1302.359, -917.940] - Model Order: 463.402 - Testing Reward: -1519.33396895 - Training Loss: 5.44046712215 - Testing Loss: 49.0793298334
+Interval 135 (134000 steps performed)
+5 episodes - episode_rewards: -1058.179 [-1161.568, -996.709] - Model Order: 464.357 - Testing Reward: -1643.32749646 - Training Loss: 3.68273422741 - Testing Loss: 33.9081379651
+Interval 136 (135000 steps performed)
+5 episodes - episode_rewards: -1035.512 [-1215.605, -917.646] - Model Order: 467.693 - Testing Reward: -138.420869244 - Training Loss: 4.73158302873 - Testing Loss: 38.4306182849
+Interval 137 (136000 steps performed)
+5 episodes - episode_rewards: -1064.798 [-1242.551, -984.045] - Model Order: 474.059 - Testing Reward: -1641.50179249 - Training Loss: 7.05652031649 - Testing Loss: 54.0099242675
+Interval 138 (137000 steps performed)
+5 episodes - episode_rewards: -972.950 [-1115.215, -782.451] - Model Order: 477.493 - Testing Reward: -1359.6488174 - Training Loss: 4.58394135117 - Testing Loss: 31.1999404321
+Interval 139 (138000 steps performed)
+5 episodes - episode_rewards: -1145.005 [-1234.510, -1031.698] - Model Order: 476.357 - Testing Reward: -508.674256412 - Training Loss: 2.43170701815 - Testing Loss: 39.593196048
+Interval 140 (139000 steps performed)
+5 episodes - episode_rewards: -998.749 [-1158.058, -865.284] - Model Order: 472.843 - Testing Reward: -1322.81000103 - Training Loss: 7.62266752831 - Testing Loss: 43.3118573114
+Interval 141 (140000 steps performed)
+5 episodes - episode_rewards: -1040.327 [-1180.857, -908.907] - Model Order: 480.038 - Testing Reward: -572.213296814 - Training Loss: 3.42430998614 - Testing Loss: 30.2486835941
+Interval 142 (141000 steps performed)
+5 episodes - episode_rewards: -955.369 [-1206.709, -790.877] - Model Order: 481.449 - Testing Reward: -1357.46715218 - Training Loss: 9.41946530107 - Testing Loss: 43.3394460077
+Interval 143 (142000 steps performed)
+5 episodes - episode_rewards: -1086.155 [-1420.054, -880.864] - Model Order: 483.051 - Testing Reward: -1577.19168902 - Training Loss: 10.2849902847 - Testing Loss: 42.7633837623
+Interval 144 (143000 steps performed)
+5 episodes - episode_rewards: -899.729 [-1074.226, -748.537] - Model Order: 487.873 - Testing Reward: -123.597804631 - Training Loss: 7.29046621734 - Testing Loss: 6.40619187613
+Interval 145 (144000 steps performed)
+5 episodes - episode_rewards: -891.373 [-987.565, -749.189] - Model Order: 492.79 - Testing Reward: -771.27719432 - Training Loss: 8.55982467483 - Testing Loss: 37.4555670336
+Interval 146 (145000 steps performed)
+5 episodes - episode_rewards: -913.894 [-1001.104, -820.746] - Model Order: 494.235 - Testing Reward: -5.44886614252 - Training Loss: 7.38440658468 - Testing Loss: 28.3538698588
+Interval 147 (146000 steps performed)
+5 episodes - episode_rewards: -938.983 [-1124.331, -770.246] - Model Order: 497.832 - Testing Reward: -126.602260506 - Training Loss: 4.89166568896 - Testing Loss: 28.3215653102
+Interval 148 (147000 steps performed)
+5 episodes - episode_rewards: -1081.079 [-1205.548, -910.978] - Model Order: 496.558 - Testing Reward: -968.080527904 - Training Loss: 6.23266738866 - Testing Loss: 14.502140904
+Interval 149 (148000 steps performed)
+5 episodes - episode_rewards: -1071.750 [-1387.988, -905.730] - Model Order: 502.36 - Testing Reward: -1415.49311458 - Training Loss: 7.85949276662 - Testing Loss: 39.6271456764
+Interval 150 (149000 steps performed)
+5 episodes - episode_rewards: -1213.297 [-1463.540, -906.376] - Model Order: 509.048 - Testing Reward: -1443.4423218 - Training Loss: 19.4917509565 - Testing Loss: 35.0588606674
+Interval 151 (150000 steps performed)
+5 episodes - episode_rewards: -1124.593 [-1460.551, -996.455] - Model Order: 510.682 - Testing Reward: -1432.05863169 - Training Loss: 5.20492955463 - Testing Loss: 37.7555255236
+Interval 152 (151000 steps performed)
+5 episodes - episode_rewards: -1099.711 [-1203.229, -980.040] - Model Order: 511.243 - Testing Reward: -1631.75431345 - Training Loss: 2.86897937934 - Testing Loss: 44.3137810104
+Interval 153 (152000 steps performed)
+5 episodes - episode_rewards: -1123.736 [-1551.286, -898.016] - Model Order: 511.791 - Testing Reward: -1470.76155706 - Training Loss: 12.048839831 - Testing Loss: 39.8924456697
+Interval 154 (153000 steps performed)
+5 episodes - episode_rewards: -996.056 [-1097.658, -894.486] - Model Order: 512.818 - Testing Reward: -1572.99574659 - Training Loss: 4.91877897261 - Testing Loss: 49.8334571053
+Interval 155 (154000 steps performed)
+5 episodes - episode_rewards: -1047.970 [-1123.865, -924.282] - Model Order: 521.529 - Testing Reward: -1628.30991935 - Training Loss: 11.4935975359 - Testing Loss: 47.4784014224
+Interval 156 (155000 steps performed)
+5 episodes - episode_rewards: -930.104 [-1307.447, -754.378] - Model Order: 526.748 - Testing Reward: -117.22339962 - Training Loss: 6.35784564976 - Testing Loss: 34.8695071479
+Interval 157 (156000 steps performed)
+5 episodes - episode_rewards: -1006.643 [-1174.152, -882.413] - Model Order: 526.436 - Testing Reward: -1643.98456337 - Training Loss: 5.39310942587 - Testing Loss: 32.1745566011
+Interval 158 (157000 steps performed)
+5 episodes - episode_rewards: -1035.953 [-1138.095, -976.791] - Model Order: 527.568 - Testing Reward: -4.41694247858 - Training Loss: 7.2522114739 - Testing Loss: 42.1575617402
+Interval 159 (158000 steps performed)
+5 episodes - episode_rewards: -958.960 [-1110.681, -766.946] - Model Order: 527.142 - Testing Reward: -246.437889888 - Training Loss: 9.84256992002 - Testing Loss: 19.0621609726
+Interval 160 (159000 steps performed)
+5 episodes - episode_rewards: -1046.157 [-1137.320, -888.930] - Model Order: 535.372 - Testing Reward: -942.137826243 - Training Loss: 3.61435637902 - Testing Loss: 12.0979129147
+Interval 161 (160000 steps performed)
+5 episodes - episode_rewards: -1028.456 [-1103.178, -1001.897] - Model Order: 533.43 - Testing Reward: -848.359718252 - Training Loss: 12.8103620355 - Testing Loss: 27.3622160557
+Interval 162 (161000 steps performed)
+5 episodes - episode_rewards: -1093.831 [-1318.780, -878.539] - Model Order: 533.755 - Testing Reward: -1337.05377256 - Training Loss: 4.06623810109 - Testing Loss: 14.1667435904
+Interval 163 (162000 steps performed)
+5 episodes - episode_rewards: -883.115 [-1092.405, -725.842] - Model Order: 532.352 - Testing Reward: -1391.10027057 - Training Loss: 2.34220327597 - Testing Loss: 23.6968789562
+Interval 164 (163000 steps performed)
+5 episodes - episode_rewards: -1135.907 [-1322.334, -999.699] - Model Order: 528.707 - Testing Reward: -121.820797721 - Training Loss: 4.31267852783 - Testing Loss: 4.02482981822
+Interval 165 (164000 steps performed)
+5 episodes - episode_rewards: -807.358 [-1059.235, -613.898] - Model Order: 530.426 - Testing Reward: -127.111481361 - Training Loss: 3.42512522828 - Testing Loss: 29.1896590182
+Interval 166 (165000 steps performed)
+5 episodes - episode_rewards: -1008.994 [-1141.267, -827.592] - Model Order: 531.432 - Testing Reward: -1417.86710809 - Training Loss: 2.48155720964 - Testing Loss: 26.6340937927
+Interval 167 (166000 steps performed)
+5 episodes - episode_rewards: -1082.586 [-1176.767, -927.184] - Model Order: 532.691 - Testing Reward: -1555.25525523 - Training Loss: 7.17332000612 - Testing Loss: 40.6863561597
+Interval 168 (167000 steps performed)
+5 episodes - episode_rewards: -1027.785 [-1184.459, -718.206] - Model Order: 533.658 - Testing Reward: -120.472497021 - Training Loss: 4.58239529683 - Testing Loss: 16.9920944049
+Interval 169 (168000 steps performed)
+5 episodes - episode_rewards: -952.389 [-1083.240, -745.339] - Model Order: 532.97 - Testing Reward: -127.252031353 - Training Loss: 5.93055391213 - Testing Loss: 24.9530965075
+Interval 170 (169000 steps performed)
+5 episodes - episode_rewards: -927.425 [-1050.978, -849.972] - Model Order: 534.076 - Testing Reward: -1373.10116691 - Training Loss: 5.34259665528 - Testing Loss: 16.3731538612
+Interval 171 (170000 steps performed)
+5 episodes - episode_rewards: -1018.911 [-1205.570, -896.871] - Model Order: 537.654 - Testing Reward: -1514.44348856 - Training Loss: 4.40097026538 - Testing Loss: 40.485180422
+Interval 172 (171000 steps performed)
+5 episodes - episode_rewards: -1169.770 [-1544.932, -882.721] - Model Order: 538.343 - Testing Reward: -559.070481535 - Training Loss: 3.06868369302 - Testing Loss: 5.79397699397
+Interval 173 (172000 steps performed)
+5 episodes - episode_rewards: -882.136 [-1082.688, -726.511] - Model Order: 542.22 - Testing Reward: -1497.35672636 - Training Loss: 14.227750307 - Testing Loss: 39.6114156946
+Interval 174 (173000 steps performed)
+5 episodes - episode_rewards: -1059.591 [-1188.195, -902.662] - Model Order: 544.0 - Testing Reward: -3.92131293997 - Training Loss: 2.9975940298 - Testing Loss: 27.1955420001
+Interval 175 (174000 steps performed)
+5 episodes - episode_rewards: -938.376 [-1209.681, -763.184] - Model Order: 544.582 - Testing Reward: -1633.02779251 - Training Loss: 10.9852930612 - Testing Loss: 34.1997638651
+Interval 176 (175000 steps performed)
+5 episodes - episode_rewards: -1006.539 [-1131.328, -848.935] - Model Order: 552.828 - Testing Reward: -1470.67561343 - Training Loss: 11.37699045 - Testing Loss: 41.7652960473
+Interval 177 (176000 steps performed)
+5 episodes - episode_rewards: -956.541 [-1121.138, -883.930] - Model Order: 554.977 - Testing Reward: -127.323959842 - Training Loss: 8.5359593632 - Testing Loss: 2.22174719548
+Interval 178 (177000 steps performed)
+5 episodes - episode_rewards: -888.572 [-1112.369, -762.882] - Model Order: 552.988 - Testing Reward: -1387.11085946 - Training Loss: 2.94368503825 - Testing Loss: 49.4481794531
+Interval 179 (178000 steps performed)
+5 episodes - episode_rewards: -953.967 [-1055.354, -743.189] - Model Order: 548.771 - Testing Reward: -1575.20844169 - Training Loss: 6.36029260148 - Testing Loss: 39.3447025788
+Interval 180 (179000 steps performed)
+5 episodes - episode_rewards: -791.082 [-1056.294, -618.276] - Model Order: 549.786 - Testing Reward: -1461.67395065 - Training Loss: 8.60183855703 - Testing Loss: 27.2857259924
+Interval 181 (180000 steps performed)
+5 episodes - episode_rewards: -1099.503 [-1239.057, -903.451] - Model Order: 550.241 - Testing Reward: -4.74308314878 - Training Loss: 6.69660617818 - Testing Loss: 16.711145587
+Interval 182 (181000 steps performed)
+5 episodes - episode_rewards: -863.850 [-1090.644, -632.575] - Model Order: 551.878 - Testing Reward: -122.347262633 - Training Loss: 8.99529469934 - Testing Loss: 19.1451132333
+Interval 183 (182000 steps performed)
+5 episodes - episode_rewards: -948.750 [-1150.686, -725.070] - Model Order: 555.687 - Testing Reward: -936.229593659 - Training Loss: 9.89109486519 - Testing Loss: 15.6048459607
+Interval 184 (183000 steps performed)
+5 episodes - episode_rewards: -918.572 [-1158.550, -638.082] - Model Order: 553.976 - Testing Reward: -117.826363807 - Training Loss: 10.4058257614 - Testing Loss: 3.59302947527
+Interval 185 (184000 steps performed)
+5 episodes - episode_rewards: -821.546 [-993.451, -610.340] - Model Order: 554.405 - Testing Reward: -639.375165491 - Training Loss: 4.45994243563 - Testing Loss: 6.89576749762
+Interval 186 (185000 steps performed)
+5 episodes - episode_rewards: -901.859 [-1062.499, -506.291] - Model Order: 554.364 - Testing Reward: -271.635129822 - Training Loss: 12.7749495048 - Testing Loss: 14.5536510378
+Interval 187 (186000 steps performed)
+5 episodes - episode_rewards: -862.492 [-1126.579, -740.593] - Model Order: 556.811 - Testing Reward: -119.378352344 - Training Loss: 6.54880519945 - Testing Loss: 4.64148134222
+Interval 188 (187000 steps performed)
+5 episodes - episode_rewards: -920.723 [-1207.873, -524.120] - Model Order: 555.91 - Testing Reward: -1205.96819484 - Training Loss: 12.6728291848 - Testing Loss: 28.0884696204
+Interval 189 (188000 steps performed)
+5 episodes - episode_rewards: -884.300 [-1016.733, -630.258] - Model Order: 558.496 - Testing Reward: -242.622488105 - Training Loss: 8.33726798819 - Testing Loss: 4.06629247789
+Interval 190 (189000 steps performed)
+5 episodes - episode_rewards: -982.072 [-1119.116, -757.701] - Model Order: 562.184 - Testing Reward: -231.256201119 - Training Loss: 4.95876304324 - Testing Loss: 13.2277789485
+Interval 191 (190000 steps performed)
+5 episodes - episode_rewards: -911.898 [-981.685, -763.347] - Model Order: 563.611 - Testing Reward: -390.959307758 - Training Loss: 2.59661425118 - Testing Loss: 2.93805227966
+Interval 192 (191000 steps performed)
+5 episodes - episode_rewards: -990.729 [-1217.105, -827.784] - Model Order: 569.401 - Testing Reward: -124.784304478 - Training Loss: 12.1103337893 - Testing Loss: 2.31987686408
+Interval 193 (192000 steps performed)
+5 episodes - episode_rewards: -989.675 [-1114.131, -887.612] - Model Order: 575.611 - Testing Reward: -237.367252667 - Training Loss: 15.4026408103 - Testing Loss: 23.0523980508
+Interval 194 (193000 steps performed)
+5 episodes - episode_rewards: -788.288 [-918.009, -624.883] - Model Order: 578.67 - Testing Reward: -1518.43004316 - Training Loss: 9.9709857881 - Testing Loss: 53.5617269739
+Interval 195 (194000 steps performed)
+5 episodes - episode_rewards: -994.776 [-1191.645, -854.916] - Model Order: 579.719 - Testing Reward: -1353.79771215 - Training Loss: 3.33551506581 - Testing Loss: 14.0328685489
+Interval 196 (195000 steps performed)
+5 episodes - episode_rewards: -851.402 [-1089.947, -619.216] - Model Order: 580.367 - Testing Reward: -236.857046406 - Training Loss: 2.87073958274 - Testing Loss: 1.86576561142
+Interval 197 (196000 steps performed)
+5 episodes - episode_rewards: -794.554 [-1058.888, -372.122] - Model Order: 573.796 - Testing Reward: -129.821408314 - Training Loss: 5.39917555412 - Testing Loss: 2.55422112697
+Interval 198 (197000 steps performed)
+5 episodes - episode_rewards: -817.187 [-1199.525, -576.634] - Model Order: 576.082 - Testing Reward: -114.783502357 - Training Loss: 10.4180496924 - Testing Loss: 3.22607019609
+Interval 199 (198000 steps performed)
+5 episodes - episode_rewards: -882.514 [-1179.983, -749.196] - Model Order: 580.082 - Testing Reward: -120.430763577 - Training Loss: 8.09075851877 - Testing Loss: 2.87903086364
+Interval 200 (199000 steps performed)
+5 episodes - episode_rewards: -868.308 [-1033.773, -740.592] - Model Order: 580.89 - Testing Reward: -251.62783385 - Training Loss: 7.90197494853 - Testing Loss: 3.53949883569
+Interval 201 (200000 steps performed)
+5 episodes - episode_rewards: -829.552 [-972.794, -642.069] - Model Order: 579.416 - Testing Reward: -128.089612954 - Training Loss: 6.9453387038 - Testing Loss: 4.42245224609
+Interval 202 (201000 steps performed)
+5 episodes - episode_rewards: -851.243 [-970.600, -757.186] - Model Order: 577.237 - Testing Reward: -362.584328871 - Training Loss: 7.09048232607 - Testing Loss: 3.09649388839
+Interval 203 (202000 steps performed)
+5 episodes - episode_rewards: -799.173 [-977.012, -518.697] - Model Order: 582.025 - Testing Reward: -239.98308485 - Training Loss: 10.7824383077 - Testing Loss: 2.37550232682
+Interval 204 (203000 steps performed)
+5 episodes - episode_rewards: -668.366 [-869.138, -389.753] - Model Order: 584.239 - Testing Reward: -125.99983751 - Training Loss: 8.63566216263 - Testing Loss: 2.6050989673
+Interval 205 (204000 steps performed)
+5 episodes - episode_rewards: -895.065 [-1139.287, -645.079] - Model Order: 583.522 - Testing Reward: -118.788096686 - Training Loss: 8.90289614809 - Testing Loss: 1.8008360171
+Interval 206 (205000 steps performed)
+5 episodes - episode_rewards: -874.763 [-1124.446, -630.294] - Model Order: 580.799 - Testing Reward: -243.892584365 - Training Loss: 4.10967567521 - Testing Loss: 1.32466826998
+Interval 207 (206000 steps performed)
+5 episodes - episode_rewards: -875.710 [-979.326, -759.935] - Model Order: 580.249 - Testing Reward: -247.978694965 - Training Loss: 5.39555280338 - Testing Loss: 1.78556935332
+Interval 208 (207000 steps performed)
+5 episodes - episode_rewards: -953.429 [-1321.780, -834.018] - Model Order: 579.939 - Testing Reward: -239.760140813 - Training Loss: 3.89086818986 - Testing Loss: 1.03927605574
+Interval 209 (208000 steps performed)
+5 episodes - episode_rewards: -794.595 [-878.767, -648.131] - Model Order: 581.893 - Testing Reward: -129.064870815 - Training Loss: 4.82643384388 - Testing Loss: 1.65929647711
+Interval 210 (209000 steps performed)
+5 episodes - episode_rewards: -728.987 [-865.799, -506.721] - Model Order: 583.222 - Testing Reward: -125.619531481 - Training Loss: 10.3712874915 - Testing Loss: 2.99172627527
+Interval 211 (210000 steps performed)
+5 episodes - episode_rewards: -765.992 [-976.621, -613.458] - Model Order: 586.868 - Testing Reward: -125.991773651 - Training Loss: 6.76241169076 - Testing Loss: 1.80737097388
+Interval 212 (211000 steps performed)
+5 episodes - episode_rewards: -719.111 [-1012.438, -381.510] - Model Order: 588.079 - Testing Reward: -0.730343669055 - Training Loss: 11.3177224108 - Testing Loss: 0.611166207364
+Interval 213 (212000 steps performed)
+5 episodes - episode_rewards: -759.955 [-895.716, -628.415] - Model Order: 593.039 - Testing Reward: -352.928183478 - Training Loss: 7.70702389597 - Testing Loss: 1.69361015928
+Interval 214 (213000 steps performed)
+5 episodes - episode_rewards: -851.266 [-963.655, -751.580] - Model Order: 593.354 - Testing Reward: -251.403149971 - Training Loss: 4.99036504644 - Testing Loss: 1.42451869678
+Interval 215 (214000 steps performed)
+5 episodes - episode_rewards: -807.204 [-1001.437, -637.338] - Model Order: 587.297 - Testing Reward: -119.454803031 - Training Loss: 6.38439000421 - Testing Loss: 1.2204071094
+Interval 216 (215000 steps performed)
+5 episodes - episode_rewards: -829.610 [-974.027, -734.880] - Model Order: 586.607 - Testing Reward: -250.585351462 - Training Loss: 10.5695794131 - Testing Loss: 2.81740280382
+Interval 217 (216000 steps performed)
+5 episodes - episode_rewards: -819.324 [-1098.654, -570.964] - Model Order: 587.4 - Testing Reward: -241.138623575 - Training Loss: 7.73930331148 - Testing Loss: 0.95365157299
+Interval 218 (217000 steps performed)
+5 episodes - episode_rewards: -793.386 [-876.668, -661.235] - Model Order: 586.302 - Testing Reward: -124.622104509 - Training Loss: 8.97776223558 - Testing Loss: 0.462248277963
+Interval 219 (218000 steps performed)
+5 episodes - episode_rewards: -698.842 [-903.844, -449.134] - Model Order: 585.81 - Testing Reward: -125.603943682 - Training Loss: 6.966802875 - Testing Loss: 1.76917405787
+Interval 220 (219000 steps performed)
+5 episodes - episode_rewards: -752.344 [-985.783, -505.722] - Model Order: 588.638 - Testing Reward: -124.091118618 - Training Loss: 8.33430192391 - Testing Loss: 1.01612183193
+Interval 221 (220000 steps performed)
+5 episodes - episode_rewards: -962.356 [-1159.929, -830.650] - Model Order: 591.882 - Testing Reward: -1.89144072599 - Training Loss: 6.4943442928 - Testing Loss: 1.29873328696
+Interval 222 (221000 steps performed)
+5 episodes - episode_rewards: -771.300 [-1084.641, -385.233] - Model Order: 590.58 - Testing Reward: -224.75191423 - Training Loss: 5.8867732735 - Testing Loss: 1.17121418238
+Interval 223 (222000 steps performed)
+5 episodes - episode_rewards: -725.424 [-896.138, -138.569] - Model Order: 588.927 - Testing Reward: -118.009507866 - Training Loss: 5.72592418171 - Testing Loss: 3.27950586734
+Interval 224 (223000 steps performed)
+5 episodes - episode_rewards: -785.982 [-1068.102, -575.915] - Model Order: 590.25 - Testing Reward: -126.980896955 - Training Loss: 6.77856107338 - Testing Loss: 1.64547584669
+Interval 225 (224000 steps performed)
+5 episodes - episode_rewards: -835.096 [-1118.453, -685.416] - Model Order: 593.501 - Testing Reward: -115.607470483 - Training Loss: 10.5485124812 - Testing Loss: 0.519664982424
+Interval 226 (225000 steps performed)
+5 episodes - episode_rewards: -825.452 [-1030.718, -628.029] - Model Order: 597.624 - Testing Reward: -133.776130422 - Training Loss: 3.37494320956 - Testing Loss: 1.17252798809
+Interval 227 (226000 steps performed)
+5 episodes - episode_rewards: -613.415 [-777.834, -365.968] - Model Order: 600.624 - Testing Reward: -2.01068740019 - Training Loss: 17.6417723633 - Testing Loss: 0.899090359461
+Interval 228 (227000 steps performed)
+5 episodes - episode_rewards: -781.914 [-1042.795, -344.122] - Model Order: 597.892 - Testing Reward: -244.015848224 - Training Loss: 6.8006247104 - Testing Loss: 2.59072295049
+Interval 229 (228000 steps performed)
+5 episodes - episode_rewards: -645.989 [-878.816, -252.697] - Model Order: 596.995 - Testing Reward: -1.30573576428 - Training Loss: 6.53028141365 - Testing Loss: 0.939360554811
+Interval 230 (229000 steps performed)
+5 episodes - episode_rewards: -778.796 [-915.667, -619.688] - Model Order: 597.26 - Testing Reward: -1.59677978329 - Training Loss: 10.7905945181 - Testing Loss: 1.08901162224
+Interval 231 (230000 steps performed)
+5 episodes - episode_rewards: -784.636 [-1267.738, -376.654] - Model Order: 595.701 - Testing Reward: -121.625906177 - Training Loss: 2.70890831468 - Testing Loss: 1.47659461259
+Interval 232 (231000 steps performed)
+5 episodes - episode_rewards: -621.355 [-964.589, -255.420] - Model Order: 592.404 - Testing Reward: -126.631851396 - Training Loss: 7.3729863197 - Testing Loss: 1.09109306312
+Interval 233 (232000 steps performed)
+5 episodes - episode_rewards: -796.144 [-1095.903, -630.153] - Model Order: 593.413 - Testing Reward: -131.721763226 - Training Loss: 2.83038663621 - Testing Loss: 13.8682191138
+Interval 234 (233000 steps performed)
+5 episodes - episode_rewards: -723.765 [-984.472, -508.404] - Model Order: 592.713 - Testing Reward: -127.286278748 - Training Loss: 2.69385619335 - Testing Loss: 0.913025065088
+Interval 235 (234000 steps performed)
+5 episodes - episode_rewards: -752.235 [-910.298, -622.989] - Model Order: 590.149 - Testing Reward: -247.593846458 - Training Loss: 4.29148159714 - Testing Loss: 2.06888080405
+Interval 236 (235000 steps performed)
+5 episodes - episode_rewards: -667.739 [-976.217, -252.947] - Model Order: 590.19 - Testing Reward: -241.546657799 - Training Loss: 5.21522968357 - Testing Loss: 1.19259710762
+Interval 237 (236000 steps performed)
+5 episodes - episode_rewards: -742.332 [-1239.865, -504.514] - Model Order: 589.398 - Testing Reward: -223.719655453 - Training Loss: 4.34643186014 - Testing Loss: 0.888898954242
+Interval 238 (237000 steps performed)
+5 episodes - episode_rewards: -679.253 [-921.324, -504.704] - Model Order: 589.434 - Testing Reward: -124.836953844 - Training Loss: 7.43561542901 - Testing Loss: 0.729917498523
+Interval 239 (238000 steps performed)
+5 episodes - episode_rewards: -615.887 [-964.759, -352.567] - Model Order: 587.815 - Testing Reward: -124.959129128 - Training Loss: 3.81030840546 - Testing Loss: 0.940898489449
+Interval 240 (239000 steps performed)
+5 episodes - episode_rewards: -795.633 [-1009.618, -586.783] - Model Order: 586.353 - Testing Reward: -126.766184545 - Training Loss: 2.18982212907 - Testing Loss: 2.38463946907
+Interval 241 (240000 steps performed)
+5 episodes - episode_rewards: -698.064 [-836.259, -499.648] - Model Order: 586.831 - Testing Reward: -116.990346023 - Training Loss: 3.053586264 - Testing Loss: 0.413262117097
+Interval 242 (241000 steps performed)
+5 episodes - episode_rewards: -582.659 [-773.064, -377.995] - Model Order: 588.911 - Testing Reward: -116.643994939 - Training Loss: 5.44995587721 - Testing Loss: 1.24167202546
+Interval 243 (242000 steps performed)
+5 episodes - episode_rewards: -728.242 [-883.955, -492.317] - Model Order: 588.965 - Testing Reward: -116.570693875 - Training Loss: 4.81296364485 - Testing Loss: 1.1375830511
+Interval 244 (243000 steps performed)
+5 episodes - episode_rewards: -644.960 [-854.400, -514.094] - Model Order: 591.887 - Testing Reward: -240.221626847 - Training Loss: 4.86071480241 - Testing Loss: 1.47641450087
+Interval 245 (244000 steps performed)
+5 episodes - episode_rewards: -603.518 [-753.188, -505.514] - Model Order: 592.772 - Testing Reward: -363.473029056 - Training Loss: 4.64025379922 - Testing Loss: 1.3172365989
+Interval 246 (245000 steps performed)
+5 episodes - episode_rewards: -774.371 [-1209.540, -499.771] - Model Order: 594.953 - Testing Reward: -129.284338242 - Training Loss: 7.7053549181 - Testing Loss: 1.06019619158
+Interval 247 (246000 steps performed)
+5 episodes - episode_rewards: -693.337 [-1004.328, -377.670] - Model Order: 591.762 - Testing Reward: -1.09482190269 - Training Loss: 9.05782382831 - Testing Loss: 0.836903200896
+Interval 248 (247000 steps performed)
+5 episodes - episode_rewards: -693.602 [-1079.834, -374.725] - Model Order: 592.106 - Testing Reward: -123.954226385 - Training Loss: 6.21301979362 - Testing Loss: 1.47103381764
+Interval 249 (248000 steps performed)
+5 episodes - episode_rewards: -578.726 [-1117.936, -127.405] - Model Order: 591.889 - Testing Reward: -116.209314573 - Training Loss: 7.45343981762 - Testing Loss: 0.77341200891
+Interval 250 (249000 steps performed)
+5 episodes - episode_rewards: -743.634 [-1202.177, -485.561] - Model Order: 596.944 - Testing Reward: -127.589552573 - Training Loss: 6.74409869066 - Testing Loss: 4.84604642764
+Interval 251 (250000 steps performed)
+5 episodes - episode_rewards: -532.334 [-747.795, -381.739] - Model Order: 595.443 - Testing Reward: -490.713226228 - Training Loss: 6.00823162666 - Testing Loss: 2.6353737193
+Interval 252 (251000 steps performed)
+5 episodes - episode_rewards: -649.139 [-982.738, -301.079] - Model Order: 595.794 - Testing Reward: -242.435544656 - Training Loss: 10.2384364938 - Testing Loss: 1.44480154057
+Interval 253 (252000 steps performed)
+5 episodes - episode_rewards: -803.020 [-1034.663, -422.821] - Model Order: 597.69 - Testing Reward: -129.028007926 - Training Loss: 3.14060506621 - Testing Loss: 2.14014762515
+Interval 254 (253000 steps performed)
+5 episodes - episode_rewards: -574.910 [-845.073, -375.366] - Model Order: 596.284 - Testing Reward: -117.426800603 - Training Loss: 5.18113040323 - Testing Loss: 2.19560593301
+Interval 255 (254000 steps performed)
+5 episodes - episode_rewards: -517.280 [-633.193, -382.018] - Model Order: 597.572 - Testing Reward: -239.176397881 - Training Loss: 2.90639034278 - Testing Loss: 1.98784663463
+Interval 256 (255000 steps performed)
+5 episodes - episode_rewards: -797.676 [-880.063, -718.908] - Model Order: 598.84 - Testing Reward: -2.33685422361 - Training Loss: 6.87813791325 - Testing Loss: 1.82513734707
+Interval 257 (256000 steps performed)
+5 episodes - episode_rewards: -592.079 [-865.699, -414.118] - Model Order: 602.118 - Testing Reward: -123.262353975 - Training Loss: 3.84723295784 - Testing Loss: 2.32532329741
+Interval 258 (257000 steps performed)
+5 episodes - episode_rewards: -846.793 [-1144.031, -604.372] - Model Order: 600.929 - Testing Reward: -255.416077118 - Training Loss: 3.91261996537 - Testing Loss: 4.32841314144
+Interval 259 (258000 steps performed)
+5 episodes - episode_rewards: -579.689 [-745.089, -253.367] - Model Order: 600.204 - Testing Reward: -129.002508447 - Training Loss: 4.32178374676 - Testing Loss: 2.46044788432
+Interval 260 (259000 steps performed)
+5 episodes - episode_rewards: -613.852 [-756.434, -400.256] - Model Order: 601.595 - Testing Reward: -118.458363913 - Training Loss: 5.25273726616 - Testing Loss: 1.66219748878
+Interval 261 (260000 steps performed)
+5 episodes - episode_rewards: -600.402 [-744.397, -488.766] - Model Order: 602.322 - Testing Reward: -340.760247239 - Training Loss: 7.38749635327 - Testing Loss: 3.28252602965
+Interval 262 (261000 steps performed)
+5 episodes - episode_rewards: -598.648 [-864.209, -500.783] - Model Order: 607.32 - Testing Reward: -127.282600939 - Training Loss: 6.12305581329 - Testing Loss: 3.15282800395
+Interval 263 (262000 steps performed)
+5 episodes - episode_rewards: -532.955 [-762.457, -256.323] - Model Order: 606.82 - Testing Reward: -127.607140401 - Training Loss: 4.69884575928 - Testing Loss: 2.68007740297
+Interval 264 (263000 steps performed)
+5 episodes - episode_rewards: -591.034 [-844.703, -376.748] - Model Order: 604.604 - Testing Reward: -240.221494233 - Training Loss: 3.50880931624 - Testing Loss: 1.99151466214
+Interval 265 (264000 steps performed)
+5 episodes - episode_rewards: -560.514 [-741.103, -374.607] - Model Order: 606.278 - Testing Reward: -1.67220475074 - Training Loss: 4.97633802794 - Testing Loss: 3.31020293214
+Interval 266 (265000 steps performed)
+5 episodes - episode_rewards: -451.708 [-764.111, -4.356] - Model Order: 606.575 - Testing Reward: -120.402507662 - Training Loss: 5.15222725144 - Testing Loss: 2.98627066002
+Interval 267 (266000 steps performed)
+5 episodes - episode_rewards: -617.424 [-982.189, -373.626] - Model Order: 606.852 - Testing Reward: -247.065013485 - Training Loss: 3.62404661598 - Testing Loss: 2.74150070861
+Interval 268 (267000 steps performed)
+5 episodes - episode_rewards: -509.566 [-836.975, -376.404] - Model Order: 606.072 - Testing Reward: -253.301832391 - Training Loss: 7.0845527005 - Testing Loss: 3.07197550718
+Interval 269 (268000 steps performed)
+5 episodes - episode_rewards: -546.803 [-960.890, -245.568] - Model Order: 607.176 - Testing Reward: -324.036705833 - Training Loss: 6.18246738331 - Testing Loss: 3.53548392818
+Interval 270 (269000 steps performed)
+5 episodes - episode_rewards: -501.360 [-805.028, -380.529] - Model Order: 606.851 - Testing Reward: -231.360950409 - Training Loss: 5.15274582808 - Testing Loss: 3.391663794
+Interval 271 (270000 steps performed)
+5 episodes - episode_rewards: -610.188 [-924.898, -384.309] - Model Order: 607.654 - Testing Reward: -121.661175211 - Training Loss: 3.58808897112 - Testing Loss: 2.68574462292
+Interval 272 (271000 steps performed)
+5 episodes - episode_rewards: -515.092 [-736.671, -364.260] - Model Order: 608.779 - Testing Reward: -125.139506399 - Training Loss: 3.27868835365 - Testing Loss: 2.38084803636
+Interval 273 (272000 steps performed)
+5 episodes - episode_rewards: -568.886 [-718.334, -377.806] - Model Order: 605.14 - Testing Reward: -229.907433102 - Training Loss: 2.39753224117 - Testing Loss: 1.54477706246
+Interval 274 (273000 steps performed)
+5 episodes - episode_rewards: -692.619 [-1116.068, -378.064] - Model Order: 602.45 - Testing Reward: -116.762113667 - Training Loss: 4.23722359923 - Testing Loss: 1.72500409601
+Interval 275 (274000 steps performed)
+5 episodes - episode_rewards: -427.112 [-598.223, -250.869] - Model Order: 601.561 - Testing Reward: -1.57947130567 - Training Loss: 8.92547997813 - Testing Loss: 1.96405459901
+Interval 276 (275000 steps performed)
+5 episodes - episode_rewards: -518.092 [-728.695, -243.395] - Model Order: 606.601 - Testing Reward: -120.457344353 - Training Loss: 6.94757634986 - Testing Loss: 2.8265865118
+Interval 277 (276000 steps performed)
+5 episodes - episode_rewards: -627.644 [-862.071, -378.017] - Model Order: 607.63 - Testing Reward: -242.981946817 - Training Loss: 3.729510384 - Testing Loss: 2.5672337198
+Interval 278 (277000 steps performed)
+5 episodes - episode_rewards: -631.657 [-981.387, -376.556] - Model Order: 608.848 - Testing Reward: -123.654890627 - Training Loss: 3.95026663016 - Testing Loss: 2.96123569355
+Interval 279 (278000 steps performed)
+5 episodes - episode_rewards: -559.889 [-837.619, -251.674] - Model Order: 606.938 - Testing Reward: -125.279689108 - Training Loss: 4.23805388133 - Testing Loss: 3.07915146031
+Interval 280 (279000 steps performed)
+5 episodes - episode_rewards: -491.135 [-704.677, -130.920] - Model Order: 607.805 - Testing Reward: -126.095961176 - Training Loss: 5.05809026083 - Testing Loss: 3.56708069073
+Interval 281 (280000 steps performed)
+5 episodes - episode_rewards: -543.748 [-726.848, -252.831] - Model Order: 607.668 - Testing Reward: -316.454603902 - Training Loss: 3.87915328469 - Testing Loss: 3.19237865401
+Interval 282 (281000 steps performed)
+5 episodes - episode_rewards: -621.825 [-848.368, -383.855] - Model Order: 608.418 - Testing Reward: -117.361954993 - Training Loss: 4.23075297386 - Testing Loss: 2.9831379581
+Interval 283 (282000 steps performed)
+5 episodes - episode_rewards: -487.533 [-615.579, -374.478] - Model Order: 609.921 - Testing Reward: -119.598567188 - Training Loss: 10.8265745737 - Testing Loss: 3.22101110882
+Interval 284 (283000 steps performed)
+5 episodes - episode_rewards: -504.246 [-748.049, -255.113] - Model Order: 608.005 - Testing Reward: -119.347247381 - Training Loss: 3.98609666778 - Testing Loss: 5.09285339729
+Interval 285 (284000 steps performed)
+5 episodes - episode_rewards: -460.626 [-574.751, -277.521] - Model Order: 609.29 - Testing Reward: -124.411340652 - Training Loss: 2.95058808046 - Testing Loss: 4.35744260439
+Interval 286 (285000 steps performed)
+5 episodes - episode_rewards: -488.357 [-762.662, -128.059] - Model Order: 609.907 - Testing Reward: -129.623960823 - Training Loss: 7.83993417418 - Testing Loss: 3.75119300235
+Interval 287 (286000 steps performed)
+5 episodes - episode_rewards: -408.065 [-565.062, -358.711] - Model Order: 607.224 - Testing Reward: -246.899435898 - Training Loss: 3.82065795827 - Testing Loss: 3.57718895462
+Interval 288 (287000 steps performed)
+5 episodes - episode_rewards: -472.783 [-989.230, -125.816] - Model Order: 609.488 - Testing Reward: -119.910464483 - Training Loss: 5.24869999958 - Testing Loss: 4.85814374052
+Interval 289 (288000 steps performed)
+5 episodes - episode_rewards: -446.453 [-636.306, -251.488] - Model Order: 609.388 - Testing Reward: -239.929401436 - Training Loss: 2.91531947557 - Testing Loss: 2.72717114254
+Interval 290 (289000 steps performed)
+5 episodes - episode_rewards: -586.183 [-817.896, -375.541] - Model Order: 607.493 - Testing Reward: -250.49162872 - Training Loss: 2.62710857945 - Testing Loss: 2.70848733629
+Interval 291 (290000 steps performed)
+5 episodes - episode_rewards: -523.378 [-859.490, -242.252] - Model Order: 607.491 - Testing Reward: -123.526147126 - Training Loss: 5.01270049067 - Testing Loss: 1.91908338434
+Interval 292 (291000 steps performed)
+5 episodes - episode_rewards: -539.791 [-952.259, -245.005] - Model Order: 607.184 - Testing Reward: -244.626270107 - Training Loss: 2.05857007442 - Testing Loss: 2.09737286728
+Interval 293 (292000 steps performed)
+5 episodes - episode_rewards: -440.739 [-615.525, -125.885] - Model Order: 606.842 - Testing Reward: -1.79143830682 - Training Loss: 3.27060576496 - Testing Loss: 2.78659898919
+Interval 294 (293000 steps performed)
+5 episodes - episode_rewards: -481.031 [-782.971, -264.338] - Model Order: 606.739 - Testing Reward: -124.929859175 - Training Loss: 2.80759789097 - Testing Loss: 2.74711236684
+Interval 295 (294000 steps performed)
+5 episodes - episode_rewards: -493.312 [-726.162, -127.941] - Model Order: 604.724 - Testing Reward: -316.993310546 - Training Loss: 2.31378996877 - Testing Loss: 2.48599632373
+Interval 296 (295000 steps performed)
+5 episodes - episode_rewards: -359.788 [-793.212, -121.997] - Model Order: 605.224 - Testing Reward: -120.133025931 - Training Loss: 4.46638237099 - Testing Loss: 2.95178317551
+Interval 297 (296000 steps performed)
+5 episodes - episode_rewards: -563.962 [-822.510, -360.925] - Model Order: 606.562 - Testing Reward: -130.00333951 - Training Loss: 2.65559317977 - Testing Loss: 2.14939723098
+Interval 298 (297000 steps performed)
+5 episodes - episode_rewards: -536.999 [-722.162, -363.434] - Model Order: 603.84 - Testing Reward: -223.04855417 - Training Loss: 2.76913613436 - Testing Loss: 2.24975004139
+Interval 299 (298000 steps performed)
+5 episodes - episode_rewards: -433.326 [-728.728, -205.749] - Model Order: 604.01 - Testing Reward: -124.896467783 - Training Loss: 4.25720055114 - Testing Loss: 2.12644987399
+Interval 300 (299000 steps performed)
+5 episodes - episode_rewards: -484.462 [-637.059, -155.937] - Model Order: 605.527 - Testing Reward: -245.190410426 - Training Loss: 3.13683739376 - Testing Loss: 2.86766096405
+Interval 301 (300000 steps performed)
+5 episodes - episode_rewards: -440.024 [-587.463, -375.759] - Model Order: 606.585 - Testing Reward: -118.08751156 - Training Loss: 1.96827408589 - Testing Loss: 2.00381741361
+Interval 302 (301000 steps performed)
+5 episodes - episode_rewards: -418.868 [-705.269, -126.786] - Model Order: 606.539 - Testing Reward: -119.964000774 - Training Loss: 1.97281823101 - Testing Loss: 2.99130411158
+Interval 303 (302000 steps performed)
+5 episodes - episode_rewards: -560.050 [-843.116, -245.175] - Model Order: 604.325 - Testing Reward: -116.721829862 - Training Loss: 2.9517414606 - Testing Loss: 3.00534943491
+Interval 304 (303000 steps performed)
+5 episodes - episode_rewards: -468.322 [-500.017, -361.540] - Model Order: 602.836 - Testing Reward: -1.41775814712 - Training Loss: 4.04284176555 - Testing Loss: 2.98906636757
+Interval 305 (304000 steps performed)
+5 episodes - episode_rewards: -562.103 [-818.102, -396.477] - Model Order: 604.644 - Testing Reward: -308.476766043 - Training Loss: 2.71941053803 - Testing Loss: 2.48031674086
+Interval 306 (305000 steps performed)
+5 episodes - episode_rewards: -458.134 [-604.120, -247.811] - Model Order: 604.845 - Testing Reward: -345.162469809 - Training Loss: 3.00343295334 - Testing Loss: 2.32911775601
+Interval 307 (306000 steps performed)
+5 episodes - episode_rewards: -489.293 [-626.886, -373.575] - Model Order: 605.236 - Testing Reward: -2.05703343262 - Training Loss: 2.51330464819 - Testing Loss: 2.12783329498
+Interval 308 (307000 steps performed)
+5 episodes - episode_rewards: -613.761 [-859.754, -490.067] - Model Order: 604.683 - Testing Reward: -244.334813034 - Training Loss: 2.35877142566 - Testing Loss: 2.54946412345
+Interval 309 (308000 steps performed)
+5 episodes - episode_rewards: -518.820 [-878.167, -260.344] - Model Order: 606.241 - Testing Reward: -1.85891206768 - Training Loss: 5.88633431488 - Testing Loss: 2.34940542087
+Interval 310 (309000 steps performed)
+5 episodes - episode_rewards: -649.183 [-871.684, -371.811] - Model Order: 605.371 - Testing Reward: -127.230567959 - Training Loss: 3.12416805266 - Testing Loss: 2.8805674937
+Interval 311 (310000 steps performed)
+5 episodes - episode_rewards: -519.026 [-750.539, -374.758] - Model Order: 604.438 - Testing Reward: -240.724456044 - Training Loss: 2.54957306713 - Testing Loss: 2.24124353224
+Interval 312 (311000 steps performed)
+5 episodes - episode_rewards: -381.268 [-847.876, -127.834] - Model Order: 602.836 - Testing Reward: -125.128850835 - Training Loss: 2.96302038205 - Testing Loss: 2.35981019043
+Interval 313 (312000 steps performed)
+5 episodes - episode_rewards: -394.024 [-733.560, -128.413] - Model Order: 601.897 - Testing Reward: -120.685127957 - Training Loss: 2.39511528243 - Testing Loss: 2.5904769607
+Interval 314 (313000 steps performed)
+5 episodes - episode_rewards: -512.399 [-695.248, -370.152] - Model Order: 603.882 - Testing Reward: -124.25055892 - Training Loss: 5.31919285341 - Testing Loss: 1.90441189878
+Interval 315 (314000 steps performed)
+5 episodes - episode_rewards: -299.899 [-488.482, -125.022] - Model Order: 602.627 - Testing Reward: -121.419925075 - Training Loss: 2.85462517601 - Testing Loss: 2.43055934604
+Interval 316 (315000 steps performed)
+5 episodes - episode_rewards: -379.826 [-400.462, -366.949] - Model Order: 600.743 - Testing Reward: -245.711760848 - Training Loss: 2.02158598553 - Testing Loss: 3.31898043588
+Interval 317 (316000 steps performed)
+5 episodes - episode_rewards: -416.186 [-595.548, -124.151] - Model Order: 600.262 - Testing Reward: -118.13812295 - Training Loss: 4.01978179819 - Testing Loss: 2.69344733544
+Interval 318 (317000 steps performed)
+5 episodes - episode_rewards: -488.102 [-623.458, -383.715] - Model Order: 602.252 - Testing Reward: -126.755414213 - Training Loss: 3.59760178111 - Testing Loss: 3.16555849472
+Interval 319 (318000 steps performed)
+5 episodes - episode_rewards: -506.838 [-853.279, -317.558] - Model Order: 601.486 - Testing Reward: -0.488535909371 - Training Loss: 2.63559506784 - Testing Loss: 2.47701719709
+Interval 320 (319000 steps performed)
+5 episodes - episode_rewards: -519.977 [-831.091, -254.793] - Model Order: 601.062 - Testing Reward: -124.271116139 - Training Loss: 6.34427567128 - Testing Loss: 2.46300237458
+Interval 321 (320000 steps performed)
+5 episodes - episode_rewards: -324.828 [-385.363, -124.742] - Model Order: 602.89 - Testing Reward: -245.087857902 - Training Loss: 4.33561414579 - Testing Loss: 3.08302002805
+Interval 322 (321000 steps performed)
+5 episodes - episode_rewards: -607.598 [-830.833, -240.601] - Model Order: 602.697 - Testing Reward: -125.080516911 - Training Loss: 2.81697940899 - Testing Loss: 3.81515461974
+Interval 323 (322000 steps performed)
+5 episodes - episode_rewards: -330.078 [-506.575, -247.663] - Model Order: 601.982 - Testing Reward: -4.13392765027 - Training Loss: 4.18209258693 - Testing Loss: 3.48483873934
+Interval 324 (323000 steps performed)
+5 episodes - episode_rewards: -400.043 [-614.745, -128.522] - Model Order: 601.392 - Testing Reward: -236.947232256 - Training Loss: 3.24815964217 - Testing Loss: 2.78404546501
+Interval 325 (324000 steps performed)
+5 episodes - episode_rewards: -394.902 [-592.325, -252.016] - Model Order: 602.18 - Testing Reward: -237.607593466 - Training Loss: 4.10128854894 - Testing Loss: 9.22253320082
+Interval 326 (325000 steps performed)
+5 episodes - episode_rewards: -334.406 [-489.065, -129.169] - Model Order: 603.92 - Testing Reward: -117.385400537 - Training Loss: 3.95425515969 - Testing Loss: 1.60538689608
+Interval 327 (326000 steps performed)
+5 episodes - episode_rewards: -610.687 [-878.739, -126.944] - Model Order: 603.856 - Testing Reward: -116.843818832 - Training Loss: 3.08516111782 - Testing Loss: 2.34419537603
+Interval 328 (327000 steps performed)
+5 episodes - episode_rewards: -416.825 [-784.271, -119.435] - Model Order: 603.687 - Testing Reward: -228.712840253 - Training Loss: 2.00658938371 - Testing Loss: 1.33432128829
+Interval 329 (328000 steps performed)
+5 episodes - episode_rewards: -364.657 [-841.110, -3.035] - Model Order: 603.197 - Testing Reward: -117.539067979 - Training Loss: 2.12069286293 - Testing Loss: 1.58395502452
+Interval 330 (329000 steps performed)
+5 episodes - episode_rewards: -509.731 [-741.956, -381.371] - Model Order: 604.508 - Testing Reward: -1.47538662916 - Training Loss: 2.41203073388 - Testing Loss: 1.77944220029
+Interval 331 (330000 steps performed)
+5 episodes - episode_rewards: -458.150 [-674.989, -241.690] - Model Order: 605.644 - Testing Reward: -119.919092662 - Training Loss: 2.69539791741 - Testing Loss: 2.47278517108
+Interval 332 (331000 steps performed)
+5 episodes - episode_rewards: -324.851 [-606.471, -132.127] - Model Order: 605.503 - Testing Reward: -121.235676453 - Training Loss: 2.13976926991 - Testing Loss: 1.88737105649
+Interval 333 (332000 steps performed)
+5 episodes - episode_rewards: -279.271 [-386.970, -123.943] - Model Order: 604.982 - Testing Reward: -231.181341404 - Training Loss: 2.65518201826 - Testing Loss: 1.93359419304
+Interval 334 (333000 steps performed)
+5 episodes - episode_rewards: -442.528 [-499.920, -232.029] - Model Order: 604.529 - Testing Reward: -116.8407084 - Training Loss: 2.51962555421 - Testing Loss: 2.76771214112
+Interval 335 (334000 steps performed)
+5 episodes - episode_rewards: -494.610 [-627.874, -130.672] - Model Order: 606.118 - Testing Reward: -1.94719357976 - Training Loss: 4.00773298418 - Testing Loss: 3.88999790139
+Interval 336 (335000 steps performed)
+5 episodes - episode_rewards: -380.194 [-678.500, -3.611] - Model Order: 604.971 - Testing Reward: -115.082227581 - Training Loss: 2.44865417102 - Testing Loss: 4.22498018331
+Interval 337 (336000 steps performed)
+5 episodes - episode_rewards: -391.871 [-805.208, -253.199] - Model Order: 607.69 - Testing Reward: -122.247294059 - Training Loss: 4.33817087211 - Testing Loss: 4.64852683607
+Interval 338 (337000 steps performed)
+5 episodes - episode_rewards: -395.910 [-608.669, -250.238] - Model Order: 610.268 - Testing Reward: -127.47471075 - Training Loss: 5.58168955359 - Testing Loss: 5.20900865903
+Interval 339 (338000 steps performed)
+5 episodes - episode_rewards: -344.603 [-386.454, -235.833] - Model Order: 605.062 - Testing Reward: -124.564905438 - Training Loss: 2.03583064419 - Testing Loss: 4.08466178194
+Interval 340 (339000 steps performed)
+5 episodes - episode_rewards: -342.536 [-716.358, -126.531] - Model Order: 605.163 - Testing Reward: -126.867216695 - Training Loss: 7.03439297774 - Testing Loss: 6.20909963284
+Interval 341 (340000 steps performed)
+5 episodes - episode_rewards: -565.796 [-815.335, -258.518] - Model Order: 604.686 - Testing Reward: -125.54887406 - Training Loss: 5.20941114371 - Testing Loss: 3.33475105619
+Interval 342 (341000 steps performed)
+5 episodes - episode_rewards: -533.495 [-842.920, -249.124] - Model Order: 605.03 - Testing Reward: -121.160504112 - Training Loss: 5.21286226116 - Testing Loss: 3.29239596312
+Interval 343 (342000 steps performed)
+5 episodes - episode_rewards: -542.645 [-624.333, -380.269] - Model Order: 604.341 - Testing Reward: -114.653969128 - Training Loss: 3.69739906825 - Testing Loss: 3.8322307577
+Interval 344 (343000 steps performed)
+5 episodes - episode_rewards: -470.814 [-728.854, -245.972] - Model Order: 606.632 - Testing Reward: -115.270817904 - Training Loss: 5.6931722391 - Testing Loss: 2.37370835743
+Interval 345 (344000 steps performed)
+5 episodes - episode_rewards: -343.983 [-548.473, -2.692] - Model Order: 605.253 - Testing Reward: -238.45478817 - Training Loss: 4.18783328392 - Testing Loss: 4.34186434365
+Interval 346 (345000 steps performed)
+5 episodes - episode_rewards: -420.545 [-615.009, -128.929] - Model Order: 606.997 - Testing Reward: -120.607476394 - Training Loss: 3.4689096474 - Testing Loss: 3.43936083215
+Interval 347 (346000 steps performed)
+5 episodes - episode_rewards: -269.179 [-333.754, -244.890] - Model Order: 607.172 - Testing Reward: -121.791057462 - Training Loss: 3.24251396427 - Testing Loss: 3.6890400562
+Interval 348 (347000 steps performed)
+5 episodes - episode_rewards: -445.624 [-629.807, -128.555] - Model Order: 605.571 - Testing Reward: -228.236775704 - Training Loss: 4.21522612152 - Testing Loss: 4.50292119122
+Interval 349 (348000 steps performed)
+5 episodes - episode_rewards: -457.466 [-665.644, -255.865] - Model Order: 609.162 - Testing Reward: -240.32908612 - Training Loss: 5.5726757407 - Testing Loss: 3.01348233976
+Interval 350 (349000 steps performed)
+5 episodes - episode_rewards: -435.645 [-710.938, -121.609] - Model Order: 609.56 - Testing Reward: -121.920940093 - Training Loss: 4.14836638294 - Testing Loss: 2.24019900025
+Interval 351 (350000 steps performed)
+5 episodes - episode_rewards: -401.259 [-748.113, -129.632] - Model Order: 608.529 - Testing Reward: -1.5910752148 - Training Loss: 2.14521336461 - Testing Loss: 3.08150608975
+Interval 352 (351000 steps performed)
+5 episodes - episode_rewards: -428.725 [-695.051, -232.176] - Model Order: 610.353 - Testing Reward: -125.553666841 - Training Loss: 6.60642164398 - Testing Loss: 2.96936850496
+Interval 353 (352000 steps performed)
+5 episodes - episode_rewards: -313.057 [-444.009, -135.345] - Model Order: 613.644 - Testing Reward: -240.985565933 - Training Loss: 2.6975996682 - Testing Loss: 4.55285473429
+Interval 354 (353000 steps performed)
+5 episodes - episode_rewards: -398.216 [-621.050, -126.388] - Model Order: 614.177 - Testing Reward: -124.298528791 - Training Loss: 2.9883808333 - Testing Loss: 2.87770741888
+Interval 355 (354000 steps performed)
+5 episodes - episode_rewards: -398.941 [-597.486, -2.716] - Model Order: 612.3 - Testing Reward: -227.373670419 - Training Loss: 3.44144043339 - Testing Loss: 2.91463122907
+Interval 356 (355000 steps performed)
+5 episodes - episode_rewards: -433.047 [-722.652, -128.621] - Model Order: 612.955 - Testing Reward: -125.795169292 - Training Loss: 2.24214885551 - Testing Loss: 2.52311063692
+Interval 357 (356000 steps performed)
+5 episodes - episode_rewards: -367.178 [-612.437, -126.260] - Model Order: 611.489 - Testing Reward: -226.972154986 - Training Loss: 4.51949464899 - Testing Loss: 3.60842537717
+Interval 358 (357000 steps performed)
+5 episodes - episode_rewards: -277.606 [-383.252, -123.094] - Model Order: 608.181 - Testing Reward: -324.28363183 - Training Loss: 3.16682814086 - Testing Loss: 4.66278986198
+Interval 359 (358000 steps performed)
+5 episodes - episode_rewards: -364.265 [-542.393, -128.240] - Model Order: 608.568 - Testing Reward: -128.520774429 - Training Loss: 7.15593621807 - Testing Loss: 4.97746366675
+Interval 360 (359000 steps performed)
+5 episodes - episode_rewards: -420.433 [-506.929, -254.916] - Model Order: 610.642 - Testing Reward: -115.184783306 - Training Loss: 3.77843409391 - Testing Loss: 5.20967421649
+Interval 361 (360000 steps performed)
+5 episodes - episode_rewards: -222.312 [-364.889, -119.815] - Model Order: 611.928 - Testing Reward: -123.242204395 - Training Loss: 4.4000938526 - Testing Loss: 4.62568674129
+Interval 362 (361000 steps performed)
+5 episodes - episode_rewards: -473.643 [-599.177, -357.419] - Model Order: 614.056 - Testing Reward: -236.844541982 - Training Loss: 5.32098816414 - Testing Loss: 5.4952413406
+Interval 363 (362000 steps performed)
+5 episodes - episode_rewards: -337.099 [-474.478, -248.089] - Model Order: 619.399 - Testing Reward: -231.661555302 - Training Loss: 3.48126006923 - Testing Loss: 4.79210879616
+Interval 364 (363000 steps performed)
+5 episodes - episode_rewards: -344.859 [-727.900, -124.508] - Model Order: 619.912 - Testing Reward: -1.83954044056 - Training Loss: 5.00693147867 - Testing Loss: 4.76345153528
+Interval 365 (364000 steps performed)
+5 episodes - episode_rewards: -342.782 [-607.029, -238.043] - Model Order: 623.66 - Testing Reward: -126.86574604 - Training Loss: 3.04891924254 - Testing Loss: 4.39689085251
+Interval 366 (365000 steps performed)
+5 episodes - episode_rewards: -295.648 [-507.794, -126.840] - Model Order: 619.854 - Testing Reward: -127.512989012 - Training Loss: 3.612488395 - Testing Loss: 3.03756929472
+Interval 367 (366000 steps performed)
+5 episodes - episode_rewards: -269.525 [-485.334, -2.785] - Model Order: 619.197 - Testing Reward: -114.911972981 - Training Loss: 2.52077631668 - Testing Loss: 3.72733437074
+Interval 368 (367000 steps performed)
+5 episodes - episode_rewards: -369.209 [-502.948, -240.277] - Model Order: 617.438 - Testing Reward: -117.454077981 - Training Loss: 4.86783419306 - Testing Loss: 4.03914637326
+Interval 369 (368000 steps performed)
+5 episodes - episode_rewards: -388.548 [-489.342, -247.667] - Model Order: 617.402 - Testing Reward: -340.033301946 - Training Loss: 2.93434706024 - Testing Loss: 4.95215150967
+Interval 370 (369000 steps performed)
+5 episodes - episode_rewards: -419.752 [-622.647, -253.468] - Model Order: 616.081 - Testing Reward: -121.794561815 - Training Loss: 2.53564183477 - Testing Loss: 4.81861407023
+Interval 371 (370000 steps performed)
+5 episodes - episode_rewards: -314.907 [-491.268, -125.104] - Model Order: 618.504 - Testing Reward: -118.340358949 - Training Loss: 3.76194899087 - Testing Loss: 4.08585080835
+Interval 372 (371000 steps performed)
+5 episodes - episode_rewards: -265.769 [-481.192, -2.237] - Model Order: 621.299 - Testing Reward: -128.179760614 - Training Loss: 2.68666529121 - Testing Loss: 2.7738060219
+Interval 373 (372000 steps performed)
+5 episodes - episode_rewards: -248.172 [-378.625, -126.306] - Model Order: 619.969 - Testing Reward: -124.452340768 - Training Loss: 2.54733208965 - Testing Loss: 1.90771142287
+Interval 374 (373000 steps performed)
+5 episodes - episode_rewards: -324.816 [-503.830, -123.919] - Model Order: 617.73 - Testing Reward: -294.758960636 - Training Loss: 1.58197882112 - Testing Loss: 1.64671841661
+Interval 375 (374000 steps performed)
+5 episodes - episode_rewards: -270.118 [-364.913, -240.549] - Model Order: 616.835 - Testing Reward: -226.255354225 - Training Loss: 3.02443050731 - Testing Loss: 2.77390238951
+Interval 376 (375000 steps performed)
+5 episodes - episode_rewards: -237.064 [-558.985, -2.093] - Model Order: 617.026 - Testing Reward: -124.051333163 - Training Loss: 2.38906610345 - Testing Loss: 3.08073730733
+Interval 377 (376000 steps performed)
+5 episodes - episode_rewards: -312.762 [-594.866, -125.102] - Model Order: 617.464 - Testing Reward: -123.572264362 - Training Loss: 2.62353124707 - Testing Loss: 2.77523243498
+Interval 378 (377000 steps performed)
+5 episodes - episode_rewards: -289.974 [-364.435, -235.218] - Model Order: 617.66 - Testing Reward: -118.118118163 - Training Loss: 2.10630312553 - Testing Loss: 2.70640782395
+Interval 379 (378000 steps performed)
+5 episodes - episode_rewards: -367.824 [-721.583, -125.155] - Model Order: 617.636 - Testing Reward: -118.846042468 - Training Loss: 2.15567973504 - Testing Loss: 2.61500080553
+Interval 380 (379000 steps performed)
+5 episodes - episode_rewards: -296.148 [-498.775, -1.903] - Model Order: 616.295 - Testing Reward: -268.589078308 - Training Loss: 2.98099019613 - Testing Loss: 2.74578255923
+Interval 381 (380000 steps performed)
+5 episodes - episode_rewards: -319.002 [-495.097, -128.628] - Model Order: 617.138 - Testing Reward: -223.360052147 - Training Loss: 2.34064485448 - Testing Loss: 3.06947102975
+Interval 382 (381000 steps performed)
+5 episodes - episode_rewards: -412.262 [-593.833, -129.117] - Model Order: 617.163 - Testing Reward: -228.204199146 - Training Loss: 2.78047818138 - Testing Loss: 2.48517245639
+Interval 383 (382000 steps performed)
+5 episodes - episode_rewards: -387.567 [-608.663, -128.493] - Model Order: 616.44 - Testing Reward: -230.876353596 - Training Loss: 4.01639818108 - Testing Loss: 2.49209086578
+Interval 384 (383000 steps performed)
+5 episodes - episode_rewards: -355.300 [-570.496, -125.248] - Model Order: 618.677 - Testing Reward: -123.377219951 - Training Loss: 1.88814545383 - Testing Loss: 2.11883946121
+Interval 385 (384000 steps performed)
+5 episodes - episode_rewards: -354.636 [-478.350, -220.297] - Model Order: 619.728 - Testing Reward: -230.474494343 - Training Loss: 2.42904579661 - Testing Loss: 2.76294769153
+Interval 386 (385000 steps performed)
+5 episodes - episode_rewards: -365.101 [-508.031, -246.980] - Model Order: 621.268 - Testing Reward: -119.246161335 - Training Loss: 2.83612887071 - Testing Loss: 1.99963666096
+Interval 387 (386000 steps performed)
+5 episodes - episode_rewards: -247.095 [-454.129, -125.090] - Model Order: 622.925 - Testing Reward: -3.08659100874 - Training Loss: 2.38318859543 - Testing Loss: 3.12071362514
+Interval 388 (387000 steps performed)
+5 episodes - episode_rewards: -303.360 [-489.497, -126.667] - Model Order: 624.052 - Testing Reward: -125.081864847 - Training Loss: 3.37273896333 - Testing Loss: 2.19561206074
+Interval 389 (388000 steps performed)
+5 episodes - episode_rewards: -388.849 [-493.532, -121.043] - Model Order: 624.832 - Testing Reward: -330.227393293 - Training Loss: 3.89527851607 - Testing Loss: 3.05875584466
+Interval 390 (389000 steps performed)
+5 episodes - episode_rewards: -442.954 [-505.842, -357.558] - Model Order: 627.443 - Testing Reward: -122.934960036 - Training Loss: 2.73774348022 - Testing Loss: 2.85942901628
+Interval 391 (390000 steps performed)
+5 episodes - episode_rewards: -233.945 [-465.086, -2.394] - Model Order: 627.359 - Testing Reward: -126.79020857 - Training Loss: 3.48548929182 - Testing Loss: 1.94234366502
+Interval 392 (391000 steps performed)
+5 episodes - episode_rewards: -294.007 [-606.759, -120.538] - Model Order: 626.348 - Testing Reward: -364.669864258 - Training Loss: 2.4662510506 - Testing Loss: 2.72424528514
+Interval 393 (392000 steps performed)
+5 episodes - episode_rewards: -344.371 [-500.237, -254.630] - Model Order: 625.529 - Testing Reward: -250.572450806 - Training Loss: 1.88070621993 - Testing Loss: 2.64009335635
+Interval 394 (393000 steps performed)
+5 episodes - episode_rewards: -223.532 [-372.056, -120.220] - Model Order: 624.777 - Testing Reward: -126.088084272 - Training Loss: 2.71937646119 - Testing Loss: 2.30597652051
+Interval 395 (394000 steps performed)
+5 episodes - episode_rewards: -459.449 [-811.568, -129.222] - Model Order: 625.562 - Testing Reward: -363.290271557 - Training Loss: 3.02990665629 - Testing Loss: 2.9699754314
+Interval 396 (395000 steps performed)
+5 episodes - episode_rewards: -233.863 [-382.169, -121.457] - Model Order: 625.461 - Testing Reward: -122.992831862 - Training Loss: 2.92487675083 - Testing Loss: 2.54729603597
+Interval 397 (396000 steps performed)
+5 episodes - episode_rewards: -162.768 [-265.653, -127.480] - Model Order: 621.92 - Testing Reward: -121.502750764 - Training Loss: 2.84612634422 - Testing Loss: 2.43061837248
+Interval 398 (397000 steps performed)
+5 episodes - episode_rewards: -298.006 [-622.375, -123.354] - Model Order: 620.748 - Testing Reward: -122.641352259 - Training Loss: 4.5855383215 - Testing Loss: 2.22936280248
+Interval 399 (398000 steps performed)
+5 episodes - episode_rewards: -183.274 [-532.836, -3.118] - Model Order: 620.7 - Testing Reward: -122.622625601 - Training Loss: 3.19678127992 - Testing Loss: 4.59655399572
+Interval 400 (399000 steps performed)
+5 episodes - episode_rewards: -354.155 [-495.858, -1.845] - Model Order: 619.778 - Testing Reward: -1.23879512504 - Training Loss: 2.81435075684 - Testing Loss: 2.32197023274
+Interval 401 (400000 steps performed)
+5 episodes - episode_rewards: -248.038 [-379.159, -127.008] - Model Order: 620.155 - Testing Reward: -119.48433396 - Training Loss: 2.45786813889 - Testing Loss: 2.58922000919
+Interval 402 (401000 steps performed)
+5 episodes - episode_rewards: -272.013 [-383.513, -127.340] - Model Order: 623.377 - Testing Reward: -1.06787353753 - Training Loss: 2.54576448219 - Testing Loss: 3.09419963596
+Interval 403 (402000 steps performed)
+5 episodes - episode_rewards: -296.750 [-619.015, -2.775] - Model Order: 624.454 - Testing Reward: -119.671600168 - Training Loss: 3.89844701453 - Testing Loss: 2.82840826242
+Interval 404 (403000 steps performed)
+5 episodes - episode_rewards: -323.241 [-747.099, -120.819] - Model Order: 625.303 - Testing Reward: -119.194515109 - Training Loss: 2.48540374105 - Testing Loss: 3.23812102463
+Interval 405 (404000 steps performed)
+5 episodes - episode_rewards: -342.962 [-475.896, -125.069] - Model Order: 626.186 - Testing Reward: -120.249612695 - Training Loss: 4.49603036583 - Testing Loss: 3.50153254294
+Interval 406 (405000 steps performed)
+5 episodes - episode_rewards: -246.820 [-377.425, -122.005] - Model Order: 627.756 - Testing Reward: -3.33875264298 - Training Loss: 2.04809661745 - Testing Loss: 2.96853779528
+Interval 407 (406000 steps performed)
+5 episodes - episode_rewards: -336.698 [-582.535, -237.199] - Model Order: 630.661 - Testing Reward: -121.841583315 - Training Loss: 4.49936245922 - Testing Loss: 4.72709800059
+Interval 408 (407000 steps performed)
+5 episodes - episode_rewards: -197.384 [-363.029, -121.650] - Model Order: 630.055 - Testing Reward: -2.16730569776 - Training Loss: 2.20347317839 - Testing Loss: 3.34944954391
+Interval 409 (408000 steps performed)
+5 episodes - episode_rewards: -174.915 [-367.383, -2.174] - Model Order: 628.587 - Testing Reward: -123.141098664 - Training Loss: 2.62106725951 - Testing Loss: 2.26851489732
+Interval 410 (409000 steps performed)
+5 episodes - episode_rewards: -222.884 [-377.255, -128.116] - Model Order: 629.751 - Testing Reward: -2.16305150969 - Training Loss: 3.4927125944 - Testing Loss: 2.15899570447
+Interval 411 (410000 steps performed)
+5 episodes - episode_rewards: -244.785 [-352.852, -127.619] - Model Order: 628.977 - Testing Reward: -225.84013041 - Training Loss: 3.09356510079 - Testing Loss: 2.14176868616
+Interval 412 (411000 steps performed)
+5 episodes - episode_rewards: -295.150 [-587.380, -130.235] - Model Order: 628.838 - Testing Reward: -124.328513579 - Training Loss: 2.30915223065 - Testing Loss: 2.10512915776
+Interval 413 (412000 steps performed)
+5 episodes - episode_rewards: -433.746 [-744.786, -241.525] - Model Order: 629.271 - Testing Reward: -120.117231631 - Training Loss: 3.35047351684 - Testing Loss: 1.96449938395
+Interval 414 (413000 steps performed)
+5 episodes - episode_rewards: -246.961 [-254.851, -240.337] - Model Order: 628.618 - Testing Reward: -124.537316709 - Training Loss: 2.58170022139 - Testing Loss: 1.84714080869
+Interval 415 (414000 steps performed)
+5 episodes - episode_rewards: -272.046 [-612.351, -122.165] - Model Order: 628.672 - Testing Reward: -119.975648616 - Training Loss: 2.17647002791 - Testing Loss: 1.7151980789
+Interval 416 (415000 steps performed)
+5 episodes - episode_rewards: -222.943 [-380.419, -124.671] - Model Order: 629.364 - Testing Reward: -231.492450131 - Training Loss: 1.99557684475 - Testing Loss: 2.44419243247
+Interval 417 (416000 steps performed)
+5 episodes - episode_rewards: -227.002 [-493.984, -1.911] - Model Order: 629.671 - Testing Reward: -123.568755837 - Training Loss: 2.76778851928 - Testing Loss: 3.23140633366
+Interval 418 (417000 steps performed)
+5 episodes - episode_rewards: -254.197 [-654.700, -121.334] - Model Order: 628.392 - Testing Reward: -127.824528261 - Training Loss: 4.28891328121 - Testing Loss: 2.65667258019
+Interval 419 (418000 steps performed)
+5 episodes - episode_rewards: -241.437 [-478.417, -1.929] - Model Order: 627.288 - Testing Reward: -117.762664774 - Training Loss: 2.07743540957 - Testing Loss: 3.53380006735
+Interval 420 (419000 steps performed)
+5 episodes - episode_rewards: -347.030 [-496.759, -130.116] - Model Order: 629.353 - Testing Reward: -121.878539412 - Training Loss: 2.87693390928 - Testing Loss: 3.04613430278
+Interval 421 (420000 steps performed)
+5 episodes - episode_rewards: -219.598 [-386.554, -3.053] - Model Order: 630.523 - Testing Reward: -121.827443817 - Training Loss: 3.03543267194 - Testing Loss: 2.87602378103
+Interval 422 (421000 steps performed)
+5 episodes - episode_rewards: -273.604 [-381.473, -119.495] - Model Order: 628.108 - Testing Reward: -127.215302565 - Training Loss: 1.92193086796 - Testing Loss: 2.56806467591
+Interval 423 (422000 steps performed)
+5 episodes - episode_rewards: -291.050 [-480.538, -127.454] - Model Order: 628.154 - Testing Reward: -1.62522037925 - Training Loss: 2.39108576589 - Testing Loss: 2.75553452034
+Interval 424 (423000 steps performed)
+5 episodes - episode_rewards: -314.321 [-491.822, -119.609] - Model Order: 627.45 - Testing Reward: -249.268132671 - Training Loss: 2.83743353447 - Testing Loss: 1.72825756702
+Interval 425 (424000 steps performed)
+5 episodes - episode_rewards: -269.330 [-377.841, -123.821] - Model Order: 627.728 - Testing Reward: -309.855381444 - Training Loss: 3.00862686944 - Testing Loss: 2.35656472503
+Interval 426 (425000 steps performed)
+5 episodes - episode_rewards: -294.160 [-494.998, -1.739] - Model Order: 628.868 - Testing Reward: -120.660140692 - Training Loss: 4.49433748958 - Testing Loss: 1.6013764405
+Interval 427 (426000 steps performed)
+5 episodes - episode_rewards: -310.924 [-471.512, -123.121] - Model Order: 626.837 - Testing Reward: -117.868334718 - Training Loss: 2.49370805054 - Testing Loss: 2.05776505068
+Interval 428 (427000 steps performed)
+5 episodes - episode_rewards: -314.672 [-473.230, -237.562] - Model Order: 629.073 - Testing Reward: -123.736484453 - Training Loss: 4.30379467043 - Testing Loss: 2.01807216224
+Interval 429 (428000 steps performed)
+5 episodes - episode_rewards: -330.316 [-482.072, -129.828] - Model Order: 629.56 - Testing Reward: -334.378794222 - Training Loss: 2.5977911998 - Testing Loss: 2.96953331016
+Interval 430 (429000 steps performed)
+5 episodes - episode_rewards: -265.922 [-482.587, -123.813] - Model Order: 628.855 - Testing Reward: -120.133137085 - Training Loss: 4.202808635 - Testing Loss: 2.20210938892
+Interval 431 (430000 steps performed)
+5 episodes - episode_rewards: -307.974 [-557.862, -125.804] - Model Order: 629.192 - Testing Reward: -121.56074046 - Training Loss: 2.15668982516 - Testing Loss: 3.02619363768
+Interval 432 (431000 steps performed)
+5 episodes - episode_rewards: -305.990 [-452.760, -124.357] - Model Order: 629.703 - Testing Reward: -255.039277757 - Training Loss: 2.8133367884 - Testing Loss: 2.57701979981
+Interval 433 (432000 steps performed)
+5 episodes - episode_rewards: -268.113 [-461.900, -125.001] - Model Order: 631.769 - Testing Reward: -126.942708592 - Training Loss: 3.4856239887 - Testing Loss: 3.89700099659
+Interval 434 (433000 steps performed)
+5 episodes - episode_rewards: -194.830 [-499.119, -2.904] - Model Order: 631.458 - Testing Reward: -119.604143474 - Training Loss: 2.55480430753 - Testing Loss: 2.65003163735
+Interval 435 (434000 steps performed)
+5 episodes - episode_rewards: -231.369 [-281.500, -123.727] - Model Order: 627.132 - Testing Reward: -123.592702237 - Training Loss: 1.84324282041 - Testing Loss: 1.94653152715
+Interval 436 (435000 steps performed)
+5 episodes - episode_rewards: -220.436 [-368.085, -128.147] - Model Order: 626.561 - Testing Reward: -685.010057485 - Training Loss: 1.9061300089 - Testing Loss: 3.27409292429
+Interval 437 (436000 steps performed)
+5 episodes - episode_rewards: -125.397 [-127.200, -122.264] - Model Order: 626.225 - Testing Reward: -231.445574673 - Training Loss: 1.52378136997 - Testing Loss: 1.72157072765
+Interval 438 (437000 steps performed)
+5 episodes - episode_rewards: -290.760 [-468.378, -125.592] - Model Order: 623.456 - Testing Reward: -128.366390239 - Training Loss: 1.62880598301 - Testing Loss: 2.71162835934
+Interval 439 (438000 steps performed)
+5 episodes - episode_rewards: -267.787 [-471.006, -125.178] - Model Order: 623.306 - Testing Reward: -239.303945423 - Training Loss: 1.5217551467 - Testing Loss: 2.70638290037
+Interval 440 (439000 steps performed)
+5 episodes - episode_rewards: -291.622 [-483.665, -128.940] - Model Order: 625.705 - Testing Reward: -243.937056115 - Training Loss: 1.17262086661 - Testing Loss: 3.21298954161
+Interval 441 (440000 steps performed)
+5 episodes - episode_rewards: -222.749 [-490.200, -123.493] - Model Order: 625.727 - Testing Reward: -225.715967549 - Training Loss: 1.97758594429 - Testing Loss: 3.22424532081
+Interval 442 (441000 steps performed)
+5 episodes - episode_rewards: -124.526 [-247.906, -2.483] - Model Order: 625.855 - Testing Reward: -230.697161583 - Training Loss: 2.46908879521 - Testing Loss: 3.6617515675
+Interval 443 (442000 steps performed)
+5 episodes - episode_rewards: -194.701 [-366.003, -117.360] - Model Order: 625.864 - Testing Reward: -233.513163435 - Training Loss: 1.88407237076 - Testing Loss: 1.9097555123
+Interval 444 (443000 steps performed)
+5 episodes - episode_rewards: -189.206 [-451.600, -3.083] - Model Order: 625.739 - Testing Reward: -0.99877920738 - Training Loss: 2.7155190045 - Testing Loss: 2.13299988084
+Interval 445 (444000 steps performed)
+5 episodes - episode_rewards: -149.334 [-244.042, -120.599] - Model Order: 625.392 - Testing Reward: -118.563795955 - Training Loss: 1.55758238649 - Testing Loss: 2.17768868765
+Interval 446 (445000 steps performed)
+5 episodes - episode_rewards: -172.946 [-358.401, -122.227] - Model Order: 625.516 - Testing Reward: -229.291772019 - Training Loss: 1.82300567194 - Testing Loss: 1.54313419477
+Interval 447 (446000 steps performed)
+5 episodes - episode_rewards: -296.005 [-467.893, -248.471] - Model Order: 624.29 - Testing Reward: -122.257514331 - Training Loss: 1.50345640311 - Testing Loss: 1.40472890673
+Interval 448 (447000 steps performed)
+5 episodes - episode_rewards: -186.263 [-425.233, -2.325] - Model Order: 624.454 - Testing Reward: -221.111520352 - Training Loss: 1.68429884414 - Testing Loss: 2.72442280885
+Interval 449 (448000 steps performed)
+5 episodes - episode_rewards: -294.230 [-476.947, -122.544] - Model Order: 624.582 - Testing Reward: -121.751954513 - Training Loss: 1.45315678474 - Testing Loss: 0.951055614218
+Interval 450 (449000 steps performed)
+5 episodes - episode_rewards: -359.500 [-481.552, -121.189] - Model Order: 622.816 - Testing Reward: -119.760365827 - Training Loss: 1.70217959539 - Testing Loss: 1.95014707439
+Interval 451 (450000 steps performed)
+5 episodes - episode_rewards: -74.187 [-124.944, -1.365] - Model Order: 622.283 - Testing Reward: -119.501724208 - Training Loss: 2.0922492915 - Testing Loss: 1.64920568935
+Interval 452 (451000 steps performed)
+5 episodes - episode_rewards: -172.620 [-360.603, -123.186] - Model Order: 624.428 - Testing Reward: -331.771655681 - Training Loss: 1.60293593336 - Testing Loss: 2.25907934621
+Interval 453 (452000 steps performed)
+5 episodes - episode_rewards: -99.583 [-127.682, -1.957] - Model Order: 624.676 - Testing Reward: -1.92023107199 - Training Loss: 1.79311624113 - Testing Loss: 2.58058437573
+Interval 454 (453000 steps performed)
+5 episodes - episode_rewards: -148.620 [-222.632, -122.276] - Model Order: 626.038 - Testing Reward: -123.343797506 - Training Loss: 2.5661605603 - Testing Loss: 2.45690594898
+Interval 455 (454000 steps performed)
+5 episodes - episode_rewards: -351.131 [-625.771, -118.383] - Model Order: 626.005 - Testing Reward: -123.155447124 - Training Loss: 2.02276766511 - Testing Loss: 2.22240005666
+Interval 456 (455000 steps performed)
+5 episodes - episode_rewards: -143.337 [-345.524, -4.841] - Model Order: 627.005 - Testing Reward: -114.362174013 - Training Loss: 2.32106008062 - Testing Loss: 2.0580629836
+Interval 457 (456000 steps performed)
+5 episodes - episode_rewards: -171.987 [-249.955, -122.111] - Model Order: 628.371 - Testing Reward: -1.07169769378 - Training Loss: 1.60513993735 - Testing Loss: 1.32204073066
+Interval 458 (457000 steps performed)
+5 episodes - episode_rewards: -235.175 [-322.244, -124.357] - Model Order: 629.041 - Testing Reward: -125.798766074 - Training Loss: 1.80463860243 - Testing Loss: 1.51262087831
+Interval 459 (458000 steps performed)
+5 episodes - episode_rewards: -264.060 [-456.130, -123.376] - Model Order: 628.557 - Testing Reward: -120.887108337 - Training Loss: 1.21211229172 - Testing Loss: 5.57333942001
+Interval 460 (459000 steps performed)
+5 episodes - episode_rewards: -163.322 [-445.375, -1.802] - Model Order: 628.739 - Testing Reward: -122.989384699 - Training Loss: 4.35885989228 - Testing Loss: 1.67543797299
+Interval 461 (460000 steps performed)
+5 episodes - episode_rewards: -217.730 [-363.443, -2.197] - Model Order: 629.468 - Testing Reward: -354.62743427 - Training Loss: 1.61541302275 - Testing Loss: 2.54040567406
+Interval 462 (461000 steps performed)
+5 episodes - episode_rewards: -149.052 [-246.946, -120.792] - Model Order: 629.169 - Testing Reward: -117.888855254 - Training Loss: 2.18256021544 - Testing Loss: 2.10775208336
+Interval 463 (462000 steps performed)
+5 episodes - episode_rewards: -238.337 [-456.665, -121.648] - Model Order: 629.865 - Testing Reward: -127.791540558 - Training Loss: 1.6147015605 - Testing Loss: 1.90143605973
+Interval 464 (463000 steps performed)
+5 episodes - episode_rewards: -184.355 [-578.129, -1.150] - Model Order: 630.74 - Testing Reward: -124.105245192 - Training Loss: 2.41886404032 - Testing Loss: 1.9633200231
+Interval 465 (464000 steps performed)
+5 episodes - episode_rewards: -195.203 [-363.470, -2.624] - Model Order: 630.122 - Testing Reward: -115.281826088 - Training Loss: 1.99052409528 - Testing Loss: 3.32752707593
+Interval 466 (465000 steps performed)
+5 episodes - episode_rewards: -174.595 [-256.206, -115.670] - Model Order: 629.783 - Testing Reward: -117.812006026 - Training Loss: 1.17938597646 - Testing Loss: 1.08341769014
+Interval 467 (466000 steps performed)
+5 episodes - episode_rewards: -225.495 [-533.996, -1.476] - Model Order: 629.804 - Testing Reward: -121.936531679 - Training Loss: 1.56032605312 - Testing Loss: 1.78567032715
+Interval 468 (467000 steps performed)
+5 episodes - episode_rewards: -261.396 [-354.593, -120.337] - Model Order: 630.799 - Testing Reward: -119.872514456 - Training Loss: 1.11699769691 - Testing Loss: 1.55270392729
+Interval 469 (468000 steps performed)
+5 episodes - episode_rewards: -310.853 [-424.328, -128.659] - Model Order: 630.056 - Testing Reward: -360.969528115 - Training Loss: 1.73332097037 - Testing Loss: 2.21161713246
+Interval 470 (469000 steps performed)
+5 episodes - episode_rewards: -243.436 [-390.181, -122.629] - Model Order: 630.796 - Testing Reward: -121.855465802 - Training Loss: 0.989664866056 - Testing Loss: 2.31134521734
+Interval 471 (470000 steps performed)
+5 episodes - episode_rewards: -120.799 [-231.824, -1.468] - Model Order: 632.706 - Testing Reward: -126.220810491 - Training Loss: 2.05810283015 - Testing Loss: 5.12706378891
+Interval 472 (471000 steps performed)
+5 episodes - episode_rewards: -298.522 [-465.419, -1.026] - Model Order: 632.869 - Testing Reward: -123.678902881 - Training Loss: 2.10648702522 - Testing Loss: 2.08559279356
+Interval 473 (472000 steps performed)
+5 episodes - episode_rewards: -204.072 [-387.562, -124.044] - Model Order: 634.373 - Testing Reward: -117.26425614 - Training Loss: 1.96844140648 - Testing Loss: 2.15201118187
+Interval 474 (473000 steps performed)
+5 episodes - episode_rewards: -261.280 [-372.380, -1.745] - Model Order: 634.671 - Testing Reward: -124.434962711 - Training Loss: 1.73719106346 - Testing Loss: 1.73362591853
+Interval 475 (474000 steps performed)
+5 episodes - episode_rewards: -243.699 [-365.068, -123.919] - Model Order: 633.172 - Testing Reward: -245.588932302 - Training Loss: 1.65498346938 - Testing Loss: 2.21451322751
+Interval 476 (475000 steps performed)
+5 episodes - episode_rewards: -233.223 [-498.581, -2.943] - Model Order: 634.277 - Testing Reward: -234.412882269 - Training Loss: 1.23702241583 - Testing Loss: 1.33089001313
+Interval 477 (476000 steps performed)
+5 episodes - episode_rewards: -208.575 [-563.053, -1.758] - Model Order: 634.919 - Testing Reward: -336.913205199 - Training Loss: 1.55765793208 - Testing Loss: 1.27437888603
+Interval 478 (477000 steps performed)
+5 episodes - episode_rewards: -244.220 [-473.072, -1.582] - Model Order: 634.597 - Testing Reward: -0.71534660569 - Training Loss: 0.948742374009 - Testing Loss: 1.21183648109
+Interval 479 (478000 steps performed)
+5 episodes - episode_rewards: -188.054 [-348.547, -1.942] - Model Order: 635.132 - Testing Reward: -119.849262912 - Training Loss: 1.73932805848 - Testing Loss: 1.0718034535
+Interval 480 (479000 steps performed)
+5 episodes - episode_rewards: -226.883 [-539.281, -1.190] - Model Order: 636.837 - Testing Reward: -1.22242211736 - Training Loss: 1.28326253827 - Testing Loss: 1.51773573841
+Interval 481 (480000 steps performed)
+5 episodes - episode_rewards: -235.316 [-461.760, -122.310] - Model Order: 636.675 - Testing Reward: -128.276801808 - Training Loss: 1.49360923775 - Testing Loss: 1.22644925663
+Interval 482 (481000 steps performed)
+5 episodes - episode_rewards: -171.426 [-247.934, -122.573] - Model Order: 637.648 - Testing Reward: -115.089580544 - Training Loss: 1.19433352785 - Testing Loss: 1.40754063212
+Interval 483 (482000 steps performed)
+5 episodes - episode_rewards: -125.126 [-129.595, -123.473] - Model Order: 638.391 - Testing Reward: -243.220393426 - Training Loss: 1.52922716422 - Testing Loss: 1.74023241641
+Interval 484 (483000 steps performed)
+5 episodes - episode_rewards: -97.680 [-126.347, -1.293] - Model Order: 636.628 - Testing Reward: -124.583616341 - Training Loss: 1.02555188763 - Testing Loss: 1.26156706372
+Interval 485 (484000 steps performed)
+5 episodes - episode_rewards: -223.214 [-606.850, -1.936] - Model Order: 636.0 - Testing Reward: -126.039178894 - Training Loss: 1.24150323566 - Testing Loss: 1.21955359375
+Interval 486 (485000 steps performed)
+5 episodes - episode_rewards: -246.109 [-394.219, -124.359] - Model Order: 636.45 - Testing Reward: -232.697854931 - Training Loss: 1.35284845901 - Testing Loss: 1.84054703476
+Interval 487 (486000 steps performed)
+5 episodes - episode_rewards: -358.441 [-733.797, -1.316] - Model Order: 636.721 - Testing Reward: -127.082241375 - Training Loss: 1.48602060172 - Testing Loss: 1.42564627274
+Interval 488 (487000 steps performed)
+5 episodes - episode_rewards: -172.459 [-474.757, -3.046] - Model Order: 634.644 - Testing Reward: -1.78099493966 - Training Loss: 1.23144630892 - Testing Loss: 1.18710612199
+Interval 489 (488000 steps performed)
+5 episodes - episode_rewards: -185.823 [-364.651, -1.726] - Model Order: 634.408 - Testing Reward: -229.591220954 - Training Loss: 1.11189273075 - Testing Loss: 1.56318750042
+Interval 490 (489000 steps performed)
+5 episodes - episode_rewards: -285.877 [-451.212, -115.794] - Model Order: 634.269 - Testing Reward: -123.25188804 - Training Loss: 1.20013033578 - Testing Loss: 0.99637756634
+Interval 491 (490000 steps performed)
+5 episodes - episode_rewards: -237.098 [-469.797, -118.854] - Model Order: 634.675 - Testing Reward: -124.909890163 - Training Loss: 1.25130145191 - Testing Loss: 1.76647742317
+Interval 492 (491000 steps performed)
+5 episodes - episode_rewards: -262.260 [-377.812, -125.704] - Model Order: 633.374 - Testing Reward: -336.563122544 - Training Loss: 1.13365850433 - Testing Loss: 1.47651633252
+Interval 493 (492000 steps performed)
+5 episodes - episode_rewards: -170.837 [-360.062, -118.291] - Model Order: 632.67 - Testing Reward: -238.728675027 - Training Loss: 0.994343087903 - Testing Loss: 1.28248756712
+Interval 494 (493000 steps performed)
+5 episodes - episode_rewards: -167.665 [-348.790, -1.269] - Model Order: 632.985 - Testing Reward: -239.533033659 - Training Loss: 1.48176938483 - Testing Loss: 1.46839762131
+Interval 495 (494000 steps performed)
+5 episodes - episode_rewards: -117.666 [-348.444, -1.251] - Model Order: 634.179 - Testing Reward: -130.2093032 - Training Loss: 1.26548293321 - Testing Loss: 1.477095713
+Interval 496 (495000 steps performed)
+5 episodes - episode_rewards: -212.898 [-417.574, -1.266] - Model Order: 632.222 - Testing Reward: -124.734331257 - Training Loss: 1.24518397187 - Testing Loss: 1.18513074236
+Interval 497 (496000 steps performed)
+5 episodes - episode_rewards: -176.105 [-383.573, -119.978] - Model Order: 631.864 - Testing Reward: -118.504331468 - Training Loss: 1.26193582072 - Testing Loss: 1.27180909257
+Interval 498 (497000 steps performed)
+5 episodes - episode_rewards: -271.584 [-372.499, -119.550] - Model Order: 632.001 - Testing Reward: -124.974771974 - Training Loss: 0.771096612543 - Testing Loss: 0.948621401439
+Interval 499 (498000 steps performed)
+5 episodes - episode_rewards: -187.979 [-467.932, -1.386] - Model Order: 632.555 - Testing Reward: -128.21528228 - Training Loss: 0.680587548155 - Testing Loss: 1.49392696622
+Interval 500 (499000 steps performed)
+5 episodes - episode_rewards: -243.152 [-387.947, -1.236] - Model Order: 634.105 - Testing Reward: -0.799665632759 - Training Loss: 1.03799513752 - Testing Loss: 1.23908904317
+Interval 501 (500000 steps performed)
+200
+done, took 12372.366 seconds
+1 episodes - episode_rewards: -360.135 [-360.135, -360.135] - Model Order: 634.105 - Testing Reward: -119.720959933 - Training Loss: 1.03799513752 - Testing Loss: 1.07622563896
+
+########################################################################
+# Colfax Cluster
+# End of output for job 44356.c009
+# Date: Fri Feb 16 15:37:40 PST 2018
+########################################################################
+

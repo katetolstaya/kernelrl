@@ -39,6 +39,8 @@ pattern3 = re.compile(r"Model Order: ([0-9]*.[0-9]*)")
 pattern4 = re.compile(r"Training Loss: (-?[0-9]*.[0-9]*)")
 pattern5 = re.compile(r"Testing Loss: (-?[0-9]*.[0-9]*)")
 pattern6 = re.compile(r"Testing Reward: (-?[0-9]*.[0-9]*)")
+
+
 # episode_rewards: 36.938
 n = 100000
 a = np.zeros((n,))
@@ -75,7 +77,38 @@ d = d[0:p - 1]
 
 plt.figure(1)
 
-plt.subplot(411)
+# plt.subplot(411)
+# plt.tight_layout()
+# plt.plot(np.linspace(0, 1000 * len(a), len(a)), a)
+# plt.title('Training Reward')
+# # plt.xlabel('Training Steps')
+# #plt.ylabel('Average Reward, (w=' + str(window) + ')')
+# # plt.xlim([0,10000000])
+
+# plt.subplot(412)
+# plt.tight_layout()
+# plt.plot(np.linspace(0, len(b)* 1000, len(b)), b)
+# plt.title('Model Order')
+# # plt.xlabel('Training Episodes')
+# #plt.ylabel('Episode Length (steps),(w=' + str(window2) + ')')
+
+# plt.subplot(413)
+# plt.tight_layout()
+# plt.plot(np.linspace(0, len(c) * 1000, len(c)), c)
+# plt.title('Testing Error')
+# # plt.xlabel('Training Steps')
+# #plt.ylabel('Model Order')
+
+# plt.subplot(414)
+# plt.tight_layout()
+# plt.plot(np.linspace(0, len(d) * 1000, len(d)), d)
+# plt.title('Training Error')
+# # plt.xlabel('Training Steps')
+# #plt.ylabel('Training Error')
+# plt.tight_layout()
+# plt.show()
+
+plt.subplot(311)
 plt.tight_layout()
 plt.plot(np.linspace(0, 1000 * len(a), len(a)), a)
 plt.title('Training Reward')
@@ -83,21 +116,14 @@ plt.title('Training Reward')
 #plt.ylabel('Average Reward, (w=' + str(window) + ')')
 # plt.xlim([0,10000000])
 
-plt.subplot(412)
+plt.subplot(312)
 plt.tight_layout()
 plt.plot(np.linspace(0, len(b)* 1000, len(b)), b)
 plt.title('Model Order')
 # plt.xlabel('Training Episodes')
 #plt.ylabel('Episode Length (steps),(w=' + str(window2) + ')')
 
-plt.subplot(413)
-plt.tight_layout()
-plt.plot(np.linspace(0, len(c) * 1000, len(c)), c)
-plt.title('Testing Error')
-# plt.xlabel('Training Steps')
-#plt.ylabel('Model Order')
-
-plt.subplot(414)
+plt.subplot(313)
 plt.tight_layout()
 plt.plot(np.linspace(0, len(d) * 1000, len(d)), d)
 plt.title('Training Error')

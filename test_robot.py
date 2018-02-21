@@ -17,28 +17,33 @@ import matplotlib.pyplot as plt
 
 class GazeboTestEnv(gazebo_env.GazeboEnv):
 
-    def __init__(self):
+    def __init__(self, fname):
         # Launch the simulation with the given launchfile name
-        gazebo_env.GazeboEnv.__init__(self, "GazeboCircuit2TurtlebotLidar_v0.launch")
+        self.fname = fname
+        #self.fname = "GazeboCircuit2TurtlebotLidar_v0.launch"
+        #self.fname = "GazeboCircuit2TurtlebotLidar_v0.launch"
+        #self.fname = "GazeboMazeTurtlebotLidar_v0.launch"
+        gazebo_env.GazeboEnv.__init__(self, self.fname)
         self.vel_pub = rospy.Publisher('/mobile_base/commands/velocity', Twist, queue_size=5)
         self.unpause = rospy.ServiceProxy('/gazebo/unpause_physics', Empty)
         self.pause = rospy.ServiceProxy('/gazebo/pause_physics', Empty)
         self.reset_proxy = rospy.ServiceProxy('/gazebo/reset_simulation', Empty)
 
-        high_a = np.array([0.3])
+        self.high_a = np.array([0.3])
         low_o = np.array([0,0,0,0,0])
         high_o = np.array([np.inf,np.inf,np.inf,np.inf,np.inf])
-        self.action_space = spaces.Box(low =-1*high_a,high=high_a) #F,L,R
+        self.action_space = spaces.Box(low =-1*self.high_a,high=self.high_a) #F,L,R
         self.reward_range = (-np.inf, np.inf)
         self.observation_space = spaces.Box(low=low_o, high=high_o)
 
         self.sim = True
 
         self._seed()
+        print "Initialized"
 
     def discretize_observation(self,data,new_ranges):
         discretized_ranges = []
-        min_range = 0.2
+        min_range = 0.20
         done = False
         mod = len(data.ranges)/new_ranges
         for i, item in enumerate(data.ranges):
@@ -93,10 +98,7 @@ class GazeboTestEnv(gazebo_env.GazeboEnv):
         #pdb.set_trace() 
 
         if not done:
-            if np.sum(action) < 0.1:
-                reward = 5
-            else:
-                reward = 1
+            reward = 1
         else:
             reward = -200
 
@@ -139,15 +141,16 @@ class GazeboTestEnv(gazebo_env.GazeboEnv):
                 print ("/gazebo/pause_physics service call failed")
 
         state,done = self.discretize_observation(data,5)
+        print "Reset"
 
         return state
 
 def plot(t, rewa, scor):
-    font = {'family' : 'sens-serif',
-    'weight' : 'bold',
-    'size'   : 19}
-    plt.rc('font', **font)
-    plt.rc('text', usetex=True)
+    #font = {'family' : 'sens-serif',
+    #'weight' : 'bold',
+    #'size'   : 19}
+    #plt.rc('font', **font)
+    #plt.rc('text', usetex=True)
 
     plt.figure(1)
     plt.subplot(211)
@@ -160,42 +163,107 @@ def plot(t, rewa, scor):
     plt.plot(t, scor)
     plt.title('State Safety Scores')
 
-    plt.tight_layout()
     plt.show()
 
 def main():
-        fname = "rob7:q_model5.txt"
-        model = pickle.load(open(fname,"rb"))
-        env = GazeboTestEnv()
-        s = env.reset()
+    fname = "comod2.txt" # combined
+    #fname = "robot_results/rob15_model25.txt" # circuit 2 
+    #fname = "robot_results/rob16_model49.txt" # circuit 2 
+    #fname = "robot_results/rob14_model54.txt" # circuit 1
 
-        T = 1000
+    #launchf = "GazeboCircuit2TurtlebotLidar_v0.launch"
+    launchf = "GazeboCircuitTurtlebotLidar_v0.launch"
+    #launchf = "GazeboMazeTurtlebotLidar_v0.launch"
 
-        rewa = np.zeros((T,1)) # reward
-        stat = np.zeros((T,1)) # state
-        nsta = np.zeros((T,1)) # next state
-        acti = np.zeros((T,1)) # action
-        scor = np.zeros((T,1)) # reliability scores
+    #"rob15_model25.txt"
+    #"rob9_model36.txt" #"combined_model2.txt" #
+    model = pickle.load(open(fname,"rb"))
+    env = GazeboTestEnv(launchf)
+    s = env.reset()
 
-        max_score = np.max(np.sum(model.vpl.KDD,axis = 0))
+    T = 5000
 
-        for t in range(0,T):
-            stat[t] = s
-            scor[t] = np.sum(model.vpl.kernel.f(s,model.vpl.D))
+    rewa = np.zeros((T,1)) # reward
+    #stat = np.zeros((T,1)) # state
+    #nsta = np.zeros((T,1)) # next state
+    acti = np.zeros((T,1)) # action
+    scor = np.zeros((T,1)) # reliability scores
 
-            a = np.reshape(np.clip(model.get_pi(s),-env.high_a, env.high_a))
+    max_score = np.max(np.sum(model.vpl.KDD,axis = 0))
+    n_crashes = 0
 
-            s, r, done, _ = env.step(a)
+    for t in range(0,T):
+        #stat[t] = s
+        scor[t] = np.sum(model.vpl.kernel.f(model.vpl.D,np.reshape(s,(1,5))))
 
-            acti[a] = a
-            rewa[t] = r
-            nsta[t] = s
+        noise = 0 #np.random.normal(0,0.1,1)
 
-            if done:
-                env.reset()
-                
-        t = np.linspace(0, T, T)
-        plot(t, rewa, scor)
+        a = np.reshape(np.clip(model.get_pi(s)+noise,-env.high_a, env.high_a), (-1,))
+
+        s, r, done, _ = env.step(a)
+
+        acti[t] = a
+        rewa[t] = r
+        #nsta[t] = s
+
+        if done:
+            env.reset()
+            n_crashes = n_crashes + 1
+            print(t)
+
+    env._close()
+    print ("Sum of rewards: " + str(np.sum(rewa)) + " for " + env.fname + " using policy " + fname)
+    print ("number of crashes: " + str(n_crashes))
+
+    t = np.linspace(0, T, T)
+    plot(t, rewa, scor)
+
+
+
+if __name__ == "__main__":
+    main()
+
+# 10k steps::::
+
+# Sum of rewards: 43199.0 for GazeboCircuit2TurtlebotLidar_v0.launch using policy robot_results/rob15_model25.txt
+# Sum of rewards: 34037.0 for GazeboCircuitTurtlebotLidar_v0.launch using policy robot_results/rob15_model25.txt
+
+# Sum of rewards: 38035.0 for GazeboCircuitTurtlebotLidar_v0.launch using policy robot_results/rob14_model54.txt
+# Sum of rewards: 29062.0 for GazeboCircuit2TurtlebotLidar_v0.launch using policy robot_results/rob14_model54.txt
+
+# Sum of rewards: 40607.0 for GazeboCircuit2TurtlebotLidar_v0.launch using policy combined_model9.txt
+# Sum of rewards: 34596.0 for GazeboCircuitTurtlebotLidar_v0.launch using policy combined_model9.txt
+
+# Sum of rewards: 36314.0 for GazeboCircuitTurtlebotLidar_v0.launch using policy combined_model10.txt
+
+
+#5k
+# Sum of rewards: 14744.0 for GazeboMazeTurtlebotLidar_v0.launch using policy robot_results/rob14_model54.txt - 21 crashes
+# Sum of rewards: 14823.0 for GazeboMazeTurtlebotLidar_v0.launch using policy combined_model10.txt - 13 crashes
+# Sum of rewards: 1089.0 for GazeboMazeTurtlebotLidar_v0.launch using policy robot_results/rob16_model49.txt - 51 crashes!!
+
+# Sum of rewards: 15677.0 for GazeboMazeTurtlebotLidar_v0.launch using policy combined_model10.txt - number of crashes: 7
+
+# Sum of rewards: 12543.0 for GazeboCircuitTurtlebotLidar_v0.launch using policy combined_model10.txt  - number of crashes: 13
+
+# Sum of rewards: 14675.0 for GazeboCircuit2TurtlebotLidar_v0.launch using policy combined_model10.txt - number of crashes: 9
+
+# Sum of rewards: 16278.0 for GazeboCircuit2TurtlebotLidar_v0.launch using policy robot_results/rob16_model49.txt - number of crashes: 2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
