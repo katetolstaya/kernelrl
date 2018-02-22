@@ -128,7 +128,10 @@ class KNAFModel(object):
             print (delta)
         self.vpl.append(np.array(s), - delta * np.reshape(W, (1, -1)))
         # Prune
+
+        #if step % 10 == 0 :
         self.vpl.prune(self.eps)
+
         modelOrder_ = len(self.vpl.D)
         # Compute new error
         loss = 0.5 * self.bellman_error(s, a, r, s_) ** 2  # + self.model_error()
@@ -152,7 +155,13 @@ class KNAFAgent(object):
         self.max_act = np.reshape(json.loads(config.get('MaxAction')), (-1, 1))
 
         # ---- Initialize model
-        self.model = KNAFModel(self.stateCount, self.actionCount, config)
+
+
+        if config.get('LoadModel'):
+            fname = config.get('LoadModel')
+            self.model = pickle.load(open(fname,"rb"))
+        else:
+           self.model = KNAFModel(self.stateCount, self.actionCount, config)
 
     def act(self, s, stochastic=True):
         # "Decide what action to take in state s."
@@ -175,7 +184,7 @@ class KNAFAgent(object):
         self.noise_var.step(self.steps)
 
         if self.steps % 10000 == 0 :
-            with open('rob19_model'+str(int(self.steps/10000))+'.txt', 'wb') as f:
+            with open('rob21_model'+str(int(self.steps/10000))+'.txt', 'wb') as f:
                 pickle.dump(self.model, f)
 
 

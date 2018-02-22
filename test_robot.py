@@ -166,14 +166,20 @@ def plot(t, rewa, scor):
     plt.show()
 
 def main():
-    fname = "comod2.txt" # combined
+    #fname = "comod2.txt" # combined
+    fname = "comod3.txt" # combined
     #fname = "robot_results/rob15_model25.txt" # circuit 2 
     #fname = "robot_results/rob16_model49.txt" # circuit 2 
     #fname = "robot_results/rob14_model54.txt" # circuit 1
+    #fname = "exp18/rob16_model74.txt" # maze
+    #fname = "exp20/rob20_model23.txt" # round
+    #fname = "rob19_2_model20.txt" # pillars
 
-    #launchf = "GazeboCircuit2TurtlebotLidar_v0.launch"
-    launchf = "GazeboCircuitTurtlebotLidar_v0.launch"
-    #launchf = "GazeboMazeTurtlebotLidar_v0.launch"
+    launchf = "GazeboCircuit2TurtlebotLidar_v0.launch"
+    #launchf = "GazeboCircuitTurtlebotLidar_v0.launch"
+    launchf = "GazeboMazeTurtlebotLidar_v0.launch"
+    #launchf = "GazeboRoundTurtlebotLidar_v0.launch"
+    #launchf = "GazeboPillarsTurtlebotLidar_v0.launch"
 
     #"rob15_model25.txt"
     #"rob9_model36.txt" #"combined_model2.txt" #

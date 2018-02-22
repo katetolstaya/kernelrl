@@ -10,7 +10,7 @@ def softmax(a,b):
 	return np.exp(a) / (np.exp(a) + np.exp(b))
 
 # models to combine
-model_names = [ "robot_results/rob14_model54.txt", "robot_results/rob15_model25.txt","robot_results/rob16_model49.txt"] 
+model_names = [ "robot_results/rob14_model54.txt", "robot_results/rob15_model25.txt", "exp18/rob16_model74.txt"] 
 
 # load models
 models = list()
@@ -51,7 +51,7 @@ for i in np.random.permutation(np.shape(centers)[0]): #range(0,np.shape(centers)
 	# update model
 	if score_ > score:
 		model.vpl.append(x, (model_.vpl(x) - model.vpl(x)))
-		
+
 model.vpl.prune(model.eps)
 
 # save model
