@@ -183,9 +183,9 @@ class KNAFAgent(object):
         self.epsilon.step(self.steps)
         self.noise_var.step(self.steps)
 
-        if self.steps % 10000 == 0 :
-            with open('rob21_model'+str(int(self.steps/10000))+'.txt', 'wb') as f:
-                pickle.dump(self.model, f)
+        #if self.steps % 10000 == 0 :
+        #    with open('rob24_model'+str(int(self.steps/10000))+'.txt', 'wb') as f:
+        #        pickle.dump(self.model, f)
 
 
     def improve(self):

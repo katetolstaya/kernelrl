@@ -62,7 +62,7 @@ c = c[0:j - 1]
 d = d[0:p - 1]
 f = f[0:q - 1]
 
-N = 5
+N = 20
 
 print "Model Order/Training Loss/Training Rewards/Testing Rewards/Testing Loss"
 print str(round(np.mean(b[-N:]),2)) + " / " + str(round(np.mean(d[-N:]),2)) + " / " + str(round(np.mean(f[-N:]),2)) + " / "  + str(round(np.mean(a[-N:]),2)) + " / " + str(round(np.mean(c[-N:]),2))

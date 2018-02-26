@@ -8,3 +8,5 @@
 *.data
 *.idx
 *.o*
+results/*
+misc/*
