@@ -23,7 +23,7 @@ def scores(models, x, ind):
 # models to combine
 #model_names = [ "robot_results/rob14_model54.txt", "robot_results/rob15_model25.txt", "exp18/rob16_model74.txt"] 
 
-model_names = ["exp20/rob20_model23.txt", "exp21/rob21_model63.txt",  "exp23/rob23_3_model3.txt", "exp22/rob22_model50.txt"]
+model_names = ["robot_results/exp20/rob20_model23.txt", "robot_results/exp21/rob21_model63.txt",  "robot_results/exp23/rob23_3_model3.txt", "robot_results/exp22/rob22_model50.txt"]
 
 # load models
 models = list()

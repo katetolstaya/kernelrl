@@ -167,17 +167,32 @@ def plot(t, rewa, scor):
 
 def main():
     #fname = "comod2.txt" # combined
-    fname = "comod3.txt" # combined
+    #fname = "comod4.txt" # combined
+    #fname = "rob22_model50.txt"
     #fname = "robot_results/rob15_model25.txt" # circuit 2 
     #fname = "robot_results/rob16_model49.txt" # circuit 2 
     #fname = "robot_results/rob14_model54.txt" # circuit 1
     #fname = "exp18/rob16_model74.txt" # maze
     #fname = "exp20/rob20_model23.txt" # round
     #fname = "rob19_2_model20.txt" # pillars
+    # 21 maze
+    # 22 circuit 1
+    # 23 circuit 2
 
-    launchf = "GazeboCircuit2TurtlebotLidar_v0.launch"
+    #fname = "exp22/rob22_model55.txt"
+    #fname = "exp22/rob22_2_model15.txt"
+    #"exp23/rob23_model20.txt"
+
+    #fname = "exp20/rob20_model23.txt" # round - GOOD
+    #fname = "exp22/rob22_2_model15.txt" #rob22_model61.txt" # circuit 1 - BAD
+    #fname = "exp22/rob22_model50.txt" #rob22_model61.txt" # circuit 1 - BAD
+    #fname = "exp23/rob23_3_model3.txt" # circuit 2 - GOOD
+    #fname = "exp21/rob21_model63.txt" # maze - GOOD
+    fname = "combos/policy14.txt"
+
+    launchf = "GazeboRoundTurtlebotLidar_v0.launch"
     #launchf = "GazeboCircuitTurtlebotLidar_v0.launch"
-    launchf = "GazeboMazeTurtlebotLidar_v0.launch"
+    #launchf = "GazeboMazeTurtlebotLidar_v0.launch"
     #launchf = "GazeboRoundTurtlebotLidar_v0.launch"
     #launchf = "GazeboPillarsTurtlebotLidar_v0.launch"
 
@@ -202,7 +217,7 @@ def main():
         #stat[t] = s
         scor[t] = np.sum(model.vpl.kernel.f(model.vpl.D,np.reshape(s,(1,5))))
 
-        noise = 0 #np.random.normal(0,0.1,1)
+        noise = 0 #np.random.normal(0,0.2,1)
 
         a = np.reshape(np.clip(model.get_pi(s)+noise,-env.high_a, env.high_a), (-1,))
 

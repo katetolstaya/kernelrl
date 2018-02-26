@@ -26,7 +26,7 @@ pattern7 = re.compile(r'(\d+) steps performed')  ## steps
 save_flag = True
 
 # p3
-fdir = 'exp25/'
+fdir = 'robot_results/exp25/'
 save_exp= 'p_'
 all_names = 'rlcorejob.o44300  rlcorejob.o44303  rlcorejob.o44353  rlcorejob.o44356 rlcorejob.o44301  rlcorejob.o44304  rlcorejob.o44354 rlcorejob.o44302  rlcorejob.o44352  rlcorejob.o44355'
 all_names = 'exp25.txt'
@@ -129,6 +129,7 @@ plt.xlabel('Training Steps ($10^4$)')
 plt.ylabel('Average Episode Reward')
 ax.grid(color='k', linestyle='-', linewidth=0.25)
 plt.tight_layout()
+ax.set_ylim(6000)
 
 if save_flag:
     fig.savefig(fdir + save_exp + 'reward.png', dpi=200)

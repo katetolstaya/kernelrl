@@ -169,27 +169,28 @@ def main():
     for fname in model_names:
 
         model = pickle.load(open(fname,"rb"))
-        print (fname)
+        print np.shape(model.vpl.D)[0]
+        # print (fname)
 
-        s = env.reset()
-        rewa = np.zeros((T,1)) # reward
-        loss = np.zeros((T,1)) # reward
-        n_crashes = 0
+        # s = env.reset()
+        # rewa = np.zeros((T,1)) # reward
+        # loss = np.zeros((T,1)) # reward
+        # n_crashes = 0
 
-        for t in range(0,T):
-            noise = 0 #np.random.normal(0,0.2,1)
-            a = np.reshape(np.clip(model.get_pi(s),-env.high_a, env.high_a), (-1,))
-            qs = model.get_q(s,a)
-            s, r, done, _ = env.step(a)
-            rewa[t] = r
-            loss[t] = (qs - r - 0.99 * model.get_v(s)) ** 2
+        # for t in range(0,T):
+        #     noise = 0 #np.random.normal(0,0.2,1)
+        #     a = np.reshape(np.clip(model.get_pi(s),-env.high_a, env.high_a), (-1,))
+        #     qs = model.get_q(s,a)
+        #     s, r, done, _ = env.step(a)
+        #     rewa[t] = r
+        #     loss[t] = (qs - r - 0.99 * model.get_v(s)) ** 2
 
-            if done:
-                env.reset()
-                n_crashes = n_crashes + 1
-                #print(t)
+        #     if done:
+        #         env.reset()
+        #         n_crashes = n_crashes + 1
+        #         #print(t)
 
-        flist.write(str(fname) + ", " + str(np.sum(rewa)) + ", " +  str(np.sum(loss)) + '\n')
+        # flist.write(str(fname) + ", " + str(np.sum(rewa)) + ", " +  str(np.sum(loss)) + '\n')
 
 if __name__ == "__main__":
     main()
