@@ -1,17 +1,11 @@
-import gym
 import rospy
 import roslaunch
 import time
 import numpy as np
 import pdb
-from gym import utils, spaces
-from gym_gazebo.envs import gazebo_env
 from geometry_msgs.msg import Twist
 from std_srvs.srv import Empty
-
 from sensor_msgs.msg import LaserScan
-
-from gym.utils import seeding
 import pickle
 import matplotlib.pyplot as plt
 
