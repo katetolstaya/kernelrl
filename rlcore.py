@@ -20,6 +20,7 @@ logger = logging.getLogger(__name__)
 # Our agent types
 from corerl.callbacks import CallbackList, make_callbacks
 from algs.kqlearning import KQLearningAgent
+#from algs.knaf_rho import KNAFAgent
 from algs.knaf import KNAFAgent
 from misc.knaf2 import KNAF2Agent
 from algs.knaf_iid import KNAFIIDAgent

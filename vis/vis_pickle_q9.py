@@ -24,16 +24,28 @@ pattern7 = re.compile(r'(\d+) steps performed')  ## steps
 #################################
 
 save_flag = True
+normalized_flag = True
+mcar_flag = True
+dx = 5 #10^dx
 
 # p3
-fdir = 'robot_results/exp25/'
-save_exp= 'p_'
+fdir = 'results/robot_results/exp25/'
+fdir = 'results/tac/p3/'
+fdir = './'
+if mcar_flag:
+    save_exp= 'm_'
+else:
+    save_exp= 'p_'
 all_names = 'rlcorejob.o44300  rlcorejob.o44303  rlcorejob.o44353  rlcorejob.o44356 rlcorejob.o44301  rlcorejob.o44304  rlcorejob.o44354 rlcorejob.o44302  rlcorejob.o44352  rlcorejob.o44355'
-all_names = 'exp25.txt'
+#all_names = 'exp25.txt'
+all_names = 'p15multi.txt'
 num_files = 10
 
 # episode_rewards: 36.938
-n = 200
+if mcar_flag:
+    n = 100000000
+else:
+    n=500
 a = np.zeros((n, num_files))
 b = np.zeros((n, num_files))
 c = np.zeros((n, num_files))
@@ -54,6 +66,7 @@ for fname in all_names.split():
 
     for i, line in enumerate(open(filename)):
         if k >= n:
+            ks[fnum] = k
             break
 
         for match in re.finditer(pattern7, line):  # step index
@@ -89,6 +102,8 @@ for fname in all_names.split():
 
     fnum = fnum + 1
 
+#pdb.set_trace()
+
 colors = {0: 'lightcoral', 1: 'lightgreen', 2: 'lightblue', 3: 'khaki', 4: 'pink', 5: 'silver', 6: 'plum', 7: 'tan',
           8: 'navajowhite', 9: 'lavender'}
 
@@ -101,10 +116,14 @@ d = d[0:p,:]
 e = e[0:q,:]
 g = g[0:k,:]
 
+if normalized_flag:
+    b[b==0] = 1
+    d = np.divide(d,b) #d/(b**2)
 
-e = e/np.power(10,4)
 
-g = g/np.power(10,5)
+e = e/np.power(10,dx)
+
+g = g/np.power(10,dx)
 
 a_av = np.average(a[0:np.min(ks[:-1]),:], axis=1)
 
@@ -121,15 +140,18 @@ fig.set_figheight(5.2)
 fig.set_figwidth(6.47)
 
 for file_num2 in range(1, num_files + 1):
-    plt.plot(g[0:ks[file_num2 - 1], file_num2 - 1], a[0:ks[file_num2 - 1], file_num2 - 1], linewidth=1.0, color=(colors[file_num2 - 1]))
+    plt.plot(g[0:ks[file_num2 - 1]-2, file_num2 - 1], a[0:ks[file_num2 - 1]-2, file_num2 - 1], linewidth=1.0, color=(colors[file_num2 - 1]))
 
-plt.plot(g[0:np.min(ks[:-1]), 0], a_av, color='black', linewidth=2.0)
-plt.xlabel('Training Steps ($10^4$)')
-#plt.axhline(y=0, color='limegreen', linestyle='-', linewidth=2.0)
+plt.plot(g[0:np.min(ks[:-1])-2, 0], a_av[:-2], color='black', linewidth=2.0)
+plt.xlabel('Training Steps ($10^'+str(dx)+'$)')
+if mcar_flag:
+    plt.axhline(y=90, color='limegreen', linestyle='-', linewidth=2.0)
 plt.ylabel('Average Episode Reward')
 ax.grid(color='k', linestyle='-', linewidth=0.25)
 plt.tight_layout()
-ax.set_ylim(6000)
+#ax.set_ylim(6000)
+
+#ax.set_xlim(xmin=0,xmax=4.9)
 
 if save_flag:
     fig.savefig(fdir + save_exp + 'reward.png', dpi=200)
@@ -146,7 +168,7 @@ for file_num2 in range(1, num_files + 1):
     plt.plot(e[:, file_num2 - 1], b[:, file_num2 - 1], linewidth=1.0, color=(colors[file_num2 - 1]))
 
 plt.plot(e[:, 0], b_av, color='black', linewidth=2.0)
-plt.xlabel('Training Steps ($10^4$)')
+plt.xlabel('Training Steps ($10^'+str(dx)+'$)')
 plt.ylabel('Model Order')
 ax.grid(color='k', linestyle='-', linewidth=0.25)
 plt.tight_layout()
@@ -166,8 +188,17 @@ for file_num2 in range(1, num_files + 1):
     plt.plot(e[:, file_num2 - 1], d[:, file_num2 - 1,], linewidth=1.0, color=(colors[file_num2 - 1]))
 
 plt.plot(e[:, 0], d_av, color='black', linewidth=2.0)
-plt.xlabel('Training Steps ($10^4$)')
-plt.ylabel('Bellman Error')
+plt.xlabel('Training Steps ($10^'+str(dx)+'$)')
+if normalized_flag:
+    plt.ylabel('Normalized Bellman Error')
+    if mcar_flag:
+        ax.set_ylim(ymin=0, ymax=0.3)
+
+    else:
+        ax.set_ylim(ymin=0, ymax=0.04)
+else:
+    plt.ylabel('Bellman Error')    
+
 ax.grid(color='k', linestyle='-', linewidth=0.25)
 plt.tight_layout()
 

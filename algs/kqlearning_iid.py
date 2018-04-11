@@ -168,6 +168,7 @@ class KQLearningAgentIID(object):
             rand = True
         else:
             a = self.model.Q.argmax(s)
+            
             rand = False
 
         a_temp = np.reshape(np.clip(a, self.min_act, self.max_act), (-1,))

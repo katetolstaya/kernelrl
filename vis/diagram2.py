@@ -35,16 +35,28 @@ fig = plt.figure()
 fig, ax = plt.subplots(1, 1)
 
 
-mu1 = np.random.uniform(low = 0.2, high = 0.5, size = (5,2))
-mu2 = np.random.uniform(low = 0.5, high = 0.8, size = (3,2))
-mu3 = np.random.uniform(low = 0, high = 0.6, size = (6,2))
-mu4 = np.random.uniform(low = 0, high = 0.8, size = (4,2))
+mu1 = np.random.uniform(low = 0.2, high = 0.5, size = (20,2))
+mu2 = np.random.uniform(low = 0.5, high = 1, size = (20,2))
+mu3 = np.random.uniform(low = 0, high = 0.6, size = (60,2))
+mu4 = np.random.uniform(low = 0, high = 1, size = (40,2))
+
+mu1_ = np.random.uniform(low = 0.2, high = 0.5, size = (20,2))
+mu2_ = np.random.uniform(low = 0.5, high = 1, size = (20,2))
+mu3_ = np.random.uniform(low = 0, high = 0.6, size = (60,2))
+mu4_ = np.random.uniform(low = 0, high = 0.7, size = (40,2))
 
 
-ax.plot(mu1[:,0] ,mu1[:,1], 'r8' , label='Policy 1', markersize =18.0)
-ax.plot(mu2[:,0] ,mu2[:,1], 'bo' , label='Policy 2', markersize =18.0)
-ax.plot(mu3[:,0] ,mu3[:,1], 'gs' , label='Policy 3', markersize =18.0)
-ax.plot(mu4[:,0] ,mu4[:,1], 'm*' , label='Policy 4', markersize =18.0)
+ax.plot(mu1[:,0] ,mu1[:,1], 'r8' , label='Policy 1', markersize =8.0, markeredgecolor='k', markeredgewidth=1.0)
+ax.plot(mu2[:,0] ,mu2[:,1], 'bo' , label='Policy 2', markersize =8.0, markeredgecolor='k', markeredgewidth=1.0)
+ax.plot(mu3[:,0] ,mu3[:,1], 'gs' , label='Policy 3', markersize =8.0, markeredgecolor='k', markeredgewidth=1.0)
+ax.plot(mu4[:,0] ,mu4[:,1], 'm*' , label='Policy 4', markersize =8.0, markeredgecolor='k', markeredgewidth=1.0)
+
+ax.plot(mu1_[:,0] ,mu1_[:,1], 'r8' , label='Policy 1', markersize =6.0, fillstyle='none')
+ax.plot(mu2_[:,0] ,mu2_[:,1], 'bo' , label='Policy 2', markersize =6.0, fillstyle='none')
+ax.plot(mu3_[:,0] ,mu3_[:,1], 'gs' , label='Policy 3', markersize =6.0, fillstyle='none')
+ax.plot(mu4_[:,0] ,mu4_[:,1], 'm*' , label='Policy 4', markersize =7.0, fillstyle='none')
+
+
 
 ax.set_yticklabels([])
 ax.set_xticklabels([])
@@ -52,9 +64,9 @@ ax.set_xticklabels([])
 ax.set_xlim(0,1)
 ax.set_ylim(0,1)
 
-ax.legend( loc=1, borderaxespad=0.)
-plt.xlabel('State 1')
-plt.ylabel('State 2')
+#ax.legend( loc=1, borderaxespad=0.)
+#plt.xlabel('State 1')
+#plt.ylabel('State 2')
 #ax.plot_surface(X, Y, Z, rstride=3, cstride=3,  antialiased=True,cmap=cm.viridis) #linewidth=1,
 
 

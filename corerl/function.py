@@ -2,6 +2,9 @@ import numpy as np
 import scipy.linalg as sl
 from corerl.kernel import make_kernelN
 import json
+#import scikits.sparse.cholmod as cm
+#from scipy import sparse
+#from scipy.sparse.linalg import spsolve
 
 class KernelRepresentation(object):
     # N = dimension of state space
@@ -237,6 +240,9 @@ class KernelRepresentation(object):
     # ------------------------------
     def append(self, Dnew, Wnew):
 
+        self.lastN = np.shape(self.W)[0]
+        self.lastU = self.U
+
         # Handle edge cases
         if self.divergence:
             return
@@ -254,7 +260,7 @@ class KernelRepresentation(object):
         ))
         # Update kernel matrix inverse decomposition
         C12 = self.U.T.dot(KDX)
-        C22 = sl.cholesky(KXX - C12.T.dot(C12))
+        C22 = sl.cholesky(KXX - C12.T.dot(C12)) # cholesky
         U22 = sl.solve_triangular(C22, np.eye(len(Dnew)), overwrite_b=True)
         U12 = -self.U.dot(C12).dot(U22)
         self.U = np.vstack((
@@ -278,12 +284,13 @@ class KernelRepresentation(object):
             return
         # running total of approximation error
         S = 0.
+        N = self.D.shape[0]
         # running computation of approximation residue
         R = self.W.copy()
         # running computation of projection of dictionary elements
         V = self.U.dot(self.U.T)
         # the set of indices of D that we are keeping
-        Y = list(range(self.D.shape[0]))
+        Y = list(range(N))
         # remove points as long as we can
         while len(Y) > 0:
             # current error if we remove each point
@@ -313,18 +320,27 @@ class KernelRepresentation(object):
                 self.divergence = True
                 break
 
-        # project weights onto remaining indices
-        self.W = V[np.ix_(Y, Y)].dot(self.KDD[Y].dot(self.W))
+        if len(Y) != N:
+            # project weights onto remaining indices
+            self.W = V[np.ix_(Y, Y)].dot(self.KDD[Y].dot(self.W))
 
-        # adjust our dictionary elements
-        self.D = self.D[Y]
-        self.KDD = self.KDD[np.ix_(Y, Y)]
+            # adjust our dictionary elements
+            self.D = self.D[Y]
+            self.KDD = self.KDD[np.ix_(Y, Y)]
 
-        if len(self.D) == 0:
-            self.U = np.zeros((0, 0))
-        else:
-            self.U = sl.solve_triangular(sl.cholesky(self.KDD), np.eye(len(Y)), overwrite_b=True)
-        self.changed = True
+            if len(self.D) == 0:
+                self.U = np.zeros((0, 0))
+                self.lastU = self.U
+            elif  (len(Y) == self.lastN and np.all(np.equal(Y, np.arange(self.lastN)))):
+                self.U = self.lastU
+            else:
+                self.U = sl.solve_triangular(sl.cholesky(self.KDD), np.eye(len(Y)))#, overwrite_b=True)
+                self.lastN = len(self.W)
+                self.lastU = self.U
+
+                #self.U = sl.solve_triangular(sl.cholesky(self.KDD), np.eye(len(Y)))#, overwrite_b=True)
+
+            self.changed = True
 
     # ------------------------------
     # Hilbert-norm of this function
