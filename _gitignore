@@ -1,0 +1,14 @@
+*.txt
+*.pkl
+*.pyc
+*.xml
+*.iml
+*.dat
+*.index
+*.data
+*.idx
+*.o*
+*.png
+*.eps
+results/*
+misc/*
