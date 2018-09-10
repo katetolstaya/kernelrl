@@ -37,13 +37,15 @@ class ModelParameters():
     mu = 0.0
     sigma = 100 #200 #100 #50
 
+class GradType(Enum):
+    SGD = 0
+    MOM = 1
+    VAR = 2
+    MOMENTUM = 3
+    DELTA = 4
+
 class Model:
-    class GradType(Enum):
-        SGD = 0
-        MOM = 1
-        VAR = 2
-        MOMENTUM = 3
-        DELTA = 4
+
 
     def __init__(self, indim, outdim, grad_type):
         self.f = KernelRepresentation(indim, outdim, config)
@@ -79,21 +81,22 @@ class Model:
         # V gradient
         W = np.zeros((3,))
         
-        if self.grad_type == Model.GradType.SGD: # simple SGD
+        if self.grad_type ==GradType.SGD: # simple SGD
             W[0] =  -ModelParameters.eta * grad
-        elif self.grad_type == Model.GradType.MOM:
+        elif self.grad_type == GradType.MOM:
             W[0] =  -ModelParameters.eta * grad / (np.sqrt(self.var(x) + ModelParameters.eta**2))
             W[2] = (-ModelParameters.beta2 * self.var(x) + ModelParameters.beta2 * grad_sq)
-        elif self.grad_type == Model.GradType.VAR:
+        elif self.grad_type == GradType.VAR:
             grad_var = (grad-self.mom(x))**2
             #print(grad_var)
             W[0] =  -ModelParameters.eta * self.mom(x) / (np.sqrt(self.var(x) + ModelParameters.eta**2)) #/ np.sqrt(self.var(x) + ModelParameters.eta) 
             W[1] = (-ModelParameters.beta1 * self.mom(x) + ModelParameters.beta1 * grad) 
             W[2] = (-ModelParameters.beta2 * self.var(x) + ModelParameters.beta2 * grad_var) 
-        elif self.grad_type == Model.GradType.MOMENTUM:
-            W[0] =  -ModelParameters.eta * self.mom(x) 
+        elif self.grad_type == GradType.MOMENTUM:
+            W[0] =  -ModelParameters.eta * self.mom(x) / (np.sqrt(self.var(x) + ModelParameters.eta**2))
             W[1] = (-ModelParameters.beta1 * self.mom(x) + ModelParameters.beta1 * grad) 
-        elif self.grad_type == Model.GradType.DELTA:
+            W[2] = (-ModelParameters.beta2 * self.var(x) + ModelParameters.beta2 * grad_sq) 
+        elif self.grad_type == GradType.DELTA:
             W[0] =  -ModelParameters.eta * self.delta
             self.delta = self.delta + (-ModelParameters.beta1 * self.delta + ModelParameters.beta1 * grad) 
         else:
@@ -125,7 +128,7 @@ class Model:
         W = np.zeros((3,))
         for i in np.random.permutation(np.shape(d)[0]):
             x = d[i,:]
-            if f.grad_type == Model.GradType.SGD:
+            if f.grad_type == GradType.SGD:
                 if f1.point_density(x) >= f2.point_density(x) and i < thresh: # reciprocal here so larger is better
                     W[1] = -f.mom(x) + f1.mom(x)
                     W[2] = -f.var(x) + f1.var(x)
@@ -136,7 +139,7 @@ class Model:
                     W[2] = -f.var(x) + f2.var(x)
                     W[0] = -f.val(x) + f2.val(x)
                     f.f.append(np.array(x), np.reshape(W, (1, -1)))
-            elif f.grad_type == Model.GradType.MOM or f.grad_type == Model.GradType.VAR:
+            elif f.grad_type == GradType.MOM or f.grad_type == GradType.VAR:
                 if f1.var(x) <= f2.var(x) and i < thresh: # reciprocal here so larger is better
                     W[1] = -f.mom(x) + f1.mom(x)
                     W[2] = -f.var(x) + f1.var(x)
@@ -149,7 +152,7 @@ class Model:
                     f.f.append(np.array(x), np.reshape(W, (1, -1)))
         return f
 
-def train_model(reader, grad_type=Model.GradType.MOM):
+def train_model(reader, grad_type=GradType.MOM):
     f = Model(4, 3, grad_type)
 
     losses = []

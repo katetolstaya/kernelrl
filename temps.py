@@ -3,13 +3,15 @@ from corel.model import *
 import pickle
 import random
 
-fname = 'data/2018_246_30Z.hdf'
+file_num = '249'
+
+fname = 'data/2018_' + file_num + '_30Z.hdf'
 hdf_file = SD(fname, SDC.READ)
 
 #print hdf.datasets()
 
 def train_model(data):
-	f = Model(2, 3, Model.GradType.VAR)
+	f = Model(2, 3, GradType.VAR)
 
 	inds = data.nonzero()
 	print(len(inds[0]))
@@ -17,7 +19,7 @@ def train_model(data):
 	r = range(0,n)
 	random.Random(5).shuffle(r)
 	n_samples = 0
-	for ind in r[0:int(n/5)]:
+	for ind in r[0:int(n/10)]:
 		i = inds[0][ind]
 		j = inds[1][ind]
 		temp = (data[i][j] - offset) * scale 
@@ -26,7 +28,7 @@ def train_model(data):
 		(loss, model) =  f.train(sample)
 
 		n_samples = n_samples + 1
-		if n_samples % 1000 == 0:
+		if n_samples % 10000 == 0:
 			print n_samples, test_model(f,data), (f.var(np.array([i,j]))), f.mom(np.array([i,j]))
 
 		#print(loss)
@@ -63,6 +65,7 @@ scale = attrs.get('scale_factor')
 
 f = train_model(data)
 print(test_model(f, data))
+pickle.dump(f, open('temps' + file_num + '.pkl','wb'))
 
 #print(attrs)
 #print(data.nonzero()) # zero values are NaNs, # convert index to lat, lon
