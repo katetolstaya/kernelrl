@@ -13,13 +13,9 @@ try:
 except ImportError:
     from ConfigParser import ConfigParser
 
-fname = 'cfg/kadam2.cfg'
 
-config = ConfigParser()
-with open(fname, 'r') as f:
-    config.read_file(f)
-    
-config = config[config.default_section]
+
+
 
 class ModelParameters():
     # Learning rates
@@ -36,6 +32,11 @@ class ModelParameters():
     #sigma = 200
     mu = 0.0
     sigma = 100 #200 #100 #50
+    fname = 'cfg/kadam.cfg'
+    config = ConfigParser()
+    with open(fname, 'r') as f:
+        config.read_file(f)
+    config = config[config.default_section]
 
 class GradType(Enum):
     SGD = 0
@@ -48,7 +49,9 @@ class Model:
 
 
     def __init__(self, indim, outdim, grad_type):
-        self.f = KernelRepresentation(indim, outdim, config)
+
+
+        self.f = KernelRepresentation(indim, outdim, ModelParameters.config)
         self.indim = indim
         self.outdim = outdim
         self.grad_type = grad_type
@@ -62,6 +65,9 @@ class Model:
 
     def predictOne(self, x):  # Predict the Q function values for a single state.
         return self.f(np.reshape(x,(1,-1)))[0]
+
+    def ucb(self, x):  # Predict the Q function values for a single state.
+        return np.abs(self.mom(x)) + np.sqrt(self.var(x))
 
     def val(self, x):
         return self.predictOne(x)[0] + ModelParameters.mu
@@ -121,9 +127,9 @@ class Model:
 
         #f = KernelRepresentation(4, 3, config)
         f = Model(f1.indim, f1.outdim, f1.grad_type )
-        d = np.vstack([f1.D, f2.D]) 
+        d = np.vstack([f1.f.D, f2.f.D]) 
         
-        thresh = np.shape(f1.D)[0]
+        thresh = np.shape(f1.f.D)[0]
         
         W = np.zeros((3,))
         for i in np.random.permutation(np.shape(d)[0]):
@@ -139,13 +145,24 @@ class Model:
                     W[2] = -f.var(x) + f2.var(x)
                     W[0] = -f.val(x) + f2.val(x)
                     f.f.append(np.array(x), np.reshape(W, (1, -1)))
+            # elif f.grad_type == GradType.MOM or f.grad_type == GradType.VAR:
+            #     if f1.var(x) <= f2.var(x) and i < thresh: # reciprocal here so larger is better
+            #         W[1] = -f.mom(x) + f1.mom(x)
+            #         W[2] = -f.var(x) + f1.var(x)
+            #         W[0] = -f.val(x) + f1.val(x)
+            #         f.f.append(np.array(x), np.reshape(W, (1, -1)))
+            #     elif f1.var(x) > f2.var(x) and i >= thresh:
+            #         W[1] = -f.mom(x) + f2.mom(x)
+            #         W[2] = -f.var(x) + f2.var(x)
+            #         W[0] = -f.val(x) + f2.val(x)
+            #         f.f.append(np.array(x), np.reshape(W, (1, -1)))
             elif f.grad_type == GradType.MOM or f.grad_type == GradType.VAR:
-                if f1.var(x) <= f2.var(x) and i < thresh: # reciprocal here so larger is better
+                if (f1.ucb(x)) <= f2.ucb(x) and i < thresh: # reciprocal here so larger is better
                     W[1] = -f.mom(x) + f1.mom(x)
                     W[2] = -f.var(x) + f1.var(x)
                     W[0] = -f.val(x) + f1.val(x)
                     f.f.append(np.array(x), np.reshape(W, (1, -1)))
-                elif f1.var(x) > f2.var(x) and i >= thresh:
+                elif f1.ucb(x) > f2.ucb(x) and i >= thresh:
                     W[1] = -f.mom(x) + f2.mom(x)
                     W[2] = -f.var(x) + f2.var(x)
                     W[0] = -f.val(x) + f2.val(x)
