@@ -19,9 +19,9 @@ except ImportError:
 
 class ModelParameters():
     # Learning rates
-    eta = 0.4 #0.1
-    beta1 = 0.4
-    beta2 = 0.2
+    eta = 0.5 #0.1
+    beta1 = 0.5
+    beta2 = 0.5
     # Regularization
     lossL =  1e-6
     # Representation error budget
@@ -145,28 +145,28 @@ class Model:
                     W[2] = -f.var(x) + f2.var(x)
                     W[0] = -f.val(x) + f2.val(x)
                     f.f.append(np.array(x), np.reshape(W, (1, -1)))
-            # elif f.grad_type == GradType.MOM or f.grad_type == GradType.VAR:
-            #     if f1.var(x) <= f2.var(x) and i < thresh: # reciprocal here so larger is better
-            #         W[1] = -f.mom(x) + f1.mom(x)
-            #         W[2] = -f.var(x) + f1.var(x)
-            #         W[0] = -f.val(x) + f1.val(x)
-            #         f.f.append(np.array(x), np.reshape(W, (1, -1)))
-            #     elif f1.var(x) > f2.var(x) and i >= thresh:
-            #         W[1] = -f.mom(x) + f2.mom(x)
-            #         W[2] = -f.var(x) + f2.var(x)
-            #         W[0] = -f.val(x) + f2.val(x)
-            #         f.f.append(np.array(x), np.reshape(W, (1, -1)))
             elif f.grad_type == GradType.MOM or f.grad_type == GradType.VAR:
-                if (f1.ucb(x)) <= f2.ucb(x) and i < thresh: # reciprocal here so larger is better
+                if f1.var(x) <= f2.var(x) and i < thresh: # reciprocal here so larger is better
                     W[1] = -f.mom(x) + f1.mom(x)
                     W[2] = -f.var(x) + f1.var(x)
                     W[0] = -f.val(x) + f1.val(x)
                     f.f.append(np.array(x), np.reshape(W, (1, -1)))
-                elif f1.ucb(x) > f2.ucb(x) and i >= thresh:
+                elif f1.var(x) > f2.var(x) and i >= thresh:
                     W[1] = -f.mom(x) + f2.mom(x)
                     W[2] = -f.var(x) + f2.var(x)
                     W[0] = -f.val(x) + f2.val(x)
                     f.f.append(np.array(x), np.reshape(W, (1, -1)))
+            # elif f.grad_type == GradType.MOM or f.grad_type == GradType.VAR:
+            #     if (f1.ucb(x)) <= f2.ucb(x) and i < thresh: # reciprocal here so larger is better
+            #         W[1] = -f.mom(x) + f1.mom(x)
+            #         W[2] = -f.var(x) + f1.var(x)
+            #         W[0] = -f.val(x) + f1.val(x)
+            #         f.f.append(np.array(x), np.reshape(W, (1, -1)))
+            #     elif f1.ucb(x) > f2.ucb(x) and i >= thresh:
+            #         W[1] = -f.mom(x) + f2.mom(x)
+            #         W[2] = -f.var(x) + f2.var(x)
+            #         W[0] = -f.val(x) + f2.val(x)
+            #         f.f.append(np.array(x), np.reshape(W, (1, -1)))
         return f
 
 def train_model(reader, grad_type=GradType.MOM):
