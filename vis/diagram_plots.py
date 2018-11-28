@@ -37,10 +37,10 @@ Z = gauss(X,mu1[0],Sigma) + gauss(X,mu1[1],Sigma) + gauss(X,mu1[2],Sigma) + gaus
 fig = plt.figure()
 #ax = fig.gca(projection='3d')
 fig, ax = plt.subplots(1, 1)
-ax.plot(X, Z ,'k',linewidth=4.0, label='Composed')
+#ax.plot(X, Z ,'k',linewidth=4.0, label='Composed')
 ax.plot(X, Z1 ,'r', label='$f_1(x)$')
 #ax.plot(X, Z2 ,'g', label='$f_2(x)$')
-ax.plot(X, Z3 ,'b', label='$f_3(x)$')
+ax.plot(X, Z3 ,'b', label='$f_2(x)$')
 
 
 ax.plot(mu1,np.array([-1,-1,-1]), 'ro')
@@ -50,17 +50,27 @@ ax.plot(mu3,np.array([-1,-1,-1,-1,-1]), 'bo')
 ax.set_yticklabels([])
 ax.set_xticklabels([])
 
+
+ax.get_xaxis().set_visible(False)
+ax.get_yaxis().set_visible(False)
+
 ax.legend( loc=1, borderaxespad=0.)
-plt.xlabel('State')
-plt.ylabel('Action')
+
 #ax.plot_surface(X, Y, Z, rstride=3, cstride=3,  antialiased=True,cmap=cm.viridis) #linewidth=1,
 
 
 #cset = ax.contourf(X, Y, Z, zdir='z', offset=-0.15, cmap=cm.viridis)
 
 # Adjust the limits, ticks and view angle
-#ax.set_zlim(-0.15,0.2)
+ax.set_xlim(0.3,2.9)
+ax.set_ylim(-1.5,10)
 #ax.set_zticks(np.linspace(0,0.2,5))
 #ax.view_init(27, -21)
 
-plt.show()
+#plt.show()
+
+plt.savefig('diag1.jpg')
+
+ax.plot(X, Z ,'k',linewidth=4.0, label='Composed')
+
+plt.savefig('diag2.jpg')
