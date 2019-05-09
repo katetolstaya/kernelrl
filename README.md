@@ -31,5 +31,3 @@ Kernel NAF with Continuous Mountain Car
 # Tuning parameters
 To tune learning rates and other parameters, adjust the corresponding parameters in the .cfg file.
 
-# TODO
-- What is the difference between kqgreedy_replay and kqlearning_replay?
