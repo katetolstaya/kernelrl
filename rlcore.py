@@ -25,20 +25,20 @@ from algs.knaf import KNAFAgent
 from misc.knaf2 import KNAF2Agent
 from algs.knaf_iid import KNAFIIDAgent
 from algs.ksarsa import KSARSAAgent
-from algs.kqlearning2 import KQLearningAgent2
-from algs.policy_test import QTestAgent2
-from algs.kpolicy import KPolicyAgent
-from algs.kpolicytab import KPolicyTabAgent
-from algs.kdpg import KDPGAgent
-from algs.kqtab import KQTabAgent
-from algs.kadv import KAdvAgent
-from algs.kqgreedy import KGreedyQAgent
-from algs.kqgreedy_per import KQGreedyAgentPER
-from algs.kqlearning_per import KQLearningAgentPER
-from algs.kqlearning_iid import KQLearningAgentIID
+from algs.kqlearning_cont_action import KQLearningAgent2
+from algs.old.policy_test import QTestAgent2
+from algs.old.kpolicy import KPolicyAgent
+from algs.kpolicy_tabular import KPolicyTabAgent
+from algs.old.kdpg import KDPGAgent
+from algs.kq_tabular import KQTabAgent
+from algs.old.kadv import KAdvAgent
+from algs.old.kqgreedy import KGreedyQAgent
+from algs.kqgreedy_replay import KQGreedyAgentPER
+from algs.kqlearning_replay import KQLearningAgentPER
+from algs.old.kqlearning_iid import KQLearningAgentIID
 from corerl.random_agent import RandomAgent
-from algs.kqlearningalt import KQLearningAltAgent
-from algs.rbf import RBFAgentIID
+from algs.old.kqlearningalt import KQLearningAltAgent
+from algs.old.rbf import RBFAgentIID
 import gym_gazebo
 
 
@@ -279,7 +279,7 @@ class Experiment(object):
         # Initialize our memory
         if hasattr(self.agent, 'memory'):
             print('Initializing memory with random agent...')
-            while not self.random_agent.memory.isFull():
+            while not self.random_agent.memory.is_full():
                 self.env.run(self.random_agent, nb_steps=self.random_agent.memory.remaining())
                 print('%d/%d' % (self.random_agent.memory.length, self.random_agent.memory.capacity))
             self.agent.memory = self.random_agent.memory
