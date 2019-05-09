@@ -1,8 +1,8 @@
-# RLCore
+# Kernel Reinforcement Learning
 
 
 ## Dependencies
-- Python
+- Python 2
 - OpenAI Gym
 - SciPy
 
