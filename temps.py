@@ -1,5 +1,6 @@
 from pyhdf.SD import SD, SDC
-from corel.model import *
+#from corel.model import *
+from corel.rbf_regression import *
 import pickle
 import random
 
@@ -14,12 +15,13 @@ def train_model(data):
 	f = Model(2, 3, GradType.VAR)
 
 	inds = data.nonzero()
+	print(np.shape(data))
 	print(len(inds[0]))
 	n = len(inds[0])
 	r = range(0,n)
 	random.Random(5).shuffle(r)
 	n_samples = 0
-	for ind in r[0:int(n/10)]:
+	for ind in r[0:int(n/3)]:
 		i = inds[0][ind]
 		j = inds[1][ind]
 		temp = (data[i][j] - offset) * scale 

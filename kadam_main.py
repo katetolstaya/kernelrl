@@ -37,7 +37,7 @@ def train_test(grad_type):
 
 # print('Compose with SGD')
 # train_test_compose(GradType.SGD)
-# print('Compose with raw 2nd moment SGD')
-# train_test_compose(GradType.MOM)
-print('Compose with momentum and variance')
-train_test_compose(GradType.VAR)
+print('Compose with raw 2nd moment SGD')
+train_test_compose(GradType.MOM)
+# print('Compose with momentum and variance')
+# train_test_compose(GradType.VAR)

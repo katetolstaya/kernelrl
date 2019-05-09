@@ -73,7 +73,7 @@ class Model:
         return self.predictOne(x)[0] + ModelParameters.mu
 
     def mom(self, x):
-        return self.predictOne(x)[1]
+        return self.predictOne(x)[1] + 100.0
         
     def var(self, x):
         return max(0, self.predictOne(x)[2]  + ModelParameters.sigma)
@@ -89,13 +89,20 @@ class Model:
         
         if self.grad_type ==GradType.SGD: # simple SGD
             W[0] =  -ModelParameters.eta * grad
+        # elif self.grad_type == GradType.MOM:
+        #     W[0] =  -ModelParameters.eta * grad / (np.sqrt(self.var(x) + ModelParameters.eta**2))
+        #     W[2] = (-ModelParameters.beta2 * self.var(x) + ModelParameters.beta2 * grad_sq)
         elif self.grad_type == GradType.MOM:
-            W[0] =  -ModelParameters.eta * grad / (np.sqrt(self.var(x) + ModelParameters.eta**2))
-            W[2] = (-ModelParameters.beta2 * self.var(x) + ModelParameters.beta2 * grad_sq)
+            # W[0] =  -ModelParameters.eta * self.mom(x) #/ (np.sqrt(self.var(x) + ModelParameters.eta**2))
+            # W[1] = (-ModelParameters.beta1 * self.mom(x) + ModelParameters.beta1 * grad) 
+            ##########################
+            W[0] =  -ModelParameters.eta * self.mom(x) #/ (np.sqrt(self.var(x) + ModelParameters.eta**2))
+            W[1] = (-ModelParameters.beta1 * self.mom(x) + ModelParameters.beta1 * grad) 
+            #W[2] = (-ModelParameters.beta2 * self.var(x) + ModelParameters.beta2 * grad_sq)
         elif self.grad_type == GradType.VAR:
             grad_var = (grad-self.mom(x))**2
             #print(grad_var)
-            W[0] =  -ModelParameters.eta * self.mom(x) / (np.sqrt(self.var(x) + ModelParameters.eta**2)) #/ np.sqrt(self.var(x) + ModelParameters.eta) 
+            W[0] =  -ModelParameters.eta * self.mom(x) #/ (np.sqrt(self.var(x) + ModelParameters.eta**2)) #/ np.sqrt(self.var(x) + ModelParameters.eta) 
             W[1] = (-ModelParameters.beta1 * self.mom(x) + ModelParameters.beta1 * grad) 
             W[2] = (-ModelParameters.beta2 * self.var(x) + ModelParameters.beta2 * grad_var) 
         elif self.grad_type == GradType.MOMENTUM:
@@ -145,31 +152,43 @@ class Model:
                     W[2] = -f.var(x) + f2.var(x)
                     W[0] = -f.val(x) + f2.val(x)
                     f.f.append(np.array(x), np.reshape(W, (1, -1)))
-            elif f.grad_type == GradType.MOM or f.grad_type == GradType.VAR:
-                if f1.var(x) <= f2.var(x) and i < thresh: # reciprocal here so larger is better
+            elif f.grad_type == GradType.MOM :
+                if f1.mom(x) <= f2.mom(x) and i < thresh: # reciprocal here so larger is better
                     W[1] = -f.mom(x) + f1.mom(x)
                     W[2] = -f.var(x) + f1.var(x)
                     W[0] = -f.val(x) + f1.val(x)
                     f.f.append(np.array(x), np.reshape(W, (1, -1)))
-                elif f1.var(x) > f2.var(x) and i >= thresh:
+                elif f1.mom(x) > f2.mom(x) and i >= thresh:
                     W[1] = -f.mom(x) + f2.mom(x)
                     W[2] = -f.var(x) + f2.var(x)
                     W[0] = -f.val(x) + f2.val(x)
                     f.f.append(np.array(x), np.reshape(W, (1, -1)))
-            # elif f.grad_type == GradType.MOM or f.grad_type == GradType.VAR:
-            #     if (f1.ucb(x)) <= f2.ucb(x) and i < thresh: # reciprocal here so larger is better
+            # elif f.grad_type == GradType.VAR:
+            #     if f1.var(x) <= f2.var(x) and i < thresh: # reciprocal here so larger is better
             #         W[1] = -f.mom(x) + f1.mom(x)
             #         W[2] = -f.var(x) + f1.var(x)
             #         W[0] = -f.val(x) + f1.val(x)
             #         f.f.append(np.array(x), np.reshape(W, (1, -1)))
-            #     elif f1.ucb(x) > f2.ucb(x) and i >= thresh:
+            #     elif f1.var(x) > f2.var(x) and i >= thresh:
             #         W[1] = -f.mom(x) + f2.mom(x)
             #         W[2] = -f.var(x) + f2.var(x)
             #         W[0] = -f.val(x) + f2.val(x)
             #         f.f.append(np.array(x), np.reshape(W, (1, -1)))
+            elif  f.grad_type == GradType.VAR:
+                if (f1.ucb(x)) <= f2.ucb(x) and i < thresh: # reciprocal here so larger is better
+                    W[1] = -f.mom(x) + f1.mom(x)
+                    W[2] = -f.var(x) + f1.var(x)
+                    W[0] = -f.val(x) + f1.val(x)
+                    f.f.append(np.array(x), np.reshape(W, (1, -1)))
+                elif f1.ucb(x) > f2.ucb(x) and i >= thresh:
+                    W[1] = -f.mom(x) + f2.mom(x)
+                    W[2] = -f.var(x) + f2.var(x)
+                    W[0] = -f.val(x) + f2.val(x)
+                    f.f.append(np.array(x), np.reshape(W, (1, -1)))
         return f
 
 def train_model(reader, grad_type=GradType.MOM):
+    np.random.seed(0)
     f = Model(4, 3, grad_type)
 
     losses = []
@@ -181,6 +200,7 @@ def train_model(reader, grad_type=GradType.MOM):
     return f
     
 def test_model(f, reader):
+    np.random.seed(2)
     n = 0
     temp_loss = 0
     for i, row in enumerate(reader):
