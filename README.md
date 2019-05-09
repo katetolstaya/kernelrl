@@ -28,8 +28,8 @@ Kernel NAF with Continuous Mountain Car
 Other options of configuration files are   
 - Kernel Q-Learning for Cont. Mountain Car: `cfg/kq_mccar.cfg`
 - Kernel Q-Learning for Pendulum: `cfg/kq_pendulum.cfg` 
-- Kernel NAF for Pendulum: `cfg/knaf_pendulum.cfg`
 - Kernel Q-Learning for discrete-action Cartpole: `cfg/kq_cartpole.cfg`
+- Kernel NAF for Pendulum: `cfg/knaf_pendulum.cfg`
 - `cfg/kqgreedy_pendulum_per.cfg`
 - `cfg/kgreedyq_pendulum.cfg`
 
