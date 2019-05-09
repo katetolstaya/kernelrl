@@ -33,6 +33,9 @@ Other options of configuration files are
 - `cfg/kqgreedy_pendulum_per.cfg`
 - `cfg/kgreedyq_pendulum.cfg`
 
+## Composing policies
+
+The `compose` folder contains the code for composing two or more trained policies as described in the IROS 2018 paper. 
 
 ## Tuning parameters
 To tune learning rates and other parameters, adjust the corresponding parameters in the .cfg file.
