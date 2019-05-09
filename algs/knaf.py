@@ -4,9 +4,9 @@ from corerl.core import ScheduledParameter
 from corerl.function import KernelRepresentation
 import pdb
 import pickle
-# =====
+
 # =============================================
-# A POLK Normalized Advantage Function Algorithm
+# Q-Learning with Normalized Advantage Function Algorithm
 
 class KNAFModel(object):
     def __init__(self, stateCount, actionCount, config):
@@ -121,21 +121,22 @@ class KNAFModel(object):
             W[-1] = lgrad_temp  * self.eta_l.value
 
         # Check for model divergence!
-        if np.abs(delta) > 50 and False:
-            print ("Divergence!")
-            print (pi)
-            print (lmat)
-            print (delta)
-        self.vpl.append(np.array(s), - delta * np.reshape(W, (1, -1)))
-        # Prune
+        # if np.abs(delta) > 50 and False:
+        #     print ("Divergence!")
+        #     print (pi)
+        #     print (lmat)
+        #     print (delta)
 
-        #if step % 10 == 0 :
+
+        self.vpl.append(np.array(s), - delta * np.reshape(W, (1, -1)))
+
+        # Prune
         self.vpl.prune(self.eps)
 
         modelOrder_ = len(self.vpl.D)
         # Compute new error
         loss = 0.5 * self.bellman_error(s, a, r, s_) ** 2  # + self.model_error()
-        return (float(loss), float(modelOrder_))  # ==================================================
+        return (float(loss), float(modelOrder_))  
 
 # An agent using Q-Learning
 
@@ -155,8 +156,6 @@ class KNAFAgent(object):
         self.max_act = np.reshape(json.loads(config.get('MaxAction')), (-1, 1))
 
         # ---- Initialize model
-
-
         if config.get('LoadModel'):
             fname = config.get('LoadModel')
             self.model = pickle.load(open(fname,"rb"))
@@ -166,12 +165,7 @@ class KNAFAgent(object):
     def act(self, s, stochastic=True):
         # "Decide what action to take in state s."
         a = self.model.get_pi(s)
-        #noise = np.sum(self.model.vpl.kernel.f(s, self.model.vpl.D))
-        #print (noise)
-        #if noise < 1:
-        #    noise = 1
         
-
         if stochastic: # if exploration, add noise
             a = a + np.random.normal(0,self.noise_var.value,self.actionCount)
         a = np.reshape(np.clip(a, self.min_act, self.max_act), (-1,))
@@ -182,11 +176,6 @@ class KNAFAgent(object):
         self.steps += 1
         self.epsilon.step(self.steps)
         self.noise_var.step(self.steps)
-
-        #if self.steps % 10000 == 0 :
-        #    with open('rob24_model'+str(int(self.steps/10000))+'.txt', 'wb') as f:
-        #        pickle.dump(self.model, f)
-
 
     def improve(self):
         return self.model.train(self.steps, self.lastSample)
