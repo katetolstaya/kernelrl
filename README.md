@@ -5,6 +5,7 @@
 - Python 2
 - OpenAI Gym
 - SciPy
+- MatPlotLib
 
 ## Available algorithms
 
