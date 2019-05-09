@@ -10,46 +10,44 @@ try:
 except ImportError:
     from ConfigParser import ConfigParser
 
-
-
 import gym
 import numpy as np
-
-logger = logging.getLogger(__name__)
 
 # Our agent types
 from corerl.callbacks import CallbackList, make_callbacks
 from algs.kqlearning import KQLearningAgent
-#from algs.knaf_rho import KNAFAgent
 from algs.knaf import KNAFAgent
 from misc.knaf2 import KNAF2Agent
 from algs.knaf_iid import KNAFIIDAgent
 from algs.ksarsa import KSARSAAgent
 from algs.kqlearning_cont_action import KQLearningAgent2
-from algs.old.policy_test import QTestAgent2
-from algs.old.kpolicy import KPolicyAgent
 from algs.kpolicy_tabular import KPolicyTabAgent
-from algs.old.kdpg import KDPGAgent
 from algs.kq_tabular import KQTabAgent
-from algs.old.kadv import KAdvAgent
-from algs.old.kqgreedy import KGreedyQAgent
 from algs.kqgreedy_replay import KQGreedyAgentPER
 from algs.kqlearning_replay import KQLearningAgentPER
-from algs.old.kqlearning_iid import KQLearningAgentIID
 from corerl.random_agent import RandomAgent
-from algs.old.kqlearningalt import KQLearningAltAgent
-from algs.old.rbf import RBFAgentIID
-import gym_gazebo
+from algs.kqgreedy import KGreedyQAgent
 
-
+# import gym_gazebo
+# from algs.knaf_rho import KNAFAgent
+# from algs.old.kdpg import KDPGAgent
+# from algs.old.policy_test import QTestAgent2
+# from algs.old.kpolicy import KPolicyAgent
+# from algs.old.kadv import KAdvAgent
+# from algs.old.kqgreedy import KGreedyQAgent
+# from algs.old.kqlearning_iid import KQLearningAgentIID
+# from algs.old.kqlearningalt import KQLearningAltAgent
+# from algs.old.rbf import RBFAgentIID
 # from kv import KVAgent
-
 # sys.path.append('../gym_gazebo/envs')
 # from tqdm import tqdm
 # import matplotlib
 # import matplotlib.pyplot as plt
 # matplotlib.use('Agg')
 # ==================================================
+
+logger = logging.getLogger(__name__)
+
 
 class Environment:
     def __init__(self, cfg):
@@ -94,9 +92,10 @@ class Environment:
             callbacks.on_step_begin(episodeStep)
 
             # Choose action
-            if isinstance(agent, KQLearningAgentIID) or isinstance(agent,RBFAgentIID):
-                a, rand = agent.act(s)
-            elif isinstance(agent, RandomAgent):
+            # if isinstance(agent, KQLearningAgentIID) or isinstance(agent, RBFAgentIID):
+            #     a, rand = agent.act(s)
+            # el
+            if isinstance(agent, RandomAgent):
                 a = agent.act(s)
                 rand = True
             else:
@@ -109,8 +108,9 @@ class Environment:
             callbacks.on_action_end(a)
             # Process this transition
 
-            if isinstance(agent,KQLearningAgentIID) or isinstance(agent,RandomAgent) or isinstance(agent, RBFAgentIID):
-                agent.observe((s, a, r, (None if done else s_),rand))
+            if isinstance(agent, RandomAgent):
+                # isinstance(agent, KQLearningAgentIID) or isinstance(agent, RandomAgent) or isinstance(agent, RBFAgentIID):
+                agent.observe((s, a, r, (None if done else s_)))  # , rand))
             else:
                 agent.observe((s, a, r, None if done else s_))
             metrics = agent.improve()
@@ -221,18 +221,8 @@ class Experiment(object):
         elif atype.lower() == 'kqgreedyper':
             self.random_agent = RandomAgent(self.env, config)
             self.agent = KQGreedyAgentPER(self.env, config)
-        elif atype.lower() == 'kqlearningiid':
-            self.random_agent = RandomAgent(self.env, config)
-            self.agent = KQLearningAgentIID(self.env, config)
-        elif atype.lower() == 'rbf':
-            self.random_agent = RandomAgent(self.env, config)
-            self.agent = RBFAgentIID(self.env, config)
         elif atype.lower() == 'kqlearning2':
             self.agent = KQLearningAgent2(self.env, config)
-        elif atype.lower() == 'kqlearningalt':
-            self.agent = KQLearningAltAgent(self.env, config)
-        elif atype.lower() == 'kadv':
-            self.agent = KAdvAgent(self.env, config)
         elif atype.lower() == 'knaf':
             self.agent = KNAFAgent(self.env, config)
         elif atype.lower() == 'knafiid':
@@ -240,10 +230,6 @@ class Experiment(object):
             self.random_agent = RandomAgent(self.env, config)
         elif atype.lower() == 'knaf2':
             self.agent = KNAF2Agent(self.env, config)
-        elif atype.lower() == 'kgreedyq':
-            self.agent = KGreedyQAgent(self.env, config)
-        elif atype.lower() == 'qtest':
-            self.agent = QTestAgent2(self.env, config)
         elif atype.lower() == 'kpolicy':
             self.agent = KPolicyAgent(self.env, config)
         elif atype.lower() == 'kpolicytab':
@@ -252,8 +238,24 @@ class Experiment(object):
             self.agent = KQTabAgent(self.env, config)
         elif atype.lower() == 'ksarsa':
             self.agent = KSARSAAgent(self.env, config)
-        elif atype.lower() == 'kdpg':
-            self.agent = KDPGAgent(self.env, config)
+        elif atype.lower() == 'kgreedyq':
+            self.agent = KGreedyQAgent(self.env, config)
+
+        # elif atype.lower() == 'kqlearningiid':
+        #     self.random_agent = RandomAgent(self.env, config)
+        #     self.agent = KQLearningAgentIID(self.env, config)
+        # elif atype.lower() == 'rbf':
+        #     self.random_agent = RandomAgent(self.env, config)
+        #     self.agent = RBFAgentIID(self.env, config)
+        # elif atype.lower() == 'kqlearningalt':
+        #     self.agent = KQLearningAltAgent(self.env, config)
+        # elif atype.lower() == 'kadv':
+        #     self.agent = KAdvAgent(self.env, config)
+
+        # elif atype.lower() == 'qtest':
+        #     self.agent = QTestAgent2(self.env, config)
+        # elif atype.lower() == 'kdpg':
+        #     self.agent = KDPGAgent(self.env, config)
         elif atype is None:
             raise ValueError("'Agent' type not specified")
         else:
@@ -288,9 +290,9 @@ class Experiment(object):
         # Begin our training
         self.callbacks.on_train_begin()
         # Select how our environment runs an episode
-        if isinstance(self.agent, KSARSAAgent) or isinstance(self.agent, KPolicyAgent) or isinstance(self.agent,
-                                                                                                     KPolicyTabAgent) or isinstance(
-                self.agent, KDPGAgent):
+
+        if isinstance(self.agent, KSARSAAgent):
+            # or isinstance(self.agent, KPolicyAgent) or isinstance(self.agent, KPolicyTabAgent)
             erun = self.env.runSARSA
         else:
             erun = self.env.run
@@ -344,23 +346,7 @@ def run_experiments(config):
 
 if __name__ == '__main__':
 
-    # Some options for CFG files:
-
-    # 'ksarsa.cfg', 'kq.cfg', kpolicy_quad.cfg, cfg/kq_quad2.cfg, 'cfg/kq_mccar_multi2.cfg'
-    # 'cfg/knaf_pendulum.cfg', 'cfg/kq_robot.cfg', 'cfg/kq_pendulum.cfg', 'cfg/kadv_pendulum.cfg', 'cfg/knaf_mcar.cfg',
-    # 'cfg/kq_pendulum.cfg', 'cfg/knaf_pendulum_multi.cfg', 'cfg/kq_pendulum_iid.cfg', 'cfg/kq_invpendulum.cfg'
-
     fname = sys.argv[1]
-
-    #fname = 'cfg/kgreedyq_pendulum.cfg'
-    #fname = 'cfg/kqalt_pendulum.cfg'
-    #fname = 'cfg/kqalt_ccar.cfg'
-    #fname = 'cfg/kq2_pendulum.cfg'
-    #fname = 'cfg/kq_car_iid.cfg'
-    #fname = 'cfg/kq_pendulum_iid.cfg'
-
-    #fname = 'cfg/kqgreedy_pendulum_per.cfg'
-
     print(fname)
     if isinstance(fname, str):
         config = ConfigParser()
@@ -368,7 +354,6 @@ if __name__ == '__main__':
             config.read_file(f)
 
         ret = run_experiments(config)
-        # cProfile.run(run_experiments('cfg/kq_planar1.cfg'))
 
         if 'PKLFileName' in config:
             pkl_fname = config.get('PKLFileName')

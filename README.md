@@ -19,11 +19,19 @@
 
 ## To run
 
-Kernel Q-Learning with Pendulum and replay buffer
+Kernel Q-Learning with Pendulum with prioritized experience replay
 `python rlcore.py kq_pendulum_per.cfg`
 
 Kernel NAF with Continuous Mountain Car
 `python rlcore.py cfg/knaf_mcar.cfg`
+
+Other options of configuration files are   
+- Kernel Q-Learning for Cont. Mountain Car: `cfg/kq_mccar.cfg`
+- Kernel Q-Learning for Pendulum: `cfg/kq_pendulum.cfg` 
+- Kernel NAF for Pendulum: `cfg/knaf_pendulum.cfg`
+- Kernel Q-Learning for discrete-action Cartpole: `cfg/kq_cartpole.cfg`
+- `cfg/kqgreedy_pendulum_per.cfg`
+- `cfg/kgreedyq_pendulum.cfg`
 
 
 ## Tuning parameters
