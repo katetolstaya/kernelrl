@@ -15,8 +15,6 @@
 
 - Kernel Normalized Advantage Functions in continuous action spaces from [IROS 2018](https://katetolstaya.github.io/files/c_2018_tolstaya_etal_b.pdf)
 
-- Also available: experience replay buffers
-
 ## To run
 
 Kernel Q-Learning with Pendulum with prioritized experience replay
