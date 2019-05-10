@@ -10,7 +10,7 @@ from corerl.function import KernelRepresentation
 # ==================================================
 # A POLK Q-Learning Model
 
-class KQLearningModel2(object):
+class KQLearningContModel(object):
     def __init__(self, stateCount, actionCount, config):
         self.Q = KernelRepresentation(stateCount + actionCount, 1, config)
 
@@ -45,7 +45,7 @@ class KQLearningModel2(object):
             x_ = np.concatenate((np.reshape(s_, (1, -1)), np.reshape(a_, (1, -1))), axis=1)
             return r + self.gamma * self.Q(x_) - self.Q(x)
 
-    def bellman_error2(self, x, r, x_):
+    def bellman_error_helper(self, x, r, x_):
         if x_ is None:
             return r - self.Q(x)
         else:
@@ -76,13 +76,14 @@ class KQLearningModel2(object):
         else:
             a_ = self.Q.argmax(s_)
             x_ = np.concatenate((np.reshape(np.array(s_), (1, -1)), np.reshape(np.array(a_), (1, -1))), axis=1)
-        delta = self.bellman_error2(x, r, x_)
+        delta = self.bellman_error_helper(x, r, x_)
 
         # Running average of TD-error
         self.y += self.beta.value * (delta - self.y)
 
         # Gradient step
         self.Q.shrink(1. - self.eta.value * self.lossL)
+
         if self.algorithm == 'td' or (self.algorithm == 'hybrid' and not self.rand_act):
             self.Q.append(x, self.eta.value * self.y)
         elif self.algorithm == 'gtd' or (self.algorithm == 'hybrid' and self.rand_act):
@@ -101,14 +102,14 @@ class KQLearningModel2(object):
         modelOrder_ = self.Q.model_order()
 
         # Compute new error
-        loss = 0.5 * self.bellman_error2(x, r, x_) ** 2 + self.model_error()  # TODO should we have model error here?
+        loss = 0.5 * self.bellman_error_helper(x, r, x_) ** 2 + self.model_error()  # TODO should we have model error here?
 
         return (float(loss), float(modelOrder_))
 
 
 # ==================================================
 # An agent using Q-Learning
-class KQLearningAgent2(object):
+class KQLearningContAgent(object):
     def __init__(self, env, config):
         self.stateCount = env.stateCount
         self.actionCount = env.actionCount
@@ -124,20 +125,18 @@ class KQLearningAgent2(object):
         self.lastSample = None
 
         # Initialize model
-        self.model = KQLearningModel2(self.stateCount, self.actionCount, config)
+        self.model = KQLearningContModel(self.stateCount, self.actionCount, config)
 
     def act(self, s, stochastic=True):
         # "Decide what action to take in state s."
         if stochastic and (random.random() < self.epsilon.value):
-            # a = self.model.Q.argmin1(s)
             a = np.random.uniform(self.min_act, self.max_act)
             self.model.rand_act = True
         else:
             a = self.model.Q.argmax(s)
             self.model.rand_act = False
 
-        a_temp = np.reshape(np.clip(a, self.min_act, self.max_act), (-1,))
-        return a_temp
+        return np.reshape(np.clip(a, self.min_act, self.max_act), (-1,))
 
     def observe(self, sample):
         self.lastSample = sample

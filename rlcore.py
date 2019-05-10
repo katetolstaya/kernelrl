@@ -19,13 +19,13 @@ from algs.kqlearning import KQLearningAgent
 from algs.knaf import KNAFAgent
 from algs.knaf_iid import KNAFIIDAgent
 from algs.ksarsa import KSARSAAgent
-from algs.kqlearning_cont_action import KQLearningAgent2
+from algs.kqlearning_cont_action import KQLearningContAgent
 from algs.kpolicy_tabular import KPolicyTabAgent
 from algs.kq_tabular import KQTabAgent
-from algs.kqgreedy_replay import KQGreedyAgentPER
+from algs.old.kqgreedy_replay import KQGreedyAgentPER
 from algs.kqlearning_replay import KQLearningAgentPER
 from corerl.random_agent import RandomAgent
-from algs.kqgreedy import KGreedyQAgent
+from algs.old.kqgreedy import KGreedyQAgent
 # ==================================================
 
 logger = logging.getLogger(__name__)
@@ -201,7 +201,7 @@ class Experiment(object):
             self.random_agent = RandomAgent(self.env, config)
             self.agent = KQGreedyAgentPER(self.env, config)
         elif atype.lower() == 'kqlearning2':
-            self.agent = KQLearningAgent2(self.env, config)
+            self.agent = KQLearningContAgent(self.env, config)
         elif atype.lower() == 'knaf':
             self.agent = KNAFAgent(self.env, config)
         elif atype.lower() == 'knafiid':
