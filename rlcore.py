@@ -17,7 +17,7 @@ import numpy as np
 from corerl.callbacks import CallbackList, make_callbacks
 from algs.kqlearning import KQLearningAgent
 from algs.knaf import KNAFAgent
-from misc.knaf2 import KNAF2Agent
+#from misc.knaf2 import KNAF2Agent
 from algs.knaf_iid import KNAFIIDAgent
 from algs.ksarsa import KSARSAAgent
 from algs.kqlearning_cont_action import KQLearningAgent2
@@ -228,8 +228,6 @@ class Experiment(object):
         elif atype.lower() == 'knafiid':
             self.agent = KNAFIIDAgent(self.env, config)
             self.random_agent = RandomAgent(self.env, config)
-        elif atype.lower() == 'knaf2':
-            self.agent = KNAF2Agent(self.env, config)
         elif atype.lower() == 'kpolicy':
             self.agent = KPolicyAgent(self.env, config)
         elif atype.lower() == 'kpolicytab':
@@ -240,7 +238,8 @@ class Experiment(object):
             self.agent = KSARSAAgent(self.env, config)
         elif atype.lower() == 'kgreedyq':
             self.agent = KGreedyQAgent(self.env, config)
-
+        # elif atype.lower() == 'knaf2':
+        #     self.agent = KNAF2Agent(self.env, config)
         # elif atype.lower() == 'kqlearningiid':
         #     self.random_agent = RandomAgent(self.env, config)
         #     self.agent = KQLearningAgentIID(self.env, config)
@@ -251,7 +250,6 @@ class Experiment(object):
         #     self.agent = KQLearningAltAgent(self.env, config)
         # elif atype.lower() == 'kadv':
         #     self.agent = KAdvAgent(self.env, config)
-
         # elif atype.lower() == 'qtest':
         #     self.agent = QTestAgent2(self.env, config)
         # elif atype.lower() == 'kdpg':
