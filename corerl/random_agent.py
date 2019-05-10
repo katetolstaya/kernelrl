@@ -2,7 +2,10 @@ import numpy as np
 from corerl.memory import PrioritizedMemory, make_memory
 
 # ==================================================
+
+
 class RandomAgent:
+
     def __init__(self, env, cfg):
 
         # Initialize memory and parameters

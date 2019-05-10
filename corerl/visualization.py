@@ -2,6 +2,7 @@ import numpy as np
 import numpy.random as nr
 import matplotlib.pyplot as plt
 
+
 def testGrid(X, kernel, resolution=None, count=None, bounds=None):
     '''Generate a misc grid to evaluate kernel functions against.
 
@@ -37,14 +38,14 @@ def testGrid(X, kernel, resolution=None, count=None, bounds=None):
     tGrid = {}
     if count is not None:
         tGrid['X'], tGrid['Y'] = np.meshgrid(
-                np.linspace(xmin, xmax, count),
-                np.linspace(ymin, ymax, count)
-                )
+            np.linspace(xmin, xmax, count),
+            np.linspace(ymin, ymax, count)
+        )
     elif resolution is not None:
         tGrid['X'], tGrid['Y'] = np.meshgrid(
-                np.arange(xmin, xmax, resolution),
-                np.arange(ymin, ymax, resolution)
-                )
+            np.arange(xmin, xmax, resolution),
+            np.arange(ymin, ymax, resolution)
+        )
     else:
         raise "must specify either 'count' or 'resolution'"
     dims = tGrid['X'].shape
@@ -53,13 +54,14 @@ def testGrid(X, kernel, resolution=None, count=None, bounds=None):
 
     # Evaluate our misc points against every grid point
     tGrid['Kg'] = kernel.f(
-            np.hstack((
-                tGrid['X'].reshape(size, 1),
-                tGrid['Y'].reshape(size, 1)
-                )),
-            X).reshape(dims[0], dims[1], len(X))
+        np.hstack((
+            tGrid['X'].reshape(size, 1),
+            tGrid['Y'].reshape(size, 1)
+        )),
+        X).reshape(dims[0], dims[1], len(X))
 
     return tGrid
+
 
 def plotKernelFunction(tGrid, w, D=None):
     # # Create new figure
@@ -72,14 +74,15 @@ def plotKernelFunction(tGrid, w, D=None):
     plt.contour(tGrid['X'], tGrid['Y'], Z)
     # Plot the dictionary points
     if D is not None:
-        plt.plot(D[:,0], D[:,1], 'k.')
+        plt.plot(D[:, 0], D[:, 1], 'k.')
+
 
 def plotModelLossHistory(histM, histL):
     # Create new figure
     fig = plt.figure()
     # Add loss data on log scale
     ax1 = fig.add_subplot(111)
-    line1, = ax1.semilogy(histL,'r')
+    line1, = ax1.semilogy(histL, 'r')
     plt.ylabel('Testing loss')
     # Add model order
     ax2 = fig.add_subplot(111, sharex=ax1, frameon=False)
@@ -91,6 +94,7 @@ def plotModelLossHistory(histM, histL):
     plt.xlabel('Training episode')
     plt.legend((line1, line2), ('loss', 'M'))
     return fig
+
 
 def plot(data):
     config = data.config
@@ -104,30 +108,33 @@ def plot(data):
                 plotKernelFunction(grid, approx.V.W, approx.V.D)
                 plt.title(name)
         # Plot loss curves
-        names  = [t[0]          for t in data.output if 'historyL' in t[1]]
+        names = [t[0] for t in data.output if 'historyL' in t[1]]
         curves = [t[1].historyL for t in data.output if 'historyL' in t[1]]
         if curves:
-            plt.figure(); plt.hold(True)
+            plt.figure();
+            plt.hold(True)
             for curve in curves:
                 plt.semilogy(curve)
             plt.title('Testing Loss')
             plt.xlabel('Training episode')
             plt.legend(names)
         # Plot model order curves
-        names  = [t[0]          for t in data.output if 'historyM' in t[1]]
+        names = [t[0] for t in data.output if 'historyM' in t[1]]
         curves = [t[1].historyM for t in data.output if 'historyM' in t[1]]
         if curves:
-            plt.figure(); plt.hold(True)
+            plt.figure();
+            plt.hold(True)
             for curve in curves:
                 plt.plot(curve)
             plt.title('Model Order')
             plt.xlabel('Training episode')
             plt.legend(names)
         # Plot cumulative reward curves
-        names  = [t[0]          for t in data.output if 'historyR' in t[1]]
+        names = [t[0] for t in data.output if 'historyR' in t[1]]
         curves = [t[1].historyM for t in data.output if 'historyR' in t[1]]
         if curves:
-            plt.figure(); plt.hold(True)
+            plt.figure();
+            plt.hold(True)
             for curve in curves:
                 plt.plot(curve)
             plt.title('Cumulative (Testing) Reward')
@@ -163,6 +170,7 @@ def plot(data):
             plt.xlabel('Training episode')
     plt.show(False)
 
+
 def plot_metrics(data):
     # Build a list of all metrics
     metricnames = set()
@@ -172,20 +180,28 @@ def plot_metrics(data):
     # Build plots of all metrics
     for metric in metricnames:
         names = []
-        plt.figure(metric); plt.clf(); plt.hold(True)
+        plt.figure(metric);
+        plt.clf();
+        plt.hold(True)
         for experiment, logs in data.iteritems():
             if metric in logs['interval_metrics']:
                 names.append(experiment)
                 plt.plot(logs['interval_metrics']['step'], logs['interval_metrics'][metric])
-        plt.title(metric); plt.xlabel('Training Step'); plt.ylabel(metric); plt.legend(names)
+        plt.title(metric);
+        plt.xlabel('Training Step');
+        plt.ylabel(metric);
+        plt.legend(names)
+
 
 import time
+
+
 def animate(data):
     config = data.config[data.config.default_section]
-    T      = config.getint('MaximumEpisodeLength')
+    T = config.getint('MaximumEpisodeLength')
     approx = data.output
     env = data.env
-    delay=1.0/env.metadata.get('video.frames_per_second', 30)
+    delay = 1.0 / env.metadata.get('video.frames_per_second', 30)
     s = env.reset()
     env.render()
     for i in range(T):
@@ -197,4 +213,3 @@ def animate(data):
             print ('terminated after %s timesteps' % i)
             break
         time.sleep(delay)
-

@@ -2,9 +2,7 @@ import numpy as np
 import scipy.linalg as sl
 from corerl.kernel import make_kernelN
 import json
-#import scikits.sparse.cholmod as cm
-#from scipy import sparse
-#from scipy.sparse.linalg import spsolve
+
 
 class KernelRepresentation(object):
     # N = dimension of state space
@@ -41,6 +39,9 @@ class KernelRepresentation(object):
         self.last_val = None
         self.changed = True
 
+        self.lastU = None
+        self.lastN = None
+
     # ------------------------------
     # Get model order
     # ------------------------------
@@ -71,26 +72,6 @@ class KernelRepresentation(object):
 
         return value
 
-    def eval1(self, X):
-
-        # Use buffered value
-        if not self.changed and np.array_equal(X,self.last_x):
-            return self.last_val
-
-        # Handle model divergence
-        if self.divergence:
-            return np.zeros((self.D.shape[1],1))
-
-        # Evaluate f
-        value = self.kernel.f(X, self.D).dot(np.ones(np.shape(self.W)))
-
-        # Save value to buffer
-        self.last_val = np.copy(value)
-        self.last_x = np.copy(X)
-        self.changed = False
-
-        return value
-
     # ------------------------------
     # Gradient with respect to (x,a)
     # ------------------------------
@@ -102,26 +83,13 @@ class KernelRepresentation(object):
         # Evaluate gradient
         tempW = np.reshape(self.W[:,0], (1,1,-1)) # use only axis 0 for argmax, df
         tempdf = self.kernel.df(x,self.D)
-        return  np.reshape(np.dot(tempW, tempdf),np.shape(x))
-
-    # ------------------------------
-    # Gradient with respect to (x,a)
-    # ------------------------------
-    def df1(self, x):
-        # Handle model divergence
-        if self.divergence:
-            return np.zeros(np.shape(x))
-
-        # Evaluate gradient
-        tempW = np.reshape(np.ones(np.shape(self.W[:,0])), (1,1,-1)) # use only axis 0 for argmax, df
-        tempdf = self.kernel.df(x,self.D)
-        return  np.reshape(np.dot(tempW, tempdf),np.shape(x))
+        return np.reshape(np.dot(tempW, tempdf),np.shape(x))
 
     # ------------------------------
     # Argmax - given a state, find the optimal action using gradient ascent
+    # TODO - this function only supports 1 point in query
     # ------------------------------
     def argmax(self, Y):
-        # TODO only supports 1 point in query
 
         Y = np.reshape(Y, (1, -1))
         dim_s2 = np.shape(Y)[1]  # num states
@@ -171,59 +139,6 @@ class KernelRepresentation(object):
         b = self(acts)[:,0]
         amax = np.array([np.argmax(np.random.random(b.shape) * (b == b.max()))])
         action = np.reshape(acts[amax, dim_s2:], (-1, 1))
-        return action
-
-    def argmin1(self, Y):
-        # TODO only supports 1 point in query
-
-        Y = np.reshape(Y, (1, -1))
-        dim_s2 = np.shape(Y)[1]  # num states
-
-        dim_d1 = self.D.shape[0]  # n points in dictionary
-        dim_d2 = self.D.shape[1]  # num states + actions
-
-        # handle edge cases
-        if self.divergence:
-            return np.zeros((dim_d2 - dim_s2, 1))
-
-        if dim_d1 == 0:  # dictionary is empty
-            cur_x = np.zeros((dim_d2 - dim_s2, 1))
-            return cur_x
-
-        # Initialize candidate points to random values in the action space, with given state
-        N = self.n_points
-        acts = np.zeros((N, dim_d2))
-        for i in range(0, dim_d2 - dim_s2):
-            acts[:, i + dim_s2] = np.random.uniform(self.low_act[i], self.high_act[i], (N,))
-        acts[:, 0:dim_s2] = np.tile(Y, (N, 1))
-
-        # Gradient ascent
-        iters = 0
-        keep_updating = np.full((N,), True, dtype=bool)
-        while False and (keep_updating.any()) and iters < self.n_iters: #TODO
-            iters = iters + 1
-
-            # compute gradient of Q with respect to (s,a), zero out the s component
-            df = np.zeros((N,dim_d2))
-            df[keep_updating, :] = self.df1(acts[keep_updating, :])
-            df[:, 0:dim_s2] = 0
-
-            # gradient step
-            acts = acts - self.grad_step * df
-
-            # stop updating points on edge of action space, points where delta is small
-            temp1 = np.logical_and(np.any(acts[:,dim_s2:] <= self.high_act.T,axis=1), np.any(acts[:,dim_s2:] >= self.low_act.T,axis=1))
-            temp2 = np.logical_and(temp1, np.linalg.norm(self.grad_step * df, axis=1) > self.grad_prec)
-            keep_updating = temp2
-
-        # Clip points to action space
-        for i in range(0, dim_d2 - dim_s2):
-            acts[:, i + dim_s2] = np.clip(acts[:,i + dim_s2], self.low_act[i], self.high_act[i])
-
-        # Check for point with best Q value
-        b = self.eval1(acts)[:,0]
-        amin = np.array([np.argmin(np.random.random(b.shape) * (b == b.min()))])
-        action = np.reshape(acts[amin, dim_s2:], (-1, 1))
         return action
 
     # ------------------------------
@@ -314,7 +229,7 @@ class KernelRepresentation(object):
 
             # remove point from model
             try:
-                Y.remove(y) # This can fail if model has diverged!!
+                Y.remove(y)  # This can fail if model has diverged!!
             except ValueError:
                 print ('!!!!!!!!!!!!!!!!!!Divergence!!!!!!!!!!!!!!!!!')
                 self.divergence = True
@@ -331,14 +246,12 @@ class KernelRepresentation(object):
             if len(self.D) == 0:
                 self.U = np.zeros((0, 0))
                 self.lastU = self.U
-            elif  (len(Y) == self.lastN and np.all(np.equal(Y, np.arange(self.lastN)))):
+            elif len(Y) == self.lastN and np.all(np.equal(Y, np.arange(self.lastN))):
                 self.U = self.lastU
             else:
-                self.U = sl.solve_triangular(sl.cholesky(self.KDD), np.eye(len(Y)))#, overwrite_b=True)
+                self.U = sl.solve_triangular(sl.cholesky(self.KDD), np.eye(len(Y)))  # , overwrite_b=True)
                 self.lastN = len(self.W)
                 self.lastU = self.U
-
-                #self.U = sl.solve_triangular(sl.cholesky(self.KDD), np.eye(len(Y)))#, overwrite_b=True)
 
             self.changed = True
 

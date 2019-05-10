@@ -6,7 +6,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt, numpy as np
 import random
-from algs.kqlearning_iid import KQLearningAgentIID
+from algs.old.kqlearning_iid import KQLearningAgentIID
 
 plt.ion()
 #from corerl.visualization import testGrid, plotKernelFunction
