@@ -10,7 +10,6 @@
 ## Available algorithms
 
 - Kernel Q-Learning with: 
-    - Discrete states / actions
     - Continuous states / discrete actions
     - Continuous states and actions from [ACC 2018](https://arxiv.org/pdf/1804.07323.pdf)
 
