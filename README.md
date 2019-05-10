@@ -2,7 +2,7 @@
 
 
 ## Dependencies
-- Python 2
+- Python 2 or 3
 - OpenAI Gym
 - SciPy
 - MatPlotLib
