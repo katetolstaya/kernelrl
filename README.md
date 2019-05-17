@@ -42,5 +42,5 @@ To tune learning rates and other parameters, adjust the corresponding parameters
 
 ## Contributors
 
-This software was created by [Ekaterina Tolstaya](eig@seas.upenn.edu), [Ethan Stump](ethan.a.stump2.civ@mail.mil), and [Garrett Warnell](garrett.a.warnell.civ@mail.mil).
+This software was created by [Ekaterina Tolstaya](mailto:eig@seas.upenn.edu), [Ethan Stump](mailto:ethan.a.stump2.civ@mail.mil), and [Garrett Warnell](mailto:garrett.a.warnell.civ@mail.mil).
 
