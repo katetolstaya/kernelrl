@@ -40,3 +40,7 @@ The `compose` folder contains the code for composing two or more trained policie
 ## Tuning parameters
 To tune learning rates and other parameters, adjust the corresponding parameters in the .cfg file.
 
+## Contributors
+
+This software was created by [Ekaterina Tolstaya](eig@seas.upenn.edu), [Ethan Stump](ethan.a.stump2.civ@mail.mil), and [Garrett Warnell](garrett.a.warnell.civ@mail.mil).
+
