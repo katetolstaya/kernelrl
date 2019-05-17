@@ -38,7 +38,7 @@ Other options of configuration files are
 The `compose` folder contains the code for composing two or more trained policies as described in the IROS 2018 paper. 
 
 ## Tuning parameters
-To tune learning rates and other parameters, adjust the corresponding parameters in the .cfg file.
+To tune learning rates and other parameters, adjust the corresponding parameters in the `.cfg` file.
 
 ## Contributors
 
