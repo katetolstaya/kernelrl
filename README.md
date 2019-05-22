@@ -19,7 +19,7 @@
 
 Kernel Q-Learning with Pendulum with prioritized experience replay
 ~~~~
-python rlcore.py kq_pendulum_per.cfg
+python rlcore.py cfg/kq_pendulum_per.cfg
 ~~~~
 
 Kernel NAF with Continuous Mountain Car
