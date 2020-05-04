@@ -98,7 +98,8 @@ class KQLearningContModel(object):
             raise ValueError('Unknown algorithm: {}'.format(self.algorithm))
 
         # Prune
-        self.Q.prune(self.eps ** 2 * self.eta.value ** 2 / self.beta.value)
+        #self.Q.prune(self.eps ** 2 * self.eta.value ** 2 / self.beta.value)
+        self.Q.prune((self.eps * self.eta.value ** 2) ** 2)
         modelOrder_ = self.Q.model_order()
 
         # Compute new error

@@ -40,7 +40,8 @@ class KQLearningModel(object):
 
         self.Q.append(X, W)
         # Prune
-        self.Q.prune((self.eps / N) ** 2 * self.eta.value ** 2 / self.beta.value)
+        # self.Q.prune(self.eps ** 2 * (self.eta.value / N) ** 2 / self.beta.value)
+        self.Q.prune((self.eps * self.eta.value ** 2) ** 2)
 
     def evaluate(self, xs):
         "Evaluate the Q function for a list of (s,a) pairs."
