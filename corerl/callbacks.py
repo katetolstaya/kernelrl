@@ -200,7 +200,6 @@ class IntervalRewards(Callback):
             logs['interval_rewards']['mean'] = np.mean(self.interval_rewards)
             logs['interval_rewards']['min'] = np.min(self.interval_rewards)
             logs['interval_rewards']['max'] = np.max(self.interval_rewards)
-            logs['interval_rewards']['std'] = np.std(self.interval_rewards)
 
     def on_train_begin(self, logs):
         self.reset()
@@ -292,6 +291,7 @@ class IntervalTest(Callback):
 
     def test(self, logs):
         total = 0.
+        rewards = []
         for _ in range(self.testcount):
             err = 0.
             reward = 0
@@ -307,11 +307,13 @@ class IntervalTest(Callback):
                 s = s_
                 reward += r
                 if done: break
+            rewards.append(reward)
 
             total += err / float(i + 1)
         loss = float(total) / float(self.testcount) + self.model.model_error()
         logs.setdefault('interval_metrics', {}).setdefault('Testing Loss', []).append(loss)
-        logs.setdefault('interval_metrics', {}).setdefault('Testing Reward', []).append(reward)
+        logs.setdefault('interval_metrics', {}).setdefault('Testing Reward', []).append(np.mean(rewards))
+        logs.setdefault('interval_metrics', {}).setdefault('Testing Reward Std', []).append(np.std(rewards))
 
 
     def on_step_end(self, step, logs):
