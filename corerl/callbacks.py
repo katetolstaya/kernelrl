@@ -200,6 +200,7 @@ class IntervalRewards(Callback):
             logs['interval_rewards']['mean'] = np.mean(self.interval_rewards)
             logs['interval_rewards']['min'] = np.min(self.interval_rewards)
             logs['interval_rewards']['max'] = np.max(self.interval_rewards)
+            logs['interval_rewards']['std'] = np.std(self.interval_rewards)
 
     def on_train_begin(self, logs):
         self.reset()
