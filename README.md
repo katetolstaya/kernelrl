@@ -3,7 +3,7 @@
 
 ## Dependencies
 - Python 2 or 3
-- OpenAI Gym
+- OpenAI Gym, version 0.11.0
 - SciPy
 - MatPlotLib
 
