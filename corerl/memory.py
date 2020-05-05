@@ -90,7 +90,7 @@ class PrioritizedMemory(object):
 
         Binned according to Appendix B.2.1 of https://arxiv.org/pdf/1511.05952
         '''
-        samples = range(n)
+        samples = list(range(n))
         for i, bounds in enumerate(pairs(np.linspace(0, self.total(), n + 1))):
             samples[i] = self.get(random.uniform(bounds[0], bounds[1]))
         return samples
