@@ -291,6 +291,8 @@ class IntervalTest(Callback):
 
     def test(self, logs):
         total = 0.
+        rewards = []
+        losses = []
         for _ in range(self.testcount):
             err = 0.
             reward = 0
@@ -305,12 +307,17 @@ class IntervalTest(Callback):
                 err += 0.5 * self.model.bellman_error(s, a, r, s_) ** 2
                 s = s_
                 reward += r
-                if done: break
+                if done:
+                    break
+            rewards.append(reward)
 
             total += err / float(i + 1)
+            losses.append(total)
         loss = float(total) / float(self.testcount) + self.model.model_error()
-        logs.setdefault('interval_metrics', {}).setdefault('Testing Loss', []).append(loss)
-        logs.setdefault('interval_metrics', {}).setdefault('Testing Reward', []).append(reward)
+        logs.setdefault('interval_metrics', {}).setdefault('Testing Loss Mean', []).append(loss)
+        logs.setdefault('interval_metrics', {}).setdefault('Testing Loss Std', []).append(np.std(losses))
+        logs.setdefault('interval_metrics', {}).setdefault('Testing Reward Mean', []).append(np.mean(rewards))
+        logs.setdefault('interval_metrics', {}).setdefault('Testing Reward Std', []).append(np.std(rewards))
 
 
     def on_step_end(self, step, logs):
