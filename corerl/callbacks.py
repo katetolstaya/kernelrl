@@ -138,7 +138,8 @@ class IntervalMetrics(Callback):
     def update(self, logs):
         self.interval_metrics['step'].append(self.step)
         for name, values in self.all_metrics.items():
-            self.interval_metrics[name].append(np.nanmean(values[-self.interval:]))
+            self.interval_metrics[name + ' Mean'].append(np.nanmean(values[-self.interval:]))
+            self.interval_metrics[name + ' Std'].append(np.nanstd(values[-self.interval:]))
         logs['interval_metrics'] = self.interval_metrics
         logs['all_metrics'] = self.all_metrics
 
@@ -146,7 +147,8 @@ class IntervalMetrics(Callback):
         self.metrics_names = self.model.metrics_names
         for name in self.metrics_names:
             self.all_metrics.setdefault(name, [])
-            self.interval_metrics.setdefault(name, [])
+            self.interval_metrics.setdefault(name + ' Std', [])
+            self.interval_metrics.setdefault(name + ' Mean', [])
 
     def on_train_end(self, logs):
         self.update(logs)
