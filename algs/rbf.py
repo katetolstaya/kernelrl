@@ -17,7 +17,7 @@ def assemble(s, a):
 
 
 class RBFModel(object):
-    def __init__(self, stateCount, actionCount, config):
+    def __init__(self, state_count, action_count, config):
         self.algorithm = config.get('Algorithm', 'td').lower()  # gtd, td or hybrid or gtdrandom
 
         # Learning rate
@@ -38,16 +38,16 @@ class RBFModel(object):
 
         self.kernel = GaussianKernel(self.sig)
 
-        self.indim = stateCount + actionCount
+        self.indim = state_count + action_count
         self.outdim = 1
-        self.numCenters = config.getint('NumberCenters', 1.0)
+        self.num_centers = config.getint('NumberCenters', 1.0)
 
         # action space boundaries
-        self.low_sa = np.reshape(json.loads(config.get('MinSA')), (-1, 1))
-        self.high_sa = np.reshape(json.loads(config.get('MaxSA')), (-1, 1))
+        self.min_bounds = np.reshape(json.loads(config.get('MinSA')), (-1, 1))
+        self.max_bounds = np.reshape(json.loads(config.get('MaxSA')), (-1, 1))
         # action space boundaries
-        self.low_act = np.reshape(json.loads(config.get('MinAction')), (-1, 1))
-        self.high_act = np.reshape(json.loads(config.get('MaxAction')), (-1, 1))
+        self.min_action = np.reshape(json.loads(config.get('MinAction')), (-1, 1))
+        self.max_action = np.reshape(json.loads(config.get('MaxAction')), (-1, 1))
 
         self.dim_centers = np.reshape(json.loads(config.get('DimCenters')), (-1,))
 
@@ -55,20 +55,20 @@ class RBFModel(object):
         # D is a K x N matrix of dictionary elements
 
         self.D = np.zeros(
-            (self.numCenters, self.indim))  # np.random.uniform(self.low_sa, self.high_sa, (self.numCenters))
+            (self.num_centers, self.indim))  # np.random.uniform(self.low_sa, self.high_sa, (self.numCenters))
 
-        axes = [np.linspace(self.low_sa[i], self.high_sa[i], self.dim_centers[i]) for i in range(self.indim)]
+        axes = [np.linspace(self.min_bounds[i], self.max_bounds[i], self.dim_centers[i]) for i in range(self.indim)]
         grids = np.meshgrid(*axes)
         self.D = np.stack([g.ravel() for g in grids], axis=1)
 
         # W is a K x M matrix of weights
-        self.W = np.zeros((self.numCenters, self.outdim))
+        self.W = np.zeros((self.num_centers, self.outdim))
 
         # gradient ascent parameters for argmax function
         self.grad_step = config.getfloat('GradStep', 0.05)
         self.grad_prec = config.getfloat('GradPrecision', 0.005)
         self.n_iters = config.getint('GradIters', 40)
-        self.n_points = config.getint('GradPoints', 20)
+        self.n_points = config.getint('GradPoints', 100)
 
     def fsquare(self, X, Y):
         ret = np.exp(_distEucSq(self.s, X, Y))
@@ -123,20 +123,20 @@ class RBFModel(object):
             raise ValueError('Unknown algorithm: {}'.format(self.algorithm))
 
     def evaluate(self, xs):
-        "Evaluate the Q function for a list of (s,a) pairs."
+        """Evaluate the Q function for a list of (s,a) pairs."""
         return self.f(np.array(xs))
 
     def evaluateOne(self, x):
-        "Evaluate the Q function for a single (s,a) pair."
+        """Evaluate the Q function for a single (s,a) pair."""
         temp = self.f(x)
         return temp
 
     def maximize(self, ss):
-        "Find the maximizing action for a batch of states."
+        """Find the maximizing action for a batch of states."""
         return [self.argmax(s) for s in ss]
 
     def maximizeOne(self, s):
-        "Find the maximizing action for a single state."
+        """Find the maximizing action for a single state."""
         return self.argmax(s)
 
     def df(self, x):
@@ -164,32 +164,32 @@ class RBFModel(object):
         N = self.n_points
         acts = np.zeros((N, dim_d2))
         for i in range(0, dim_d2 - dim_s2):
-            acts[:, i + dim_s2] = np.random.uniform(self.low_act[i], self.high_act[i], (N,))
+            acts[:, i + dim_s2] = np.random.uniform(self.min_action[i], self.max_action[i], (N,))
         acts[:, 0:dim_s2] = np.tile(Y, (N, 1))
 
-        # Gradient ascent
-        iters = 0
-        keep_updating = np.full((N,), True, dtype=bool)
-        while (keep_updating.any()) and iters < self.n_iters:
-            iters = iters + 1
-
-            # compute gradient of Q with respect to (s,a), zero out the s component
-            df = np.zeros((N, dim_d2))
-            df[keep_updating, :] = self.df(acts[keep_updating, :])
-            df[:, 0:dim_s2] = 0
-
-            # gradient step
-            acts = acts + self.grad_step * df
-
-            # stop updating points on edge of action space, points where delta is small
-            temp1 = np.logical_and(np.any(acts[:, dim_s2:] <= self.high_act.T, axis=1),
-                                   np.any(acts[:, dim_s2:] >= self.low_act.T, axis=1))
-            temp2 = np.logical_and(temp1, np.linalg.norm(self.grad_step * df, axis=1) > self.grad_prec)
-            keep_updating = temp2
-
-        # Clip points to action space
-        for i in range(0, dim_d2 - dim_s2):
-            acts[:, i + dim_s2] = np.clip(acts[:, i + dim_s2], self.low_act[i], self.high_act[i])
+        # # Gradient ascent - too slow with this many points
+        # iters = 0
+        # keep_updating = np.full((N,), True, dtype=bool)
+        # while (keep_updating.any()) and iters < self.n_iters:
+        #     iters = iters + 1
+        #
+        #     # compute gradient of Q with respect to (s,a), zero out the s component
+        #     df = np.zeros((N, dim_d2))
+        #     df[keep_updating, :] = self.df(acts[keep_updating, :])
+        #     df[:, 0:dim_s2] = 0
+        #
+        #     # gradient step
+        #     acts = acts + self.grad_step * df
+        #
+        #     # stop updating points on edge of action space, points where delta is small
+        #     temp1 = np.logical_and(np.any(acts[:, dim_s2:] <= self.max_action.T, axis=1),
+        #                            np.any(acts[:, dim_s2:] >= self.min_action.T, axis=1))
+        #     temp2 = np.logical_and(temp1, np.linalg.norm(self.grad_step * df, axis=1) > self.grad_prec)
+        #     keep_updating = temp2
+        #
+        # # Clip points to action space
+        # for i in range(0, dim_d2 - dim_s2):
+        #     acts[:, i + dim_s2] = np.clip(acts[:, i + dim_s2], self.min_action[i], self.max_action[i])
 
         # Check for point with best Q value
         b = self.f(acts)[:, 0]
@@ -308,7 +308,7 @@ class RBFAgentIID(object):
         # compute our average minibatch loss
         loss = 0.5 * np.mean(error ** 2)
         # compute our model order
-        modelOrder = self.model.numCenters
+        modelOrder = self.model.num_centers
         # report metrics
         return (float(loss), float(modelOrder))
 
