@@ -53,7 +53,7 @@ class RBFModel(object):
             (self.numCenters, self.indim))  # np.random.uniform(self.low_sa, self.high_sa, (self.numCenters))
 
         n_centers = [10, 10, 5, 10]
-        axes = [np.linspace(self.low_sa[i], self.high_sa[i], n_centers[i]) for i in range(stateCount)]
+        axes = [np.linspace(self.low_sa[i], self.high_sa[i], n_centers[i]) for i in range(self.indim)]
         grids = np.meshgrid(*axes)
         self.D = np.stack([g.ravel() for g in grids], axis=1)
 
