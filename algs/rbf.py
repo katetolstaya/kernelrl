@@ -87,37 +87,38 @@ class RBFModel(object):
         self.eta.step(step)
         self.beta.step(step)
 
-        # Following 2 lines are under debate - what's the right way to do batch SCGD?
-        yy = self.y + self.beta.value * (delta - self.y)
-        self.y = np.mean(yy)  # Running average of TAD error
-        ######
-
-        N = float(len(delta))
-
         if self.algorithm == 'td':
             # self.W = (1 - self.eta.value) * self.W + self.eta.value * self.fsquare(x, self.D).T * delta
             self.W += self.eta.value * self.fsquare(x, self.D).T * delta
+
         elif self.algorithm == 'hybrid' or self.algorithm == 'gtd' or self.algorithm == 'gtdrandom':
+            # Following 2 lines are under debate - what's the right way to do batch SCGD?
+            yy = self.y + self.beta.value * (delta - self.y)
+            self.y = np.mean(yy)  # Running average of TAD error
+            ######
+
+            N = float(len(delta))
+
             # Stack sample points
             X = np.vstack((x, x_[nonterminal]))
-            W = np.zeros((len(X), 1))
+            weight_gradients = np.zeros((len(X), 1))
 
             if self.algorithm == 'gtd':  # No steps for greedy actions...
                 yy[np.logical_not(rand)] = 0
 
-            W[:len(x)] = self.eta.value / N * yy
+            weight_gradients[:len(x)] = self.eta.value / N * yy
 
             if self.algorithm == 'hybrid':  # TD steps for the greedy actions
                 yy[np.logical_not(rand)] = 0
 
-            W[len(x):] = -self.eta.value / N * gamma * yy[nonterminal]
+            weight_gradients[len(x):] = -self.eta.value / N * gamma * yy[nonterminal]
 
-            if np.flatnonzero(W).size > 0:
-                self.W = (1 - self.eta.value) * self.W
-                X = X[np.flatnonzero(W), :]
-                W = W[np.flatnonzero(W)]
+            if np.flatnonzero(weight_gradients).size > 0:
+                self.W = (1 - self.lossL) * self.W
+                X = X[np.flatnonzero(weight_gradients), :]
+                weight_gradients = weight_gradients[np.flatnonzero(weight_gradients)]
 
-                self.W += self.eta.value * (W.T.dot(self.fsquare(X, self.D))).T
+                self.W += self.eta.value * (weight_gradients.T.dot(self.fsquare(X, self.D))).T
 
         else:
             raise ValueError('Unknown algorithm: {}'.format(self.algorithm))
@@ -139,12 +140,12 @@ class RBFModel(object):
         """Find the maximizing action for a single state."""
         return self.argmax(s)
 
-    def df(self, x):
-        # Handle model divergence
-        # Evaluate gradient
-        tempW = np.reshape(self.W[:, 0], (1, 1, -1))  # use only axis 0 for argmax, df
-        tempdf = self.kernel.df(x, self.D)
-        return np.reshape(np.dot(tempW, tempdf), np.shape(x))
+    # def df(self, x):
+    #     # Handle model divergence
+    #     # Evaluate gradient
+    #     tempW = np.reshape(self.W[:, 0], (1, 1, -1))  # use only axis 0 for argmax, df
+    #     tempdf = self.kernel.df(x, self.D)
+    #     return np.reshape(np.dot(tempW, tempdf), np.shape(x))
 
     # ------------------------------
     def argmax(self, Y):
@@ -167,7 +168,7 @@ class RBFModel(object):
             acts[:, i + dim_s2] = np.random.uniform(self.min_action[i], self.max_action[i], (N,))
         acts[:, 0:dim_s2] = np.tile(Y, (N, 1))
 
-        # # Gradient ascent - too slow with this many points
+        # # Gradient ascent - too slow with this many centers
         # iters = 0
         # keep_updating = np.full((N,), True, dtype=bool)
         # while (keep_updating.any()) and iters < self.n_iters:
@@ -231,8 +232,6 @@ class RBFAgentIID(object):
         self.alpha = config.getfloat('ExperiencePriorityExponent', 1.)
 
     def _getStates(self, batch):
-        # no_state = np.zeros(self.stateCount + self.actionCount)
-
         x = np.array([assemble(e[0], e[1]) for (_, e) in batch])
         rand = np.array([e[4] for (_, e) in batch])
         x_ = np.zeros((len(batch), self.stateCount + self.actionCount))
@@ -256,31 +255,25 @@ class RBFAgentIID(object):
     def bellman_error(self, s, a, r, s_):
         a = a[0]
         x = np.concatenate((np.reshape(s, (1, -1)), np.reshape(a, (1, -1))), axis=1)
-        error = 0
         if s_ is None:
             error = r - self.model.evaluateOne(x)
         else:
             a_ = self.model.maximizeOne(s_)
             x_ = np.concatenate((np.reshape(s_, (1, -1)), np.reshape(a_, (1, -1))), axis=1)
             error = r + self.gamma * self.model.evaluateOne(x_) - self.model.evaluateOne(x)
-        # print error
         return error
 
     def act(self, s, stochastic=True):
-        "Decide what action to take in state s."
+        """Decide what action to take in state s."""
 
         if stochastic and (random.random() < self.epsilon.value):
-
-            a = np.random.uniform(self.min_act, self.max_act)
-            rand = True
+            action = np.random.uniform(self.min_act, self.max_act)
+            random_flag = True
         else:
-
-            a = self.model.argmax(s)
-
-            rand = False
-
-        a_temp = np.reshape(np.clip(a, self.min_act, self.max_act), (-1,))
-        return a_temp, rand
+            action = self.model.argmax(s)
+            random_flag = False
+        clipped_action = np.reshape(np.clip(action, self.min_act, self.max_act), (-1,))
+        return clipped_action, random_flag
 
     def observe(self, sample):
         error = self.bellman_error(sample[0], sample[1], sample[2], sample[3])
@@ -290,27 +283,21 @@ class RBFAgentIID(object):
 
     def improve(self):
         batch = self.memory.sample(self.batchSize)
-
         x, x_, nt, r, rand = self._getStates(batch)
 
         # compute bellman error
-
         error = self._computeError(x, x_, nt, r)
 
         # update model
-
         self.model.train(self.steps, x, x_, nt, error, self.gamma, rand)
 
         # compute updated error
-
         error = self._computeError(x, x_, nt, r)
 
         # compute our average minibatch loss
         loss = 0.5 * np.mean(error ** 2)
-        # compute our model order
-        modelOrder = self.model.num_centers
-        # report metrics
-        return (float(loss), float(modelOrder))
+
+        return (float(loss), float(self.model.num_centers))
 
     def model_error(self):
         return 0
