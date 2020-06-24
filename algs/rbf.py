@@ -14,16 +14,16 @@ import json
 def assemble(s, a):
     return np.concatenate((s.reshape((1, -1)), a.reshape((1, -1))), axis=1).flatten()
 
+
 class RBFModel(object):
     def __init__(self, stateCount, actionCount, config):
-        self.algorithm = config.get('Algorithm', 'td').lower() # gtd, td or hybrid or gtdrandom
+        self.algorithm = config.get('Algorithm', 'td').lower()  # gtd, td or hybrid or gtdrandom
 
-        #self.Q = KernelRepresentation(stateCount + actionCount, 1, config)
         # Learning rate
         self.eta = ScheduledParameter('LearningRate', config)
         # Regularization
         self.lossL = config.getfloat('Regularization', 1e-4)
-        #self.phi = config.getfloat('Phi', 1)
+        # self.phi = config.getfloat('Phi', 1)
         # Representation error budget
         self.eps = config.getfloat('RepresentationError', 1.0)
         # TD-loss expectation approximation rate
@@ -49,22 +49,27 @@ class RBFModel(object):
         # Initialize model matrices
         # D is a K x N matrix of dictionary elements
 
+        self.D = np.zeros(
+            (self.numCenters, self.indim))  # np.random.uniform(self.low_sa, self.high_sa, (self.numCenters))
 
-        self.D = np.zeros((self.numCenters, self.indim)) #np.random.uniform(self.low_sa, self.high_sa, (self.numCenters))
+        n_centers = [10, 10, 5, 10]
+        axes = [np.linspace(self.low_sa[i], self.high_sa[i], n_centers[i]) for i in range(stateCount)]
+        grids = np.meshgrid(*axes)
+        self.D = np.stack([g.ravel() for g in grids], axis=1)
 
-        x_ = np.linspace(self.low_sa[0], self.high_sa[0], 10)
-        y_ = np.linspace(self.low_sa[1], self.high_sa[1], 10)
-        z_ = np.linspace(self.low_sa[2], self.high_sa[2], 5)
-        w_ = np.linspace(self.low_sa[3], self.high_sa[3], 10)
+        # x_ = np.linspace(self.low_sa[0], self.high_sa[0], 10)
+        # y_ = np.linspace(self.low_sa[1], self.high_sa[1], 10)
+        # z_ = np.linspace(self.low_sa[2], self.high_sa[2], 5)
+        # w_ = np.linspace(self.low_sa[3], self.high_sa[3], 10)
+        #
+        # x, y, z, w = np.meshgrid(x_, y_, z_, w_, indexing='ij')
+        #
+        # self.D[:, 0] = x.flatten()
+        # self.D[:, 1] = y.flatten()
+        # self.D[:, 2] = z.flatten()
+        # self.D[:, 3] = w.flatten()
 
-        x, y, z, w = np.meshgrid(x_, y_, z_,w_, indexing='ij')
-
-        self.D[:, 0] = x.flatten()
-        self.D[:, 1] = y.flatten()
-        self.D[:, 2] = z.flatten()
-        self.D[:, 3] = w.flatten()
-
-        #for i in range(0, self.indim):
+        # for i in range(0, self.indim):
         #    self.D[:, i] = np.random.uniform(self.low_sa[i], self.high_sa[i], (self.numCenters,))
 
         # W is a K x M matrix of weights
@@ -72,7 +77,7 @@ class RBFModel(object):
 
         # gradient ascent parameters for argmax function
         self.grad_step = config.getfloat('GradStep', 0.05)
-        self.grad_prec = config.getfloat('GradPrecision',0.005)
+        self.grad_prec = config.getfloat('GradPrecision', 0.005)
         self.n_iters = config.getint('GradIters', 40)
         self.n_points = config.getint('GradPoints', 20)
 
@@ -110,19 +115,19 @@ class RBFModel(object):
         sx1 = np.shape(X)[0]
         sy1 = np.shape(Y)[0]
 
-        ret = np.zeros((sx1,sy1))
+        ret = np.zeros((sx1, sy1))
         try:
             ret = np.exp(self._distEucSq(X, Y))
         except AttributeError:
-            print ("Attribute Error")
-            print (self.s)
-            print (X)
-            print (Y)
+            print("Attribute Error")
+            print(self.s)
+            print(X)
+            print(Y)
         except ValueError:
-            print ("Value Error")
-            print (self.s)
-            print (np.shape(X))
-            print (np.shape(Y))
+            print("Value Error")
+            print(self.s)
+            print(np.shape(X))
+            print(np.shape(Y))
 
         return ret
 
@@ -144,23 +149,22 @@ class RBFModel(object):
         self.y = np.mean(yy)  # Running average of TAD error
         ######
 
-
         N = float(len(delta))
 
         if self.algorithm == 'td':
-            #self.W = (1 - self.eta.value) * self.W + self.eta.value * self.fsquare(x, self.D).T * delta
-            self.W = self.W + self.eta.value * self.fsquare(x, self.D).T * delta
+            # self.W = (1 - self.eta.value) * self.W + self.eta.value * self.fsquare(x, self.D).T * delta
+            self.W += self.eta.value * self.fsquare(x, self.D).T * delta
         elif self.algorithm == 'hybrid' or self.algorithm == 'gtd' or self.algorithm == 'gtdrandom':
             # Stack sample points
             X = np.vstack((x, x_[nonterminal]))
             W = np.zeros((len(X), 1))
 
-            if self.algorithm == 'gtd': # No steps for greedy actions...
+            if self.algorithm == 'gtd':  # No steps for greedy actions...
                 yy[np.logical_not(rand)] = 0
 
             W[:len(x)] = self.eta.value / N * yy
 
-            if self.algorithm == 'hybrid': # TD steps for the greedy actions
+            if self.algorithm == 'hybrid':  # TD steps for the greedy actions
                 yy[np.logical_not(rand)] = 0
 
             W[len(x):] = -self.eta.value / N * gamma * yy[nonterminal]
@@ -170,7 +174,7 @@ class RBFModel(object):
                 X = X[np.flatnonzero(W), :]
                 W = W[np.flatnonzero(W)]
 
-                self.W += self.eta.value * (W.T.dot(self.fsquare(X,self.D))).T
+                self.W += self.eta.value * (W.T.dot(self.fsquare(X, self.D))).T
 
         else:
             raise ValueError('Unknown algorithm: {}'.format(self.algorithm))
@@ -181,7 +185,7 @@ class RBFModel(object):
 
     def evaluateOne(self, x):
         "Evaluate the Q function for a single (s,a) pair."
-        temp =  self.f(x)
+        temp = self.f(x)
         return temp
 
     def maximize(self, ss):
@@ -228,10 +232,11 @@ class RBFModel(object):
         #     acts[:, i + dim_s2] = np.clip(acts[:,i + dim_s2], self.low_act[i], self.high_act[i])
 
         # Check for point with best Q value
-        b = self.f(acts)[:,0]
+        b = self.f(acts)[:, 0]
         amax = np.array([np.argmax(np.random.random(b.shape) * (b == b.max()))])
         action = np.reshape(acts[amax, dim_s2:], (-1, 1))
         return action
+
     def model_error(self):
         return 0
 
@@ -266,7 +271,7 @@ class RBFAgentIID(object):
         self.alpha = config.getfloat('ExperiencePriorityExponent', 1.)
 
     def _getStates(self, batch):
-        #no_state = np.zeros(self.stateCount + self.actionCount)
+        # no_state = np.zeros(self.stateCount + self.actionCount)
 
         x = np.array([assemble(e[0], e[1]) for (_, e) in batch])
         rand = np.array([e[4] for (_, e) in batch])
@@ -293,12 +298,12 @@ class RBFAgentIID(object):
         x = np.concatenate((np.reshape(s, (1, -1)), np.reshape(a, (1, -1))), axis=1)
         error = 0
         if s_ is None:
-            error =  r - self.model.evaluateOne(x)
+            error = r - self.model.evaluateOne(x)
         else:
             a_ = self.model.maximizeOne(s_)
             x_ = np.concatenate((np.reshape(s_, (1, -1)), np.reshape(a_, (1, -1))), axis=1)
-            error =  r + self.gamma * self.model.evaluateOne(x_) - self.model.evaluateOne(x)
-        #print error
+            error = r + self.gamma * self.model.evaluateOne(x_) - self.model.evaluateOne(x)
+        # print error
         return error
 
     def act(self, s, stochastic=True):
@@ -318,7 +323,7 @@ class RBFAgentIID(object):
         return a_temp, rand
 
     def observe(self, sample):
-        error = self.bellman_error(sample[0],sample[1],sample[2],sample[3])
+        error = self.bellman_error(sample[0], sample[1], sample[2], sample[3])
         self.memory.add(sample, np.abs((error[0] + self.eps) ** self.alpha))
         self.steps += 1
         self.epsilon.step(self.steps)
@@ -332,16 +337,13 @@ class RBFAgentIID(object):
 
         error = self._computeError(x, x_, nt, r)
 
-
         # update model
 
         self.model.train(self.steps, x, x_, nt, error, self.gamma, rand)
 
-
         # compute updated error
 
         error = self._computeError(x, x_, nt, r)
-
 
         # compute our average minibatch loss
         loss = 0.5 * np.mean(error ** 2)

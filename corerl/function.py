@@ -273,8 +273,8 @@ class KernelRepresentation(object):
     # NOTE: this function is not idempotent when called repeatedly with the same
     #       approximation budget since the current value is moved each time to be
     #       the 'simplest' value within an eps-ball
-    def prune(self, eps2):
-        if self.divergence:
+    def prune(self, eps2, max_size=-np.Inf):
+        if self.divergence or len(list(range(self.D.shape[0]))) <= max_size:
             return
         # running total of approximation error
         S = 0.
@@ -293,7 +293,7 @@ class KernelRepresentation(object):
             Sy, y = S + np.min(d), np.argmin(d)
 
             # check error
-            if Sy > eps2:
+            if Sy > eps2 or len(Y) <= max_size:
                 break
 
             # updates
