@@ -6,6 +6,7 @@ from corerl.core import ScheduledParameter
 from scipy import *
 from scipy.linalg import norm, pinv
 import json
+from corerl.kernel import _distEucSq, GaussianKernel
 
 
 # ==================================================
@@ -35,6 +36,8 @@ class RBFModel(object):
         self.sig = np.array(sigma)
         self.s = -1. / (2 * self.sig ** 2)
 
+        self.kernel = GaussianKernel(self.sig)
+
         self.indim = stateCount + actionCount
         self.outdim = 1
         self.numCenters = config.getint('NumberCenters', 1.0)
@@ -46,31 +49,17 @@ class RBFModel(object):
         self.low_act = np.reshape(json.loads(config.get('MinAction')), (-1, 1))
         self.high_act = np.reshape(json.loads(config.get('MaxAction')), (-1, 1))
 
+        self.dim_centers = np.reshape(json.loads(config.get('DimCenters')), (-1,))
+
         # Initialize model matrices
         # D is a K x N matrix of dictionary elements
 
         self.D = np.zeros(
             (self.numCenters, self.indim))  # np.random.uniform(self.low_sa, self.high_sa, (self.numCenters))
 
-        n_centers = [10, 10, 5, 10]
-        axes = [np.linspace(self.low_sa[i], self.high_sa[i], n_centers[i]) for i in range(self.indim)]
+        axes = [np.linspace(self.low_sa[i], self.high_sa[i], self.dim_centers[i]) for i in range(self.indim)]
         grids = np.meshgrid(*axes)
         self.D = np.stack([g.ravel() for g in grids], axis=1)
-
-        # x_ = np.linspace(self.low_sa[0], self.high_sa[0], 10)
-        # y_ = np.linspace(self.low_sa[1], self.high_sa[1], 10)
-        # z_ = np.linspace(self.low_sa[2], self.high_sa[2], 5)
-        # w_ = np.linspace(self.low_sa[3], self.high_sa[3], 10)
-        #
-        # x, y, z, w = np.meshgrid(x_, y_, z_, w_, indexing='ij')
-        #
-        # self.D[:, 0] = x.flatten()
-        # self.D[:, 1] = y.flatten()
-        # self.D[:, 2] = z.flatten()
-        # self.D[:, 3] = w.flatten()
-
-        # for i in range(0, self.indim):
-        #    self.D[:, i] = np.random.uniform(self.low_sa[i], self.high_sa[i], (self.numCenters,))
 
         # W is a K x M matrix of weights
         self.W = np.zeros((self.numCenters, self.outdim))
@@ -81,54 +70,8 @@ class RBFModel(object):
         self.n_iters = config.getint('GradIters', 40)
         self.n_points = config.getint('GradPoints', 20)
 
-    def _distEucSq(self, X, Y):
-        if len(X.shape) > 1:
-            if len(Y.shape) > 1:
-                m = X.shape[0]
-                n = Y.shape[0]
-                # print(Y.shape)
-                # print(X.shape)
-                XX = np.sum(X * self.s * X, axis=1)
-                YY = np.sum(Y * self.s * Y, axis=1)
-                # print(XX.shape)
-                # print(YY.shape)
-                return np.tile(XX.reshape(m, 1), (1, n)) + np.tile(YY, (m, 1)) - 2 * X.dot((self.s * Y).T)
-            else:
-                m = X.shape[0]
-                XX = np.sum(X * self.s * X, axis=1)
-                YY = np.sum(Y * self.s * Y)
-                return np.tile(XX.reshape(m, 1), (1, 1)) + np.tile(YY, (m, 1)) - 2 * X.dot(self.s * Y).reshape(m, 1)
-        else:
-            if len(Y.shape) > 1:
-                n = Y.shape[0]
-                XX = np.sum(X * self.s * X)
-                YY = np.sum(Y * self.s * Y, axis=1)
-                return np.tile(XX, (1, n)) + np.tile(YY, (1, 1)) - 2 * X.dot((self.s * Y).T)
-            else:
-                m = 1
-                n = 1
-                XX = np.sum(X * self.s * X)
-                YY = np.sum(Y * self.s * Y)
-                return np.tile(XX, (1, 1)) + np.tile(YY, (1, 1)) - 2 * X.dot(Y)
-
     def fsquare(self, X, Y):
-        sx1 = np.shape(X)[0]
-        sy1 = np.shape(Y)[0]
-
-        ret = np.zeros((sx1, sy1))
-        try:
-            ret = np.exp(self._distEucSq(X, Y))
-        except AttributeError:
-            print("Attribute Error")
-            print(self.s)
-            print(X)
-            print(Y)
-        except ValueError:
-            print("Value Error")
-            print(self.s)
-            print(np.shape(X))
-            print(np.shape(Y))
-
+        ret = np.exp(_distEucSq(self.s, X, Y))
         return ret
 
     # ------------------------------
@@ -196,40 +139,57 @@ class RBFModel(object):
         "Find the maximizing action for a single state."
         return self.argmax(s)
 
+    def df(self, x):
+        # Handle model divergence
+        # Evaluate gradient
+        tempW = np.reshape(self.W[:, 0], (1, 1, -1))  # use only axis 0 for argmax, df
+        tempdf = self.kernel.df(x, self.D)
+        return np.reshape(np.dot(tempW, tempdf), np.shape(x))
+
+    # ------------------------------
     def argmax(self, Y):
+        # TODO only supports 1 point in query
 
         Y = np.reshape(Y, (1, -1))
         dim_s2 = np.shape(Y)[1]  # num states
 
+        dim_d1 = self.D.shape[0]  # n points in dictionary
+        dim_d2 = self.D.shape[1]  # num states + actions
+
+        if dim_d1 == 0:  # dictionary is empty
+            cur_x = np.zeros((dim_d2 - dim_s2, 1))
+            return cur_x
+
         # Initialize candidate points to random values in the action space, with given state
         N = self.n_points
-        acts = np.zeros((N, self.indim))
-        for i in range(0, self.indim - dim_s2):
+        acts = np.zeros((N, dim_d2))
+        for i in range(0, dim_d2 - dim_s2):
             acts[:, i + dim_s2] = np.random.uniform(self.low_act[i], self.high_act[i], (N,))
         acts[:, 0:dim_s2] = np.tile(Y, (N, 1))
 
-        # # Gradient ascent #TODO
-        # iters = 0
-        # keep_updating = np.full((N,), True, dtype=bool)
-        # while (keep_updating.any()) and iters < self.n_iters:
-        #     iters = iters + 1
-        #
-        #     # compute gradient of Q with respect to (s,a), zero out the s component
-        #     df = np.zeros((N,dim_d2))
-        #     df[keep_updating, :] = self.df(acts[keep_updating, :])
-        #     df[:, 0:dim_s2] = 0
-        #
-        #     # gradient step
-        #     acts = acts + self.grad_step * df
-        #
-        #     # stop updating points on edge of action space, points where delta is small
-        #     temp1 = np.logical_and(np.any(acts[:,dim_s2:] <= self.high_act.T,axis=1), np.any(acts[:,dim_s2:] >= self.low_act.T,axis=1))
-        #     temp2 = np.logical_and(temp1, np.linalg.norm(self.grad_step * df, axis=1) > self.grad_prec)
-        #     keep_updating = temp2
-        #
-        # # Clip points to action space
-        # for i in range(0, dim_d2 - dim_s2):
-        #     acts[:, i + dim_s2] = np.clip(acts[:,i + dim_s2], self.low_act[i], self.high_act[i])
+        # Gradient ascent
+        iters = 0
+        keep_updating = np.full((N,), True, dtype=bool)
+        while (keep_updating.any()) and iters < self.n_iters:
+            iters = iters + 1
+
+            # compute gradient of Q with respect to (s,a), zero out the s component
+            df = np.zeros((N, dim_d2))
+            df[keep_updating, :] = self.df(acts[keep_updating, :])
+            df[:, 0:dim_s2] = 0
+
+            # gradient step
+            acts = acts + self.grad_step * df
+
+            # stop updating points on edge of action space, points where delta is small
+            temp1 = np.logical_and(np.any(acts[:, dim_s2:] <= self.high_act.T, axis=1),
+                                   np.any(acts[:, dim_s2:] >= self.low_act.T, axis=1))
+            temp2 = np.logical_and(temp1, np.linalg.norm(self.grad_step * df, axis=1) > self.grad_prec)
+            keep_updating = temp2
+
+        # Clip points to action space
+        for i in range(0, dim_d2 - dim_s2):
+            acts[:, i + dim_s2] = np.clip(acts[:, i + dim_s2], self.low_act[i], self.high_act[i])
 
         # Check for point with best Q value
         b = self.f(acts)[:, 0]
