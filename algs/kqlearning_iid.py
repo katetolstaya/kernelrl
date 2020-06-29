@@ -25,6 +25,13 @@ class KQLearningModel(object):
         self.eps = config.getfloat('RepresentationError', 1.0)
         # TD-loss expectation approximation rate
         self.beta = ScheduledParameter('ExpectationRate', config)
+
+        if config.getint('NumCenters'):
+            self.num_centers = config.getint('NumCenters')
+            self.eps = 1e10
+        else:
+            self.num_centers = -1 * np.Inf
+
         # Running estimate of our expected TD-loss
         self.y = 0
 
@@ -77,7 +84,7 @@ class KQLearningModel(object):
             raise ValueError('Unknown algorithm: {}'.format(self.algorithm))
 
         # Prune
-        self.Q.prune((self.eps / N) ** 2 * self.eta.value ** 2 / self.beta.value)
+        self.Q.prune((self.eps / N) ** 2 * self.eta.value ** 2 / self.beta.value, self.num_centers)
 
     def evaluate(self, xs):
         "Evaluate the Q function for a list of (s,a) pairs."
