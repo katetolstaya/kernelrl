@@ -70,7 +70,7 @@ class RBFModel(object):
         self.n_iters = config.getint('GradIters', 40)
         self.n_points = config.getint('GradPoints', 100)
 
-    def fsquare(self, X, Y):
+    def linear_basis(self, X, Y):
         ret = np.exp(_distEucSq(self.s, X, Y))
         return ret
 
@@ -80,7 +80,7 @@ class RBFModel(object):
     # X : a L x N matrix where L is number of points to evaluate
     def f(self, X):
         # Evaluate f
-        value = self.fsquare(X, self.D).dot(self.W)
+        value = self.linear_basis(X, self.D).dot(self.W)
         return value
 
     def train(self, step, x, x_, nonterminal, delta, gamma, rand):
@@ -89,7 +89,7 @@ class RBFModel(object):
 
         if self.algorithm == 'td':
             # self.W = (1 - self.eta.value) * self.W + self.eta.value * self.fsquare(x, self.D).T * delta
-            self.W += self.eta.value * self.fsquare(x, self.D).T * delta
+            self.W += self.eta.value * self.linear_basis(x, self.D).T * delta
 
         elif self.algorithm == 'hybrid' or self.algorithm == 'gtd' or self.algorithm == 'gtdrandom':
             # Following 2 lines are under debate - what's the right way to do batch SCGD?
@@ -118,7 +118,7 @@ class RBFModel(object):
                 X = X[np.flatnonzero(weight_gradients), :]
                 weight_gradients = weight_gradients[np.flatnonzero(weight_gradients)]
 
-                self.W += self.eta.value * (weight_gradients.T.dot(self.fsquare(X, self.D))).T
+                self.W += self.eta.value * (weight_gradients.T.dot(self.linear_basis(X, self.D))).T
 
         else:
             raise ValueError('Unknown algorithm: {}'.format(self.algorithm))
