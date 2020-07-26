@@ -3,7 +3,6 @@ import random
 import numpy as np
 
 from corerl.core import ScheduledParameter
-from scipy.special import softmax
 import json
 from corerl.kernel import _distEucSq, GaussianKernel
 
@@ -70,9 +69,7 @@ class RBFModel(object):
         self.n_points = config.getint('GradPoints', 100)
 
     def linear_basis(self, X, Y):
-        # ret = np.exp(_distEucSq(self.s, X, Y))
-        # print(np.sum(ret, axis=1))
-        ret = softmax(_distEucSq(self.s, X, Y), axis=1)
+        ret = np.exp(_distEucSq(self.s, X, Y))
         return ret
 
     # ------------------------------
