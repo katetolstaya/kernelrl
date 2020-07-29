@@ -48,6 +48,9 @@ class RBFModel(object):
         self.max_action = np.reshape(json.loads(config.get('MaxAction')), (-1, 1))
 
         self.dim_centers = np.reshape(json.loads(config.get('DimCenters')), (-1,))
+        self.multipliers = np.insert(np.cumprod(self.dim_centers), 0, [1])[:-1]
+
+        self.res = (self.max_bounds - self.min_bounds) / (self.dim_centers.reshape((-1, 1)) - 1)
 
         # Initialize model matrices
         # D is a K x N matrix of dictionary elements
@@ -69,7 +72,16 @@ class RBFModel(object):
         self.n_points = config.getint('GradPoints', 100)
 
     def linear_basis(self, X, Y):
-        ret = np.exp(_distEucSq(self.s, X, Y))
+        def get_one_hot(targets, nb_classes):
+            res = np.eye(nb_classes)[np.array(targets).reshape(-1)]
+            return res.reshape(list(targets.shape) + [nb_classes])
+
+        ind = (X - self.min_bounds.reshape((1, -1))) / self.res.reshape((1, -1))
+        ind = np.sum(ind.astype(np.int32) * self.multipliers.reshape((1, -1)), axis=1)
+        ret = get_one_hot(ind, self.num_centers)
+        # dist = _distEucSq(self.s, X, Y)
+        # ret = np.where(np.equal(dist, np.min(dist, axis=1).reshape((-1,1))), 1, 0)
+        # ret = np.exp(_distEucSq(self.s, X, Y))
         return ret
 
     # ------------------------------
