@@ -146,14 +146,6 @@ class RBFModel(object):
         """Find the maximizing action for a single state."""
         return self.argmax(s)
 
-    # def df(self, x):
-    #     # Handle model divergence
-    #     # Evaluate gradient
-    #     tempW = np.reshape(self.W[:, 0], (1, 1, -1))  # use only axis 0 for argmax, df
-    #     tempdf = self.kernel.df(x, self.D)
-    #     return np.reshape(np.dot(tempW, tempdf), np.shape(x))
-
-    # ------------------------------
     def argmax(self, Y):
         # TODO only supports 1 point in query
         Y = np.reshape(Y, (1, -1))
