@@ -14,6 +14,10 @@ def assemble(s, a):
     return np.concatenate((s.reshape((1, -1)), a.reshape((1, -1))), axis=1).flatten()
 
 
+def get_one_hot(targets, nb_classes):
+    res = np.eye(nb_classes)[np.array(targets).reshape(-1)]
+    return res.reshape(list(targets.shape) + [nb_classes])
+
 class RBFModel(object):
     def __init__(self, state_count, action_count, config):
         self.algorithm = config.get('Algorithm', 'td').lower()  # gtd, td or hybrid or gtdrandom
@@ -72,16 +76,9 @@ class RBFModel(object):
         self.n_points = config.getint('GradPoints', 100)
 
     def linear_basis(self, X, Y):
-        def get_one_hot(targets, nb_classes):
-            res = np.eye(nb_classes)[np.array(targets).reshape(-1)]
-            return res.reshape(list(targets.shape) + [nb_classes])
-
         ind = (X - self.min_bounds.reshape((1, -1))) / self.res.reshape((1, -1))
         ind = np.sum(ind.astype(np.int32) * self.multipliers.reshape((1, -1)), axis=1)
         ret = get_one_hot(ind, self.num_centers)
-        # dist = _distEucSq(self.s, X, Y)
-        # ret = np.where(np.equal(dist, np.min(dist, axis=1).reshape((-1,1))), 1, 0)
-        # ret = np.exp(_distEucSq(self.s, X, Y))
         return ret
 
     # ------------------------------
@@ -159,52 +156,19 @@ class RBFModel(object):
     # ------------------------------
     def argmax(self, Y):
         # TODO only supports 1 point in query
-
         Y = np.reshape(Y, (1, -1))
-        dim_s2 = np.shape(Y)[1]  # num states
+        num_states = np.shape(Y)[1]  # num states
+        num_states_and_actions = self.D.shape[1]  # num states + actions
 
-        dim_d1 = self.D.shape[0]  # n points in dictionary
-        dim_d2 = self.D.shape[1]  # num states + actions
-
-        if dim_d1 == 0:  # dictionary is empty
-            cur_x = np.zeros((dim_d2 - dim_s2, 1))
-            return cur_x
-
-        # Initialize candidate points to random values in the action space, with given state
-        N = self.n_points
-        acts = np.zeros((N, dim_d2))
-        for i in range(0, dim_d2 - dim_s2):
-            acts[:, i + dim_s2] = np.random.uniform(self.min_action[i], self.max_action[i], (N,))
-        acts[:, 0:dim_s2] = np.tile(Y, (N, 1))
-
-        # # Gradient ascent - too slow with this many centers
-        # iters = 0
-        # keep_updating = np.full((N,), True, dtype=bool)
-        # while (keep_updating.any()) and iters < self.n_iters:
-        #     iters = iters + 1
-        #
-        #     # compute gradient of Q with respect to (s,a), zero out the s component
-        #     df = np.zeros((N, dim_d2))
-        #     df[keep_updating, :] = self.df(acts[keep_updating, :])
-        #     df[:, 0:dim_s2] = 0
-        #
-        #     # gradient step
-        #     acts = acts + self.grad_step * df
-        #
-        #     # stop updating points on edge of action space, points where delta is small
-        #     temp1 = np.logical_and(np.any(acts[:, dim_s2:] <= self.max_action.T, axis=1),
-        #                            np.any(acts[:, dim_s2:] >= self.min_action.T, axis=1))
-        #     temp2 = np.logical_and(temp1, np.linalg.norm(self.grad_step * df, axis=1) > self.grad_prec)
-        #     keep_updating = temp2
-        #
-        # # Clip points to action space
-        # for i in range(0, dim_d2 - dim_s2):
-        #     acts[:, i + dim_s2] = np.clip(acts[:, i + dim_s2], self.min_action[i], self.max_action[i])
+        axes = [np.linspace(self.min_bounds[i], self.max_bounds[i], self.dim_centers[i]) for i in range(num_states, num_states_and_actions)]
+        grids = np.meshgrid(*axes)
+        actions = np.stack([g.ravel() for g in grids], axis=1)
+        actions = np.concatenate([np.tile(Y, (np.shape(actions)[0], 1)), actions], axis=1)
 
         # Check for point with best Q value
-        b = self.f(acts)[:, 0]
-        amax = np.array([np.argmax(np.random.random(b.shape) * (b == b.max()))])
-        action = np.reshape(acts[amax, dim_s2:], (-1, 1))
+        action_value = self.f(actions)[:, 0]
+        argmax = np.array([np.argmax(np.random.random(action_value.shape) * (action_value == action_value.max()))])
+        action = np.reshape(actions[argmax, num_states:], (-1, 1))
         return action
 
     def model_error(self):
