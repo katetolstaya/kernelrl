@@ -155,12 +155,16 @@ class RBFModel(object):
         axes = [np.linspace(self.min_bounds[i], self.max_bounds[i], self.dim_centers[i]) for i in range(num_states, num_states_and_actions)]
         grids = np.meshgrid(*axes)
         actions = np.stack([g.ravel() for g in grids], axis=1)
+
         actions = np.concatenate([np.tile(Y, (np.shape(actions)[0], 1)), actions], axis=1)
 
         # Check for point with best Q value
         action_value = self.f(actions)[:, 0]
-        argmax = np.array([np.argmax(np.random.random(action_value.shape) * (action_value == action_value.max()))])
-        action = np.reshape(actions[argmax, num_states:], (-1, 1))
+
+        if action_value.max() == np.Inf:
+            print('infty')
+        amax = np.array([np.argmax(np.random.random(action_value.shape) * (action_value == action_value.max()))])
+        action = np.reshape(actions[amax, num_states:], (-1, 1))
         return action
 
     def model_error(self):
