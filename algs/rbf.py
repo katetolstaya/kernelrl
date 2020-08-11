@@ -165,7 +165,7 @@ class RBFModel(object):
             print('infty')
         amax = np.array([np.argmax(np.random.random(action_value.shape) * (action_value == action_value.max()))])
         action = np.reshape(actions[amax, num_states:], (-1, 1))
-        return action
+        return action.astype(dtype=np.float)
 
     def model_error(self):
         return 0
